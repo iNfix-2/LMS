@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block main %}
+<div class="container py-5" style="margin-top: 20px;">
+    <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap">
+        <div>
+            <h1 class="fw-bold" style="color: #002769; font-family: 'Montserrat', sans-serif;">Automated Reminder Rules</h1>
+            <p class="text-muted mb-0">System configurations for dispatching automated email/in-app reminders before key events.</p>
+        </div>
+    </div>
+
+    <div class="card border-0 shadow" style="border-radius: 15px;">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th class="ps-4">Rule Name</th>
+                            <th>Reminder Type</th>
+                            <th>Timing (Days Before/After)</th>
+                            <th>Recipients</th>
+                            <th class="pe-4">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for rule in rules %}
+                        <tr>
+                            <td class="ps-4">
+                                <span class="fw-bold text-dark">{{ rule.name }}</span>
+                            </td>
+                            <td>
+                                <span class="badge bg-secondary text-capitalize">{{ rule.get_reminder_type_display }}</span>
+                            </td>
+                            <td>
+                                <span class="text-dark">{{ rule.days_before }} Day{{ rule.days_before|pluralize }}</span>
+                            </td>
+                            <td>
+                                <div class="d-flex flex-wrap gap-1">
+                                    {% if rule.send_to_student %}
+                                        <span class="badge bg-light text-dark border">Student</span>
+                                    {% endif %}
+                                    {% if rule.send_to_guardian %}
+                                        <span class="badge bg-light text-dark border">Guardian</span>
+                                    {% endif %}
+                                    {% if rule.send_to_tutor %}
+                                        <span class="badge bg-light text-dark border">Tutor</span>
+                                    {% endif %}
+                                    {% if rule.send_to_admin %}
+                                        <span class="badge bg-light text-dark border">Admin</span>
+                                    {% endif %}
+                                </div>
+                            </td>
+                            <td class="pe-4">
+                                {% if rule.is_active %}
+                                    <span class="badge bg-success bg-opacity-10 text-success rounded-pill px-3 py-1"><i class="fas fa-toggle-on me-1"></i> Active</span>
+                                {% else %}
+                                    <span class="badge bg-danger bg-opacity-10 text-danger rounded-pill px-3 py-1"><i class="fas fa-toggle-off me-1"></i> Inactive</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="5" class="text-center py-5 text-muted">
+                                <i class="fas fa-sliders-h fa-3x mb-3 opacity-25"></i>
+                                <p class="lead mb-0">No reminder rules defined. Rules are used by the CLI reminder task runner.</p>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock main %}

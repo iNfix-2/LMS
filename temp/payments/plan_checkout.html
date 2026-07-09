@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block main %}
+<div class="container py-5" style="margin-top: 20px;">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="card border-0 shadow-lg" style="border-radius: 20px; overflow: hidden; background: #fff;">
+                <!-- Header Gradient -->
+                <div class="p-5 text-center text-white" style="background: linear-gradient(135deg, #71A20A 0%, #4f7307 100%);">
+                    <i class="fas fa-gem fa-3x mb-3 text-warning"></i>
+                    <h2 class="fw-bold mb-1" style="font-family: 'Montserrat', sans-serif;">Subscribe</h2>
+                    <p class="mb-0 opacity-75">Activate your membership plan</p>
+                </div>
+                
+                <div class="card-body p-4 p-md-5">
+                    <div class="mb-4">
+                        <span class="text-uppercase tracking-wider text-muted small fw-bold">Plan details</span>
+                        <h4 class="fw-bold mt-1" style="color: #002769;">{{ plan.name }}</h4>
+                        <p class="text-muted mb-0 small">{{ plan.description }}</p>
+                        <div class="mt-2 text-primary fw-semibold small">
+                            <i class="far fa-calendar-alt me-1"></i> Duration: {{ plan.duration_days }} Days
+                        </div>
+                    </div>
+                    
+                    <hr class="my-4">
+                    
+                    <!-- Pricing Summary -->
+                    <div class="bg-light p-4 rounded-3 mb-4">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <span class="text-muted">Plan Price</span>
+                            <span class="fw-semibold">₦{{ plan.price }}</span>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <span class="text-muted">Subscription Type</span>
+                            <span class="badge bg-primary text-uppercase">{{ plan.get_plan_type_display }}</span>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <span class="text-muted">Reference</span>
+                            <span class="text-secondary font-monospace small">{{ transaction.reference }}</span>
+                        </div>
+                        <hr class="my-3">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="fw-bold text-dark fs-5">Total to Pay</span>
+                            <span class="fw-bold text-primary fs-4" style="color: #002769 !important;">₦{{ invoice.amount }}</span>
+                        </div>
+                    </div>
+                    
+                    <div class="d-grid gap-2">
+                        <a href="{% url 'payments:initialize_invoice_payment' invoice.id %}" class="btn btn-primary btn-lg py-3" style="background-color: #002769; border: none; border-radius: 12px; font-weight: 700; letter-spacing: 0.5px;">
+                            <i class="fas fa-credit-card me-2"></i> Pay Now with Paystack
+                        </a>
+                        <a href="{% url 'pricing_plans_list' %}" class="btn btn-link text-muted mt-2">
+                            Cancel and Return
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="card-footer bg-light border-0 py-3 text-center">
+                    <small class="text-muted"><i class="fas fa-lock me-1"></i> Secured server-side verification</small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock main %}

@@ -1,0 +1,125 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block main %}
+<div class="container py-5" style="margin-top: 20px;">
+    <!-- Detail Header -->
+    <div class="row mb-5 align-items-center">
+        <div class="col-md-8">
+            <h3 class="text-uppercase tracking-wider text-muted mb-2" style="color: #71A20A !important; font-weight: 600; font-size: 0.9rem; letter-spacing: 2px;">VIRTUAL MEETING ROOM</h3>
+            <h1 class="display-5 fw-bold" style="color: #002769; font-family: 'Montserrat', sans-serif;">{{ live_class.title }}</h1>
+            <p class="lead text-muted">Course: {{ live_class.course.title }}</p>
+        </div>
+        <div class="col-md-4 text-md-end">
+            <a href="{% url 'academics:live_class_list' %}" class="btn btn-outline-primary rounded-pill px-4" style="border-color: #002769; color: #002769;">
+                <i class="fas fa-arrow-left me-2"></i> All Live Classes
+            </a>
+        </div>
+    </div>
+
+    <!-- Details card -->
+    <div class="row">
+        <div class="col-lg-8 mb-4">
+            <div class="card border-0 shadow-sm" style="border-radius: 15px;">
+                <div class="card-body p-5">
+                    <h4 class="fw-bold mb-4" style="color: #002769;">Description & Details</h4>
+                    <p class="text-muted" style="line-height: 1.8;">
+                        {{ live_class.description|default:"No description provided for this session." }}
+                    </p>
+                    
+                    <hr class="my-4">
+                    
+                    <h5 class="fw-bold mb-3" style="color: #002769;">Class Information</h5>
+                    <div class="row g-4">
+                        <div class="col-sm-6">
+                            <span class="text-muted d-block small">TUTOR</span>
+                            <span class="fw-bold text-dark">{{ live_class.tutor.get_full_name|default:live_class.tutor.username }}</span>
+                        </div>
+                        <div class="col-sm-6">
+                            <span class="text-muted d-block small">STATUS</span>
+                            {% if live_class.status == 'live' %}
+                                <span class="badge bg-danger text-white rounded-pill px-3 py-1.5"><i class="fas fa-broadcast-tower me-1 animate-pulse"></i> Live Now</span>
+                            {% elif live_class.status == 'scheduled' %}
+                                <span class="badge bg-primary text-white rounded-pill px-3 py-1.5">Scheduled</span>
+                            {% elif live_class.status == 'completed' %}
+                                <span class="badge bg-success text-white rounded-pill px-3 py-1.5">Completed</span>
+                            {% elif live_class.status == 'cancelled' %}
+                                <span class="badge bg-secondary text-white rounded-pill px-3 py-1.5">Cancelled</span>
+                            {% endif %}
+                        </div>
+                        <div class="col-sm-6">
+                            <span class="text-muted d-block small">START TIME</span>
+                            <span class="fw-bold text-dark">{{ live_class.scheduled_start|date:"M d, Y @ H:i" }}</span>
+                        </div>
+                        <div class="col-sm-6">
+                            <span class="text-muted d-block small">END TIME</span>
+                            <span class="fw-bold text-dark">{{ live_class.scheduled_end|date:"M d, Y @ H:i" }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <!-- Access Widget -->
+            <div class="card border-0 shadow-sm mb-4" style="border-radius: 15px;">
+                <div class="card-body p-4 text-center">
+                    <h5 class="fw-bold mb-4" style="color: #002769;">Join Classroom</h5>
+                    
+                    {% if show_sensitive_data %}
+                        <div class="p-3 bg-light rounded-3 mb-4 text-start">
+                            <div class="mb-2">
+                                <small class="text-muted d-block text-uppercase" style="font-size: 0.7rem;">Meeting Provider</small>
+                                <span class="fw-bold text-uppercase">{{ live_class.get_provider_display }}</span>
+                            </div>
+                            {% if live_class.meeting_id %}
+                                <div class="mb-2">
+                                    <small class="text-muted d-block text-uppercase" style="font-size: 0.7rem;">Meeting ID</small>
+                                    <code class="fw-bold text-dark">{{ live_class.meeting_id }}</code>
+                                </div>
+                            {% endif %}
+                            {% if live_class.passcode %}
+                                <div class="mb-0">
+                                    <small class="text-muted d-block text-uppercase" style="font-size: 0.7rem;">Passcode</small>
+                                    <code class="fw-bold text-dark">{{ live_class.passcode }}</code>
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        {% if show_join %}
+                            <a href="{% url 'academics:join_live_class' live_class.id %}" target="_blank" class="btn btn-success w-100 py-3 rounded-pill fw-bold">
+                                Join Session <i class="fas fa-external-link-alt ms-2"></i>
+                            </a>
+                        {% else %}
+                            <button class="btn btn-secondary w-100 py-3 rounded-pill fw-bold" disabled>
+                                Meeting Not Active
+                            </button>
+                        {% endif %}
+                    {% else %}
+                        <div class="alert alert-warning">
+                            Join links and passcodes are restricted to enrolled students and authorized users.
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Archival/Recording Widget -->
+            {% if live_class.status == 'completed' %}
+                <div class="card border-0 shadow-sm" style="border-radius: 15px; border-top: 4px solid #71A20A;">
+                    <div class="card-body p-4 text-center">
+                        <h5 class="fw-bold mb-3" style="color: #002769;">Class Recording</h5>
+                        {% if live_class.recording_url %}
+                            <p class="text-muted small mb-4">This session has been archived. You can view the session playback below.</p>
+                            <a href="{{ live_class.recording_url }}" target="_blank" class="btn btn-outline-success w-100 py-2.5 rounded-pill fw-bold">
+                                Watch Playback <i class="fas fa-play ms-2"></i>
+                            </a>
+                        {% else %}
+                            <p class="text-muted mb-0">No playback recording has been uploaded for this completed session.</p>
+                        {% endif %}
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

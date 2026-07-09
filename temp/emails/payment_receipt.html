@@ -1,0 +1,31 @@
+{% extends "emails/base_email.html" %}
+
+{% block content %}
+<h2>Payment Receipt</h2>
+<p>Hello {{ recipient.username }},</p>
+<p>Thank you for your payment. Your transaction was successful.</p>
+
+<table style="width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 14px;">
+    <tr style="border-bottom: 1px solid #eeeeee;">
+        <th style="text-align: left; padding: 8px 0;">Reference:</th>
+        <td style="padding: 8px 0;">{{ payment.reference }}</td>
+    </tr>
+    <tr style="border-bottom: 1px solid #eeeeee;">
+        <th style="text-align: left; padding: 8px 0;">Invoice Number:</th>
+        <td style="padding: 8px 0;">{{ invoice.invoice_number }}</td>
+    </tr>
+    <tr style="border-bottom: 1px solid #eeeeee;">
+        <th style="text-align: left; padding: 8px 0;">Amount Paid:</th>
+        <td style="padding: 8px 0; font-weight: bold; color: #71A20A;">₦{{ payment.amount }}</td>
+    </tr>
+    <tr style="border-bottom: 1px solid #eeeeee;">
+        <th style="text-align: left; padding: 8px 0;">Payment Date:</th>
+        <td style="padding: 8px 0;">{{ payment.paid_at|date:"M d, Y" }}</td>
+    </tr>
+</table>
+
+<p>A copy of your PDF receipt has been attached to this email.</p>
+
+<p>If you have any questions, please reply to this email to contact support.</p>
+<p>Best regards,<br>The Edukom Team</p>
+{% endblock %}

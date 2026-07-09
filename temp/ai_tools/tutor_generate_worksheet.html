@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block main %}
+<div class="container py-4">
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a href="{% url 'tutor_dashboard' %}">Tutor Dashboard</a></li>
+      <li class="breadcrumb-item"><a href="{% url 'course_detail' course.slug %}">{{ course.title }}</a></li>
+      <li class="breadcrumb-item active" aria-current="page">AI Worksheet Generator</li>
+    </ol>
+  </nav>
+
+  <div class="row justify-content-center">
+    <div class="col-md-8">
+      <div class="card shadow-sm border-0 rounded-3">
+        <div class="card-header text-white py-4" style="background-color: #002769;">
+          <h3 class="fw-bold mb-0"><i class="fas fa-file-alt me-2 text-warning"></i>AI Worksheet Generator</h3>
+          <p class="mb-0 text-white-50 small mt-1">Generate a comprehensive practice worksheet for students, complete with sections and an answer key.</p>
+        </div>
+
+        <div class="card-body p-4">
+          <form method="POST">
+            {% csrf_token %}
+            <div class="mb-3">
+              <label class="form-label fw-bold text-dark">Course:</label>
+              <input type="text" class="form-control" value="{{ course.title }}" readonly disabled>
+            </div>
+
+            <div class="mb-3">
+              <label for="lesson-select" class="form-label fw-bold text-dark">Select Target Lesson:</label>
+              <select name="lesson" id="lesson-select" class="form-select" required>
+                <option value="">-- Choose a Lesson --</option>
+                {% for lesson in lessons %}
+                  <option value="{{ lesson.id }}">{{ lesson.title }}</option>
+                {% endfor %}
+              </select>
+            </div>
+
+            <div class="mb-3">
+              <label for="difficulty" class="form-label fw-bold text-dark">Target Difficulty:</label>
+              <select name="difficulty" id="difficulty" class="form-select" required>
+                <option value="easy">Easy</option>
+                <option value="medium" selected>Medium</option>
+                <option value="hard">Hard</option>
+              </select>
+            </div>
+
+            <div class="alert alert-info border-0 rounded-3 mt-3">
+              <h6 class="fw-bold text-info"><i class="fas fa-info-circle me-2"></i>Draft Workflow</h6>
+              <p class="mb-0 small">The generated worksheet will be stored as an editable draft. You can review, approve, and copy or export it for your students.</p>
+            </div>
+
+            <div class="d-flex justify-content-between align-items-center mt-4 border-top pt-3">
+              <a href="{% url 'course_detail' course.slug %}" class="btn btn-outline-secondary">
+                Cancel
+              </a>
+              <button type="submit" class="btn text-white px-4 py-2" style="background-color: #002769;">
+                <i class="fas fa-cog fa-spin me-2 d-none" id="loader-icon"></i><i class="fas fa-magic me-2" id="magic-icon"></i>Generate Worksheet Draft
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.querySelector('form').addEventListener('submit', function() {
+    document.getElementById('loader-icon').classList.remove('d-none');
+    document.getElementById('magic-icon').classList.add('d-none');
+    this.querySelector('button[type="submit"]').disabled = true;
+  });
+</script>
+{% endblock main %}

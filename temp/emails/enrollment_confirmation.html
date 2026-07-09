@@ -1,0 +1,14 @@
+{% extends "emails/base_email.html" %}
+
+{% block content %}
+<h2>Course Enrollment Confirmed!</h2>
+<p>Hello {{ recipient.username }},</p>
+<p>You have successfully enrolled in the course: <strong>{{ course.title }}</strong>.</p>
+<p>You can start studying and accessing lessons immediately.</p>
+
+<div class="button-container">
+    <a href="{{ site_url }}/learn/course/{{ course.slug }}/" class="button">Go to Course Details</a>
+</div>
+
+<p>Happy learning!<br>The Edukom Team</p>
+{% endblock %}

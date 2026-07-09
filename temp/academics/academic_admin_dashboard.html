@@ -1,0 +1,164 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block main %}
+<div class="container py-5" style="margin-top: 20px;">
+    <!-- Dashboard Header -->
+    <div class="row mb-5 align-items-center">
+        <div class="col-md-8">
+            <h3 class="text-uppercase tracking-wider text-muted mb-2" style="color: #71A20A !important; font-weight: 600; font-size: 0.9rem; letter-spacing: 2px;">ACADEMIC CONTROL PANEL</h3>
+            <h1 class="display-5 fw-bold" style="color: #002769; font-family: 'Montserrat', sans-serif;">Academic Admin Dashboard</h1>
+            <p class="lead text-muted">Manage calendars, track live virtual classroom links, and supervise student attendance records.</p>
+        </div>
+        <div class="col-md-4 text-md-end">
+            <a href="{% url 'academics:academic_calendar' %}" class="btn btn-outline-primary rounded-pill px-4 me-2">
+                <i class="far fa-calendar-alt me-2"></i> View Calendar
+            </a>
+            <a href="{% url 'academics:my_timetable' %}" class="btn btn-outline-primary rounded-pill px-4">
+                <i class="fas fa-clock me-2"></i> Timetables
+            </a>
+        </div>
+    </div>
+
+    <!-- Active Details Widget -->
+    <div class="row mb-5">
+        <div class="col-md-6 mb-4 mb-md-0">
+            <div class="card border-0 shadow-sm h-100" style="border-radius: 15px; border-left: 5px solid #002769;">
+                <div class="card-body p-4">
+                    <h5 class="text-muted text-uppercase mb-2" style="font-size: 0.8rem; letter-spacing: 1px;">Current Active Session</h5>
+                    <h3 class="fw-bold" style="color: #002769;">
+                        {% if current_session %}
+                            {{ current_session.name }}
+                        {% else %}
+                            No session marked as current
+                        {% endif %}
+                    </h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card border-0 shadow-sm h-100" style="border-radius: 15px; border-left: 5px solid #71A20A;">
+                <div class="card-body p-4">
+                    <h5 class="text-muted text-uppercase mb-2" style="font-size: 0.8rem; letter-spacing: 1px;">Current Active Term</h5>
+                    <h3 class="fw-bold" style="color: #71A20A;">
+                        {% if current_term %}
+                            {{ current_term.name }}
+                        {% else %}
+                            No term marked as current
+                        {% endif %}
+                    </h3>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Stats grid -->
+    <div class="row g-4 mb-5">
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm text-center py-4" style="border-radius: 15px;">
+                <h1 class="display-4 fw-bold text-primary mb-1">{{ total_slots }}</h1>
+                <span class="text-muted text-uppercase fw-semibold" style="font-size: 0.75rem;">Timetable Slots</span>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm text-center py-4" style="border-radius: 15px;">
+                <h1 class="display-4 fw-bold text-success mb-1">{{ live_classes_today }}</h1>
+                <span class="text-muted text-uppercase fw-semibold" style="font-size: 0.75rem;">Live Classes Today</span>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm text-center py-4" style="border-radius: 15px;">
+                <h1 class="display-4 fw-bold text-info mb-1">{{ attendance_sessions_today }}</h1>
+                <span class="text-muted text-uppercase fw-semibold" style="font-size: 0.75rem;">Attendance Sessions Today</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Daily Records lists -->
+    <div class="row">
+        <!-- Absent students -->
+        <div class="col-lg-6 mb-4">
+            <div class="card border-0 shadow-sm h-100" style="border-radius: 15px;">
+                <div class="card-body p-4">
+                    <h4 class="fw-bold mb-4" style="color: #002769;"><i class="fas fa-user-minus me-2 text-danger"></i> Absent Students Today</h4>
+                    <div class="table-responsive">
+                        <table class="table align-middle">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Student</th>
+                                    <th>Course</th>
+                                    <th>Sheet Title</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for record in absent_records_today %}
+                                    <tr>
+                                        <td>
+                                            <h6 class="mb-0 fw-bold" style="color: #002769;">{{ record.student.get_full_name|default:record.student.username }}</h6>
+                                            <small class="text-muted">{{ record.student.username }}</small>
+                                        </td>
+                                        <td>
+                                            <small class="fw-semibold text-muted">{{ record.attendance_session.course.title }}</small>
+                                        </td>
+                                        <td>
+                                            <small class="text-muted">{{ record.attendance_session.title }}</small>
+                                        </td>
+                                    </tr>
+                                {% empty %}
+                                    <tr>
+                                        <td colspan="3" class="text-center py-4 text-muted">No student marked absent today.</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Upcoming Exam/Test Weeks -->
+        <div class="col-lg-6 mb-4">
+            <div class="card border-0 shadow-sm h-100" style="border-radius: 15px;">
+                <div class="card-body p-4">
+                    <h4 class="fw-bold mb-4" style="color: #002769;"><i class="fas fa-exclamation-triangle me-2 text-warning"></i> Upcoming Exam & Test Weeks</h4>
+                    <div class="table-responsive">
+                        <table class="table align-middle">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Week</th>
+                                    <th>Activity</th>
+                                    <th>Dates</th>
+                                    <th>Type</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for week in upcoming_weeks %}
+                                    <tr>
+                                        <td class="fw-bold">Week {{ week.week_number }}</td>
+                                        <td>
+                                            <h6 class="mb-0 fw-bold" style="color: #002769;">{{ week.activity }}</h6>
+                                            <small class="text-muted">{{ week.term.name }}</small>
+                                        </td>
+                                        <td>
+                                            <small class="text-muted">{{ week.start_date|date:"M d" }} — {{ week.end_date|date:"M d, Y" }}</small>
+                                        </td>
+                                        <td>
+                                            <span class="badge {% if week.week_type == 'exam' %}bg-danger{% else %}bg-warning text-dark{% endif %} text-uppercase" style="font-size: 0.75rem;">
+                                                {{ week.get_week_type_display }}
+                                            </span>
+                                        </td>
+                                    </tr>
+                                {% empty %}
+                                    <tr>
+                                        <td colspan="4" class="text-center py-4 text-muted">No upcoming test or exam weeks configured.</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

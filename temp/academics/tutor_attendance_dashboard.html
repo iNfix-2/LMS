@@ -1,0 +1,103 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block main %}
+<div class="container py-5" style="margin-top: 20px;">
+    <!-- Dashboard Header -->
+    <div class="row mb-5 align-items-center">
+        <div class="col-md-8">
+            <h3 class="text-uppercase tracking-wider text-muted mb-2" style="color: #71A20A !important; font-weight: 600; font-size: 0.9rem; letter-spacing: 2px;">ATTENDANCE HUB</h3>
+            <h1 class="display-5 fw-bold" style="color: #002769; font-family: 'Montserrat', sans-serif;">Tutor Attendance Dashboard</h1>
+            <p class="lead text-muted">Create roll call events, review student presence logs, and record course attendance.</p>
+        </div>
+        <div class="col-md-4 text-md-end">
+            <!-- AI Attendance Insights Hook (Task 22) -->
+            <!-- TODO: Integrate AI attendance insights here -->
+            <div class="card border-0 bg-light-green shadow-sm p-3 inline-block" style="border-radius: 12px; display: inline-block; border-left: 4px solid #71A20A;">
+                <div class="d-flex align-items-center">
+                    <div class="me-2"><i class="fas fa-brain text-success"></i></div>
+                    <div>
+                        <span class="fw-bold text-success" style="font-size: 0.85rem;">AI Attendance Insights</span>
+                        <br><span class="text-muted" style="font-size: 0.75rem;">Detect patterns, gaps, or churn alerts (Coming Soon)</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Courses List -->
+        <div class="col-lg-6 mb-4">
+            <div class="card border-0 shadow-sm h-100" style="border-radius: 15px;">
+                <div class="card-body p-4">
+                    <h4 class="fw-bold mb-4" style="color: #002769;">Create Roll Call Session</h4>
+                    <p class="text-muted small">Select a course below to instantiate a new daily student attendance sheet.</p>
+                    <div class="list-group list-group-flush mt-3">
+                        {% for course in courses %}
+                            <div class="list-group-item px-0 py-3 d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h6 class="fw-bold mb-1" style="color: #002769;">{{ course.title }}</h6>
+                                    <small class="text-muted">Class: {{ course.class_level.name }}</small>
+                                </div>
+                                <a href="{% url 'academics:create_attendance_session' course.slug %}" class="btn btn-sm btn-primary rounded-pill px-3" style="background-color: #002769; border-color: #002769;">
+                                    New Session <i class="fas fa-plus ms-1"></i>
+                                </a>
+                            </div>
+                        {% empty %}
+                            <div class="alert alert-info py-3 mb-0">No courses assigned to your profile.</div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Sheets -->
+        <div class="col-lg-6 mb-4">
+            <div class="card border-0 shadow-sm h-100" style="border-radius: 15px;">
+                <div class="card-body p-4">
+                    <h4 class="fw-bold mb-4" style="color: #002769;">Recent Attendance Sessions</h4>
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Title</th>
+                                    <th>Date</th>
+                                    <th class="text-end">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for session in recent_sessions %}
+                                    <tr>
+                                        <td>
+                                            <h6 class="mb-0 fw-bold" style="color: #002769;">{{ session.title }}</h6>
+                                            <small class="text-muted">{{ session.course.title }}</small>
+                                        </td>
+                                        <td>
+                                            <small class="fw-semibold text-muted">{{ session.date|date:"Y-m-d" }}</small>
+                                        </td>
+                                        <td class="text-end">
+                                            <a href="{% url 'academics:mark_attendance' session.id %}" class="btn btn-sm btn-outline-primary rounded-pill px-3">
+                                                Mark Roll <i class="fas fa-check-double ms-1"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                {% empty %}
+                                    <tr>
+                                        <td colspan="3" class="text-center py-4 text-muted">No attendance sheets recorded yet.</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .bg-light-green {
+        background-color: rgba(113, 162, 10, 0.1) !important;
+    }
+</style>
+{% endblock %}

@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Progress Report: {{ student.username }}</title>
+    <style>
+        @page {
+            size: A4;
+            margin: 2cm;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            color: #333333;
+            line-height: 1.4;
+            font-size: 13px;
+        }
+        .header {
+            border-bottom: 2px solid #002769;
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        .logo {
+            font-size: 26px;
+            font-weight: bold;
+            color: #002769;
+            margin-bottom: 5px;
+        }
+        .title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #555555;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .info-table {
+            width: 100%;
+            margin-bottom: 30px;
+            background-color: #f8f9fa;
+            border: 1px solid #eeeeee;
+            border-radius: 6px;
+            border-collapse: separate;
+            border-spacing: 15px;
+        }
+        .info-table td {
+            vertical-align: top;
+        }
+        .info-label {
+            font-weight: bold;
+            color: #002769;
+        }
+        .section-title {
+            color: #002769;
+            font-size: 15px;
+            font-weight: bold;
+            margin: 20px 0 10px 0;
+            border-bottom: 2px solid #eeeeee;
+            padding-bottom: 5px;
+        }
+        .scores-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 30px;
+        }
+        .scores-table th {
+            background-color: #002769;
+            color: #ffffff;
+            font-weight: bold;
+            text-align: left;
+            padding: 8px 10px;
+        }
+        .scores-table td {
+            padding: 8px 10px;
+            border-bottom: 1px solid #eeeeee;
+        }
+        .scores-table tr:nth-child(even) td {
+            background-color: #f8f9fa;
+        }
+        .remarks-box {
+            background-color: #f8f9fa;
+            border-left: 4px solid #002769;
+            padding: 15px;
+            margin-bottom: 30px;
+            font-style: italic;
+        }
+        .footer {
+            margin-top: 50px;
+            text-align: center;
+            font-size: 11px;
+            color: #777777;
+            border-top: 1px solid #eeeeee;
+            padding-top: 15px;
+        }
+        .signature-table {
+            width: 100%;
+            margin-top: 50px;
+        }
+        .signature-line {
+            border-top: 1px solid #333333;
+            width: 200px;
+            margin-top: 40px;
+            text-align: center;
+            padding-top: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="logo">EDUKOM LEARNING</div>
+        <div class="title">Official Student Progress Report</div>
+        <div style="color: #777777; font-size: 11px; margin-top: 5px;">
+            Academic Performance Evaluation Statement
+        </div>
+    </div>
+
+    <table class="info-table">
+        <tr>
+            <td>
+                <span class="info-label">Student Name:</span> {{ student.username }}<br>
+                <span class="info-label">Email:</span> {{ student.email }}<br>
+                <span class="info-label">Course:</span> {{ course.title }}
+            </td>
+            <td>
+                <span class="info-label">Report Date:</span> {{ report.created_at|date:"M d, Y" }}<br>
+                <span class="info-label">Attendance:</span> {{ report.attendance_rate }}%<br>
+                <span class="info-label">Status:</span> {{ report.get_status_display }}
+            </td>
+        </tr>
+    </table>
+
+    <div class="section-title">Academic Metrics</div>
+    <table class="scores-table">
+        <thead>
+            <tr>
+                <th>Metric Category</th>
+                <th>Result/Average</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Quiz/Assessment Average Score</td>
+                <td style="font-weight: bold;">{{ report.quiz_average }}%</td>
+            </tr>
+            <tr>
+                <td>Assignment Average Score</td>
+                <td style="font-weight: bold;">{{ report.assignment_average }}%</td>
+            </tr>
+            <tr>
+                <td>Overall Calculated Grade</td>
+                <td style="font-weight: bold; color: #002769; font-size: 14px;">{{ report.grade }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="section-title">Tutor Remarks & Feedback</div>
+    <div class="remarks-box">
+        {% if report.remarks %}
+            "{{ report.remarks }}"
+        {% else %}
+            "No remarks provided by the tutor."
+        {% endif %}
+    </div>
+
+    <table class="signature-table">
+        <tr>
+            <td>
+                <div class="signature-line">
+                    Course Tutor
+                </div>
+            </td>
+            <td style="text-align: right;">
+                <div class="signature-line" style="float: right;">
+                    Edukom Registrar
+                </div>
+            </td>
+        </tr>
+    </table>
+
+    <div class="footer">
+        <p>This report statement is generated electronically based on active database scores.</p>
+        <p>© 2026 Edukom Learning. All rights reserved.</p>
+    </div>
+</body>
+</html>

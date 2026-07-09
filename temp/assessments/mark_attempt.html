@@ -1,0 +1,120 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block main %}
+<div class="container py-5" style="margin-top: 20px;">
+    <!-- Dashboard Header -->
+    <div class="row mb-5 align-items-center">
+        <div class="col-md-8">
+            <h3 class="text-uppercase tracking-wider text-muted mb-2" style="color: #71A20A !important; font-weight: 600; font-size: 0.9rem; letter-spacing: 2px;">ASSESSMENT MARKING</h3>
+            <h1 class="display-5 fw-bold" style="color: #002769; font-family: 'Montserrat', sans-serif;">Grade Assessment Attempt</h1>
+            <p class="lead text-muted">Student: <strong>{{ attempt.student.get_full_name|default:attempt.student.username }}</strong> | Assessment: <strong>{{ attempt.assessment.title }}</strong></p>
+        </div>
+        <div class="col-md-4 text-md-end">
+            <a href="{% url 'course_learners' course.slug %}" class="btn btn-outline-primary px-4 py-2" style="border-color: #002769; color: #002769; border-radius: 50px; font-weight: 600;">
+                <i class="fas fa-arrow-left me-2"></i> Back to Learners
+            </a>
+        </div>
+    </div>
+
+    <!-- Attempt Submission Overview -->
+    <div class="card border-0 shadow-sm mb-4" style="border-radius: 20px;">
+        <div class="card-body p-4">
+            <div class="row g-3 align-items-center">
+                <div class="col-md-3">
+                    <span class="text-muted d-block small">Started At</span>
+                    <strong style="color: #002769;">{{ attempt.started_at|date:"M d, Y H:i" }}</strong>
+                </div>
+                <div class="col-md-3">
+                    <span class="text-muted d-block small">Submitted At</span>
+                    <strong style="color: #002769;">{{ attempt.submitted_at|date:"M d, Y H:i"|default:"Not submitted" }}</strong>
+                </div>
+                <div class="col-md-3">
+                    <span class="text-muted d-block small">Current Temporary Score</span>
+                    <strong style="color: #002769;">{{ attempt.score }} / {{ attempt.total_marks }} ({{ attempt.percentage }}%)</strong>
+                </div>
+                <div class="col-md-3">
+                    <span class="text-muted d-block small">Status</span>
+                    <span class="badge {% if attempt.status == 'submitted' %}bg-warning text-dark{% else %}bg-success{% endif %}">
+                        {{ attempt.get_status_display }}
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Marking Form -->
+    <form method="POST">
+        {% csrf_token %}
+        
+        {% for ans in answers %}
+            <div class="card border-0 shadow-sm mb-4" style="border-radius: 20px; border-left: 5px solid {% if ans.question.question_type in 'short_answer,theory' %}#ffc107{% else %}#71A20A{% endif %} !important;">
+                <div class="card-body p-4">
+                    <div class="d-flex justify-content-between mb-3">
+                        <span class="badge bg-light text-dark px-3 py-2" style="border-radius: 50px; font-weight: 600;">
+                            Q{{ forloop.counter }} - {{ ans.question.get_question_type_display }}
+                        </span>
+                        <span class="text-muted small">Max Marks: <strong>{{ ans.question.mark }}</strong></span>
+                    </div>
+
+                    <!-- Question Text -->
+                    <h5 class="fw-bold mb-3" style="color: #002769;">{{ ans.question.question_text }}</h5>
+
+                    <!-- Student Answer -->
+                    <div class="p-3 mb-4 rounded-3 border" style="background-color: #f8f9fa;">
+                        <span class="text-muted small d-block mb-1">Student's Answer:</span>
+                        {% if ans.question.question_type in 'objective,true_false' %}
+                            <div class="fw-bold" style="color: #002769;">
+                                {{ ans.selected_choice.choice_text|default:"[No choice selected]" }}
+                            </div>
+                            <div class="mt-2 small">
+                                {% if ans.is_correct %}
+                                    <span class="text-success"><i class="fas fa-check-circle me-1"></i> Correct (Auto-marked)</span>
+                                {% else %}
+                                    <span class="text-danger"><i class="fas fa-times-circle me-1"></i> Incorrect (Auto-marked)</span>
+                                {% endif %}
+                            </div>
+                        {% else %}
+                            <div class="fw-bold text-dark" style="white-space: pre-line;">{{ ans.text_answer|default:"[No answer submitted]" }}</div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Grading Section -->
+                    {% if ans.question.question_type in 'short_answer,theory' %}
+                        <div class="row g-3">
+                            <div class="col-md-3">
+                                <label for="mark_{{ ans.id }}" class="form-label fw-bold" style="color: #002769;">Score Awarded</label>
+                                <div class="input-group">
+                                    <input type="number" step="0.5" min="0" max="{{ ans.question.mark }}" class="form-control" id="mark_{{ ans.id }}" name="mark_{{ ans.id }}" value="{{ ans.mark_awarded|floatformat:1 }}" required>
+                                    <span class="input-group-text">/ {{ ans.question.mark }}</span>
+                                </div>
+                            </div>
+                            <div class="col-md-9">
+                                <label for="feedback_{{ ans.id }}" class="form-label fw-bold" style="color: #002769;">Feedback Comments</label>
+                                <input type="text" class="form-control" id="feedback_{{ ans.id }}" name="feedback_{{ ans.id }}" value="{{ ans.feedback }}" placeholder="Add helpful feedback for this answer...">
+                            </div>
+                        </div>
+                    {% else %}
+                        <div class="row g-3 align-items-center">
+                            <div class="col-md-3">
+                                <span class="text-muted small d-block">Score Awarded</span>
+                                <strong class="fs-5" style="color: #71A20A;">{{ ans.mark_awarded|floatformat:1 }} / {{ ans.question.mark }}</strong>
+                            </div>
+                            <div class="col-md-9">
+                                <span class="text-muted small d-block">Feedback</span>
+                                <p class="mb-0 text-muted small italic">Auto-graded objective question.</p>
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        {% endfor %}
+
+        <div class="card border-0 shadow-sm p-4 text-end" style="border-radius: 20px;">
+            <button type="submit" class="btn btn-primary px-5 py-3" style="background-color: #002769; border-color: #002769; border-radius: 50px; font-weight: 600;">
+                <i class="fas fa-save me-2"></i> Submit Grades & Recalculate
+            </button>
+        </div>
+    </form>
+</div>
+{% endblock %}

@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block main %}
+<div class="container py-5" style="margin-top: 20px;">
+    <!-- Sheet Header -->
+    <div class="row mb-5 align-items-center">
+        <div class="col-md-8">
+            <h3 class="text-uppercase tracking-wider text-muted mb-2" style="color: #71A20A !important; font-weight: 600; font-size: 0.9rem; letter-spacing: 2px;">RECORD SHEET</h3>
+            <h1 class="display-5 fw-bold" style="color: #002769; font-family: 'Montserrat', sans-serif;">Mark Attendance</h1>
+            <p class="lead text-muted">Session: {{ session.title }} ({{ session.date|date:"Y-m-d" }})</p>
+            <p class="text-muted mb-0">Course: {{ session.course.title }}</p>
+        </div>
+        <div class="col-md-4 text-md-end">
+            <a href="{% url 'academics:tutor_attendance_dashboard' %}" class="btn btn-outline-secondary rounded-pill px-4">
+                Cancel
+            </a>
+        </div>
+    </div>
+
+    <!-- Attendance marking form -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card border-0 shadow-sm" style="border-radius: 15px;">
+                <div class="card-body p-5">
+                    <form method="POST">
+                        {% csrf_token %}
+                        
+                        <div class="table-responsive">
+                            <table class="table align-middle">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th style="width: 30%;">Learner / Student</th>
+                                        <th style="width: 30%;">Status</th>
+                                        <th style="width: 40%;">Notes</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for record in records %}
+                                        <tr>
+                                            <td>
+                                                <div class="d-flex align-items-center">
+                                                    <div class="avatar me-3 bg-light rounded-circle d-flex align-items-center justify-content-center" style="width: 40px; height: 40px; color: #002769;">
+                                                        <i class="fas fa-user"></i>
+                                                    </div>
+                                                    <div>
+                                                        <h6 class="mb-0 fw-bold" style="color: #002769;">{{ record.student.get_full_name|default:record.student.username }}</h6>
+                                                        <small class="text-muted">{{ record.student.email|default:record.student.username }}</small>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <select name="status_{{ record.id }}" class="form-select rounded-pill px-3" style="max-width: 200px;">
+                                                    <option value="present" {% if record.status == 'present' %}selected{% endif %}>Present</option>
+                                                    <option value="absent" {% if record.status == 'absent' %}selected{% endif %}>Absent</option>
+                                                    <option value="late" {% if record.status == 'late' %}selected{% endif %}>Late</option>
+                                                    <option value="excused" {% if record.status == 'excused' %}selected{% endif %}>Excused</option>
+                                                </select>
+                                            </td>
+                                            <td>
+                                                <input type="text" name="notes_{{ record.id }}" value="{{ record.notes }}" class="form-control rounded-pill px-3" placeholder="Add optional note here...">
+                                            </td>
+                                        </tr>
+                                    {% empty %}
+                                        <tr>
+                                            <td colspan="3" class="text-center py-4 text-muted">No students currently enrolled in this course.</td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        
+                        <div class="mt-5 text-end">
+                            <button type="submit" class="btn btn-success rounded-pill px-5 py-3 fw-bold">
+                                Save Attendance Sheet <i class="fas fa-save ms-2"></i>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

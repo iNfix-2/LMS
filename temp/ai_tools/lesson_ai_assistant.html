@@ -1,0 +1,95 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block main %}
+<div class="container py-4">
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a href="{% url 'course_detail' course.slug %}">{{ course.title }}</a></li>
+      <li class="breadcrumb-item"><a href="{% url 'lesson_detail' course.slug lesson.slug %}">{{ lesson.title }}</a></li>
+      <li class="breadcrumb-item active" aria-current="page">AI Assistant</li>
+    </ol>
+  </nav>
+
+  <div class="row">
+    <!-- Sidebar / Info Card -->
+    <div class="col-md-4 mb-4">
+      <div class="card shadow-sm border-0 rounded-3 text-white" style="background-color: #002769;">
+        <div class="card-body">
+          <h4 class="card-title fw-bold">AI Lesson Assistant</h4>
+          <p class="text-white-50 small">Ask questions about this lesson to get age-appropriate explanations from our AI coach.</p>
+          <hr class="border-white-50">
+          <h6 class="fw-bold mb-2">Lesson Details:</h6>
+          <p class="mb-1 text-white-50"><i class="fas fa-book-open me-2"></i>{{ lesson.title }}</p>
+          <p class="mb-3 text-white-50"><i class="fas fa-graduation-cap me-2"></i>{{ course.class_level.name }}</p>
+          <a href="{% url 'lesson_detail' course.slug lesson.slug %}" class="btn btn-outline-light btn-sm w-100 mt-2">
+            <i class="fas fa-arrow-left me-2"></i>Back to Lesson Content
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Chat Area -->
+    <div class="col-md-8">
+      <div class="card shadow-sm border-0 rounded-3">
+        <div class="card-header bg-white border-bottom py-3">
+          <div class="d-flex align-items-center justify-content-between">
+            <h5 class="mb-0 fw-bold text-dark"><i class="fas fa-robot text-primary me-2"></i>Chat History</h5>
+            <span class="badge bg-success-subtle text-success">Active Session</span>
+          </div>
+        </div>
+        <div class="card-body p-4 bg-light" style="height: 450px; overflow-y: auto;" id="chat-box">
+          {% if messages_list %}
+            {% for msg in messages_list %}
+              {% if msg.sender == 'user' %}
+                <div class="d-flex justify-content-end mb-3">
+                  <div class="bg-primary text-white p-3 rounded-3 shadow-sm" style="max-width: 75%;">
+                    <p class="mb-0">{{ msg.content }}</p>
+                    <small class="text-white-50 d-block text-end mt-1" style="font-size: 0.75rem;">You</small>
+                  </div>
+                </div>
+              {% elif msg.sender == 'assistant' %}
+                <div class="d-flex justify-content-start mb-3">
+                  <div class="bg-white text-dark p-3 rounded-3 shadow-sm border" style="max-width: 75%;">
+                    {% if msg.moderation_status == 'blocked' %}
+                      <p class="mb-0 text-danger italic"><i class="fas fa-exclamation-triangle me-2"></i>[This response was blocked by system moderation rules.]</p>
+                    {% elif msg.moderation_status == 'flagged' %}
+                      <p class="mb-0 text-warning italic"><i class="fas fa-exclamation-circle me-2"></i>[This response has safety warning flags.]</p>
+                      <p class="mb-0 mt-1">{{ msg.content }}</p>
+                    {% else %}
+                      <p class="mb-0">{{ msg.content|linebreaksbr }}</p>
+                    {% endif %}
+                    <small class="text-muted d-block mt-1" style="font-size: 0.75rem;">AI Assistant</small>
+                  </div>
+                </div>
+              {% endif %}
+            {% endfor %}
+          {% else %}
+            <div class="text-center py-5 text-muted">
+              <i class="fas fa-comments fa-3x mb-3 text-secondary"></i>
+              <p class="mb-0">No messages yet. Ask your first question about the lesson above!</p>
+            </div>
+          {% endif %}
+        </div>
+        <div class="card-footer bg-white border-top p-3">
+          <form method="POST">
+            {% csrf_token %}
+            <div class="input-group">
+              <input type="text" name="question" class="form-control" placeholder="Ask a question about this lesson..." required>
+              <button class="btn text-white px-4" type="submit" style="background-color: #002769;">
+                <i class="fas fa-paper-plane me-2"></i>Send
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Scroll to bottom of chat
+  const chatBox = document.getElementById('chat-box');
+  chatBox.scrollTop = chatBox.scrollHeight;
+</script>
+{% endblock main %}

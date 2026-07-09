@@ -1,0 +1,130 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block main %}
+<div class="container py-4">
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a href="{% url 'tutor_dashboard' %}">Tutor Dashboard</a></li>
+      <li class="breadcrumb-item active" aria-current="page">AI Report Comment Generator</li>
+    </ol>
+  </nav>
+
+  <div class="row justify-content-center">
+    <div class="col-md-9">
+      <div class="card shadow-sm border-0 rounded-3 mb-4">
+        <div class="card-header text-white py-4 d-flex justify-content-between align-items-center" style="background-color: #002769;">
+          <div>
+            <span class="badge bg-warning text-dark mb-2 fw-bold">AI Assistant</span>
+            <h3 class="fw-bold mb-0">AI Progress Report Comment Generator</h3>
+            <p class="mb-0 text-white-50 small mt-1">Generating comments for Student: {{ report.student.username }} | Course: {{ course.title }}</p>
+          </div>
+          <a href="{% url 'student_progress_report_detail' report.id %}" class="btn btn-outline-light btn-sm">
+            <i class="fas fa-arrow-left me-2"></i>Back
+          </a>
+        </div>
+
+        <div class="card-body p-4 bg-light">
+          <!-- Student Stats Overview -->
+          <div class="row g-3 mb-4 text-center">
+            <div class="col-md-3">
+              <div class="bg-white p-3 rounded-3 shadow-sm">
+                <small class="text-muted d-block">Lesson Progress</small>
+                <span class="fs-4 fw-bold text-primary">{{ report.lesson_progress_percentage }}%</span>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="bg-white p-3 rounded-3 shadow-sm">
+                <small class="text-muted d-block">Quiz Average</small>
+                <span class="fs-4 fw-bold text-success">{{ report.assessment_average }}%</span>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="bg-white p-3 rounded-3 shadow-sm">
+                <small class="text-muted d-block">Assignment Average</small>
+                <span class="fs-4 fw-bold text-info">{{ report.assignment_average }}%</span>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="bg-white p-3 rounded-3 shadow-sm">
+                <small class="text-muted d-block">Overall Score</small>
+                <span class="fs-4 fw-bold text-dark">{{ report.overall_percentage }}%</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Generate Action Form -->
+          <form method="POST" class="bg-white p-4 rounded-3 shadow-sm mb-4 text-center">
+            {% csrf_token %}
+            <input type="hidden" name="generate" value="1">
+            <h5 class="fw-bold mb-2">Generate Comment Draft</h5>
+            <p class="text-secondary small mb-3">AI will analyze student progress metrics and draft an encouraging, constructive comment card segment.</p>
+            <button type="submit" class="btn text-white px-4" style="background-color: #002769;">
+              <i class="fas fa-cog fa-spin me-2 d-none" id="loader-icon"></i><i class="fas fa-magic me-2" id="magic-icon"></i>Generate Report Comments
+            </button>
+          </form>
+
+          {% if draft %}
+            <!-- Results Block -->
+            <div class="card border-0 shadow-sm rounded-3 p-4 mb-4">
+              <h5 class="fw-bold text-dark mb-3"><i class="fas fa-magic text-warning me-2"></i>Generated Comment Suggestions</h5>
+
+              <div class="mb-3">
+                <label class="form-label fw-bold small text-muted">Summary:</label>
+                <p class="text-secondary mb-0 bg-light p-3 rounded-3">{{ draft.generated_content.summary }}</p>
+              </div>
+
+              <div class="row">
+                <div class="col-md-6 mb-3">
+                  <label class="form-label fw-bold small text-muted">Strengths:</label>
+                  <p class="text-secondary mb-0 bg-light p-3 rounded-3">{{ draft.generated_content.strengths }}</p>
+                </div>
+                <div class="col-md-6 mb-3">
+                  <label class="form-label fw-bold small text-muted">Areas For Improvement:</label>
+                  <p class="text-secondary mb-0 bg-light p-3 rounded-3">{{ draft.generated_content.areas_for_improvement }}</p>
+                </div>
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label fw-bold small text-muted">Recommendation:</label>
+                <p class="text-secondary mb-0 bg-light p-3 rounded-3">{{ draft.generated_content.recommendation }}</p>
+              </div>
+
+              <!-- Form to Apply & Edit Cohesive Comment -->
+              <form method="POST" class="border-top pt-3 mt-3">
+                {% csrf_token %}
+                <input type="hidden" name="apply" value="1">
+                <label for="comment-area" class="form-label fw-bold text-dark">Edit/Approve Cohesive Paragraph Comment:</label>
+                <textarea name="comment_text" id="comment-area" class="form-control mb-3" rows="4" required>{{ draft.generated_content.tutor_comment }}</textarea>
+                
+                <div class="d-flex justify-content-between align-items-center">
+                  <span class="text-muted small"><i class="fas fa-user-shield me-2"></i>Encrypted, no payment/billing records referenced.</span>
+                  <button type="submit" class="btn btn-success px-4">
+                    <i class="fas fa-file-invoice me-2"></i>Apply Comment to Report Card
+                  </button>
+                </div>
+              </form>
+            </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const forms = document.querySelectorAll('form');
+  forms.forEach(form => {
+    form.addEventListener('submit', function() {
+      const btn = this.querySelector('button[type="submit"]');
+      if (btn) {
+        const loader = btn.querySelector('#loader-icon');
+        const magic = btn.querySelector('#magic-icon');
+        if (loader) loader.classList.remove('d-none');
+        if (magic) magic.classList.add('d-none');
+        btn.disabled = true;
+      }
+    });
+  });
+</script>
+{% endblock main %}

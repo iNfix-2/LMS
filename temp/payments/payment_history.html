@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block main %}
+<div class="container py-5" style="margin-top: 20px;">
+    <div class="mb-4">
+        <h1 class="fw-bold" style="color: #002769; font-family: 'Montserrat', sans-serif;">Payment History</h1>
+        <p class="text-muted">A record of your successful course and subscription payments</p>
+    </div>
+    
+    <div class="card border-0 shadow-sm" style="border-radius: 15px; overflow: hidden;">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="bg-light text-uppercase font-monospace small">
+                        <tr>
+                            <th class="ps-4 py-3">Reference</th>
+                            <th class="py-3">User</th>
+                            <th class="py-3">Amount</th>
+                            <th class="py-3">Provider</th>
+                            <th class="py-3">Channel / Description</th>
+                            <th class="py-3">Paid Date</th>
+                            <th class="pe-4 py-3 text-end">Invoice</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for tx in transactions %}
+                        <tr>
+                            <td class="ps-4 font-monospace small">{{ tx.reference }}</td>
+                            <td>{{ tx.user.username }}</td>
+                            <td class="fw-bold text-success">₦{{ tx.amount }}</td>
+                            <td><span class="badge bg-secondary text-uppercase">{{ tx.provider }}</span></td>
+                            <td>
+                                {{ tx.channel|default:"Card/Web" }}
+                                <span class="d-block small text-muted">
+                                    {% if tx.invoice.course %}
+                                        Course: {{ tx.invoice.course.title }}
+                                    {% elif tx.invoice.plan %}
+                                        Plan: {{ tx.invoice.plan.name }}
+                                    {% else %}
+                                        Manual / Special access
+                                    {% endif %}
+                                </span>
+                            </td>
+                            <td>{{ tx.paid_at|date:"M d, Y H:i" }}</td>
+                            <td class="pe-4 text-end">
+                                <a href="{% url 'payments:invoice_detail' tx.invoice.id %}" class="btn btn-sm btn-link text-primary font-monospace small">
+                                    #{{ tx.invoice.invoice_number }}
+                                </a>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="7" class="text-center py-5 text-muted">
+                                <i class="fas fa-history fa-3x mb-3 opacity-25"></i>
+                                <p class="mb-0">No successful payments found in your records.</p>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock main %}

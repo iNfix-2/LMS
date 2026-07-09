@@ -1,0 +1,190 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block main %}
+<div class="container py-5" style="margin-top: 20px;">
+    <!-- Dashboard Header -->
+    <div class="row mb-5 align-items-center">
+        <div class="col-md-8">
+            <h3 class="text-uppercase tracking-wider text-muted mb-2" style="color: #71A20A !important; font-weight: 600; font-size: 0.9rem; letter-spacing: 2px;">COURSE MANAGEMENT</h3>
+            <h1 class="display-5 fw-bold" style="color: #002769; font-family: 'Montserrat', sans-serif;">{{ course.title }}</h1>
+            <p class="lead text-muted">Manage learners, monitor progress, grade exams, and issue progress reports.</p>
+        </div>
+        <div class="col-md-4 text-md-end">
+            <a href="{% url 'tutor_dashboard' %}" class="btn btn-outline-primary px-4 py-2" style="border-color: #002769; color: #002769; border-radius: 50px; font-weight: 600;">
+                <i class="fas fa-arrow-left me-2"></i> Back to Courses
+            </a>
+        </div>
+    </div>
+
+    <!-- Active Learners Table -->
+    <div class="card border-0 shadow-sm mb-5" style="border-radius: 20px;">
+        <div class="card-header bg-white border-0 p-4 pb-0">
+            <h3 class="fw-bold mb-1" style="color: #002769; font-family: 'Montserrat', sans-serif;">Active Learners</h3>
+            <p class="text-muted small">Roster of all students currently enrolled in this course.</p>
+        </div>
+        <div class="card-body p-4">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Student</th>
+                            <th>Lesson Progress</th>
+                            <th class="text-center">Quiz Avg</th>
+                            <th class="text-center">Homework Avg</th>
+                            <th>Last Completed Lesson</th>
+                            <th class="text-end">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for data in learner_data %}
+                            <tr>
+                                <td>
+                                    <div class="fw-bold" style="color: #002769;">{{ data.student.get_full_name|default:data.student.username }}</div>
+                                    <small class="text-muted">{{ data.student.email }}</small>
+                                </td>
+                                <td>
+                                    <div class="d-flex align-items-center" style="width: 180px;">
+                                        <div class="progress flex-grow-1 me-2" style="height: 8px; border-radius: 10px;">
+                                            <div class="progress-bar" role="progressbar" style="width: {{ data.progress }}%; background-color: #71A20A;" aria-valuenow="{{ data.progress }}" aria-valuemin="0" aria-valuemax="100"></div>
+                                        </div>
+                                        <span class="fw-bold small" style="color: #002769;">{{ data.progress }}%</span>
+                                    </div>
+                                </td>
+                                <td class="text-center fw-bold">
+                                    {% if data.assessment_average > 0 %}{{ data.assessment_average|floatformat:1 }}%{% else %}-{% endif %}
+                                </td>
+                                <td class="text-center fw-bold">
+                                    {% if data.assignment_average > 0 %}{{ data.assignment_average|floatformat:1 }}%{% else %}-{% endif %}
+                                </td>
+                                <td>
+                                    {% if data.last_lesson %}
+                                        <span class="text-muted small">{{ data.last_lesson.title|truncatechars:25 }}</span>
+                                    {% else %}
+                                        <span class="text-muted small italic">None</span>
+                                    {% endif %}
+                                </td>
+                                <td class="text-end">
+                                    <div class="d-flex justify-content-end gap-2">
+                                        {% if data.latest_report %}
+                                            <a href="{% url 'student_progress_report_detail' data.latest_report.id %}" class="btn btn-sm btn-outline-success px-3" style="border-radius: 50px; font-weight: 600;">
+                                                View Report
+                                            </a>
+                                        {% endif %}
+                                        <a href="{% url 'generate_student_course_report' data.student.id course.slug %}" class="btn btn-sm btn-primary px-3" style="background-color: #002769; border-color: #002769; border-radius: 50px; font-weight: 600;">
+                                            {% if data.latest_report %}Regenerate{% else %}Issue Report{% endif %}
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        {% empty %}
+                            <tr>
+                                <td colspan="6" class="text-center py-4">
+                                    <p class="text-muted mb-0">No active students are currently enrolled in this course.</p>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Pending Grading Section -->
+    <div class="row g-4">
+        <!-- Pending Assessments -->
+        <div class="col-lg-6">
+            <div class="card border-0 shadow-sm h-100" style="border-radius: 20px;">
+                <div class="card-header bg-white border-0 p-4 pb-0">
+                    <h3 class="fw-bold mb-1" style="color: #002769; font-family: 'Montserrat', sans-serif;">Pending Quizzes / Exams</h3>
+                    <p class="text-muted small">Submitted assessments containing theory or short answer questions requiring manual grading.</p>
+                </div>
+                <div class="card-body p-4">
+                    {% if pending_attempts %}
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle">
+                                <thead>
+                                    <tr>
+                                        <th>Student</th>
+                                        <th>Assessment</th>
+                                        <th>Submitted At</th>
+                                        <th class="text-end">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for attempt in pending_attempts %}
+                                        <tr>
+                                            <td>
+                                                <div class="fw-bold" style="color: #002769;">{{ attempt.student.get_full_name|default:attempt.student.username }}</div>
+                                            </td>
+                                            <td>{{ attempt.assessment.title }}</td>
+                                            <td class="small text-muted">{{ attempt.submitted_at|date:"M d, Y H:i" }}</td>
+                                            <td class="text-end">
+                                                <a href="{% url 'mark_assessment_attempt' attempt.id %}" class="btn btn-sm btn-warning text-dark px-3 fw-bold" style="border-radius: 50px;">
+                                                    Grade Attempt
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% else %}
+                        <div class="text-center py-4">
+                            <i class="fas fa-check-circle fa-2x text-success mb-2"></i>
+                            <p class="text-muted small mb-0">No pending quiz attempts to grade!</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Pending Assignments -->
+        <div class="col-lg-6">
+            <div class="card border-0 shadow-sm h-100" style="border-radius: 20px;">
+                <div class="card-header bg-white border-0 p-4 pb-0">
+                    <h3 class="fw-bold mb-1" style="color: #002769; font-family: 'Montserrat', sans-serif;">Pending Homework</h3>
+                    <p class="text-muted small">Student assignment submissions that are waiting for grades and feedback.</p>
+                </div>
+                <div class="card-body p-4">
+                    {% if pending_submissions %}
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle">
+                                <thead>
+                                    <tr>
+                                        <th>Student</th>
+                                        <th>Assignment</th>
+                                        <th>Submitted At</th>
+                                        <th class="text-end">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for sub in pending_submissions %}
+                                        <tr>
+                                            <td>
+                                                <div class="fw-bold" style="color: #002769;">{{ sub.student.get_full_name|default:sub.student.username }}</div>
+                                            </td>
+                                            <td>{{ sub.assignment.title }}</td>
+                                            <td class="small text-muted">{{ sub.submitted_at|date:"M d, Y H:i" }}</td>
+                                            <td class="text-end">
+                                                <a href="{% url 'mark_assignment_submission' sub.id %}" class="btn btn-sm btn-warning text-dark px-3 fw-bold" style="border-radius: 50px;">
+                                                    Grade Homework
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% else %}
+                        <div class="text-center py-4">
+                            <i class="fas fa-check-circle fa-2x text-success mb-2"></i>
+                            <p class="text-muted small mb-0">No pending homework assignments to grade!</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

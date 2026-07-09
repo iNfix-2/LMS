@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ title }}</title>
+    <style>
+        body {
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            background-color: #f4f6f9;
+            margin: 0;
+            padding: 0;
+            -webkit-font-smoothing: antialiased;
+        }
+        .wrapper {
+            width: 100%;
+            background-color: #f4f6f9;
+            padding: 20px 0;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+        }
+        .header {
+            background-color: #002769;
+            padding: 30px;
+            text-align: center;
+        }
+        .header h1 {
+            color: #ffffff;
+            margin: 0;
+            font-size: 24px;
+            font-weight: 700;
+        }
+        .content {
+            padding: 40px 30px;
+            color: #333333;
+            line-height: 1.6;
+        }
+        .content h2 {
+            color: #002769;
+            margin-top: 0;
+            font-size: 20px;
+        }
+        .button-container {
+            text-align: center;
+            margin: 30px 0 10px;
+        }
+        .button {
+            background-color: #71A20A;
+            color: #ffffff !important;
+            padding: 12px 25px;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: bold;
+            display: inline-block;
+        }
+        .footer {
+            background-color: #f4f6f9;
+            padding: 20px 30px;
+            text-align: center;
+            font-size: 12px;
+            color: #777777;
+            border-top: 1px solid #eeeeee;
+        }
+        .badge {
+            display: inline-block;
+            padding: 5px 10px;
+            background-color: #e9ecef;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: bold;
+            color: #495057;
+        }
+    </style>
+</head>
+<body>
+    <div class="wrapper">
+        <div class="container">
+            <div class="header">
+                <h1>Edukom Learning LMS</h1>
+            </div>
+            <div class="content">
+                {% block content %}
+                    <h2>{{ title }}</h2>
+                    <p>{{ message }}</p>
+                    {% if button_url and button_text %}
+                        <div class="button-container">
+                            <a href="{{ button_url }}" class="button">{{ button_text }}</a>
+                        </div>
+                    {% endif %}
+                {% endblock %}
+            </div>
+            <div class="footer">
+                <p>&copy; 2026 Edukom Learning. All rights reserved.</p>
+                <p>You received this email because you are registered on Edukom LMS.</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

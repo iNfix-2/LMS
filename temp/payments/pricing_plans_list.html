@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block main %}
+<div class="container py-5" style="margin-top: 20px;">
+    <div class="text-center mb-5">
+        <h1 class="fw-bold" style="color: #002769; font-family: 'Montserrat', sans-serif;">Choose Your Membership Plan</h1>
+        <p class="text-muted col-md-6 mx-auto">Get unlimited access to courses, personalized tutoring resources, and premium assessments tailored to your class level.</p>
+    </div>
+
+    <div class="row row-cols-1 row-cols-md-3 g-4 justify-content-center">
+        {% for plan in plans %}
+        <div class="col">
+            <div class="card h-100 border-0 shadow-lg text-center" style="border-radius: 20px; overflow: hidden; background: #fff; transition: transform 0.3s ease, box-shadow 0.3s ease;">
+                <div class="p-4" style="background: linear-gradient(135deg, #002769 0%, #0040a6 100%);">
+                    <h3 class="fw-bold text-white mb-0" style="font-family: 'Montserrat', sans-serif;">{{ plan.name }}</h3>
+                    <span class="badge text-uppercase bg-warning text-dark mt-2" style="font-size: 0.75rem; font-weight: 700;">
+                        {{ plan.get_plan_type_display }}
+                    </span>
+                </div>
+                
+                <div class="card-body p-4 p-lg-5">
+                    <div class="mb-4">
+                        <span class="display-5 fw-extrabold text-dark" style="font-weight: 800;">₦{{ plan.price }}</span>
+                        <span class="text-muted d-block mt-1">For {{ plan.duration_days }} Days</span>
+                    </div>
+
+                    <p class="text-muted small mb-4">{{ plan.description }}</p>
+
+                    <hr class="my-4">
+
+                    <!-- Features List -->
+                    <ul class="list-unstyled text-start mb-4 mx-auto" style="max-width: 250px;">
+                        <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i> All level-specific courses</li>
+                        <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i> Standard/Premium assessments</li>
+                        <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i> Instant grading & marking</li>
+                        <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i> Progress report dashboard</li>
+                    </ul>
+
+                    <div class="d-grid mt-auto">
+                        <a href="{% url 'payments:plan_checkout' plan.slug %}" class="btn btn-primary btn-lg py-3" style="background-color: #71A20A; border: none; border-radius: 12px; font-weight: 700; font-size: 1rem; transition: background-color 0.2s;">
+                            Subscribe Now
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12 text-center py-5 text-muted">
+            <i class="fas fa-gem fa-3x mb-3 opacity-25"></i>
+            <p class="lead mb-0">No active pricing plans are available at this time. Please check back later.</p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock main %}

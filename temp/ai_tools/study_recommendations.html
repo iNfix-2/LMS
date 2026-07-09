@@ -1,0 +1,101 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block main %}
+<div class="container py-4">
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a href="{% url 'course_detail' course.slug %}">{{ course.title }}</a></li>
+      <li class="breadcrumb-item active" aria-current="page">Study Recommendations</li>
+    </ol>
+  </nav>
+
+  <div class="row justify-content-center">
+    <div class="col-md-9">
+      <div class="card shadow-sm border-0 rounded-3 mb-4">
+        <div class="card-header text-white py-4 d-flex justify-content-between align-items-center" style="background-color: #002769;">
+          <div>
+            <span class="badge bg-warning text-dark mb-2 fw-bold">AI Coach</span>
+            <h3 class="fw-bold mb-0">AI Study Recommendations</h3>
+            <p class="mb-0 text-white-50 small mt-1">Personalized study plan for {{ course.title }}</p>
+          </div>
+          <div class="d-flex gap-2">
+            <a href="?recalculate=1" class="btn btn-warning btn-sm">
+              <i class="fas fa-sync-alt me-2"></i>Recalculate Recommendations
+            </a>
+            <a href="{% url 'course_detail' course.slug %}" class="btn btn-outline-light btn-sm">
+              <i class="fas fa-arrow-left me-2"></i>Back to Course
+            </a>
+          </div>
+        </div>
+
+        <div class="card-body p-4 bg-light">
+          <!-- Weak Areas -->
+          <div class="card border-0 shadow-sm rounded-3 mb-4 p-4">
+            <h5 class="fw-bold text-danger mb-3"><i class="fas fa-chart-line me-2"></i>Areas Requiring Focus</h5>
+            <ul class="list-group list-group-flush">
+              {% for area in plan_data.weak_areas %}
+                <li class="list-group-item bg-transparent text-secondary border-0 ps-0">
+                  <i class="fas fa-exclamation-circle text-danger me-2"></i>{{ area }}
+                </li>
+              {% empty %}
+                <li class="list-group-item bg-transparent text-muted italic border-0 ps-0">No specific weak areas detected. Keep doing great!</li>
+              {% endfor %}
+            </ul>
+          </div>
+
+          <!-- Recommended Lessons -->
+          <div class="card border-0 shadow-sm rounded-3 mb-4 p-4">
+            <h5 class="fw-bold text-primary mb-3"><i class="fas fa-book-reader me-2"></i>Recommended Lessons to Review</h5>
+            <ul class="list-group list-group-flush">
+              {% for lesson in plan_data.recommended_lessons %}
+                <li class="list-group-item bg-transparent text-secondary border-0 ps-0">
+                  <i class="fas fa-chevron-right text-primary me-2"></i>{{ lesson }}
+                </li>
+              {% empty %}
+                <li class="list-group-item bg-transparent text-muted italic border-0 ps-0">No recommended lessons to show right now.</li>
+              {% endfor %}
+            </ul>
+          </div>
+
+          <!-- Actionable Practice Tasks -->
+          <div class="card border-0 shadow-sm rounded-3 mb-4 p-4">
+            <h5 class="fw-bold text-success mb-3"><i class="fas fa-tasks me-2"></i>Actionable Practice Tasks</h5>
+            <ul class="list-group list-group-flush">
+              {% for task in plan_data.practice_tasks %}
+                <li class="list-group-item bg-transparent text-secondary border-0 ps-0">
+                  <i class="fas fa-check-square text-success me-2"></i>{{ task }}
+                </li>
+              {% empty %}
+                <li class="list-group-item bg-transparent text-muted italic border-0 ps-0">No practice tasks generated.</li>
+              {% endfor %}
+            </ul>
+          </div>
+
+          <!-- Weekly Plan -->
+          <div class="card border-0 shadow-sm rounded-3 mb-4 p-4">
+            <h5 class="fw-bold text-dark mb-3"><i class="fas fa-calendar-alt text-warning me-2"></i>Suggested Weekly Study Plan</h5>
+            <div class="list-group">
+              {% for step in plan_data.weekly_plan %}
+                <div class="list-group-item border rounded-3 mb-2 py-3 bg-white">
+                  <p class="mb-0 text-secondary fw-semibold">{{ step }}</p>
+                </div>
+              {% empty %}
+                <p class="text-muted italic mb-0">No weekly plan steps available.</p>
+              {% endfor %}
+            </div>
+          </div>
+
+          <!-- Guardian Tip -->
+          {% if plan_data.guardian_support_tip %}
+            <div class="card border-0 shadow-sm rounded-3 p-4 bg-warning-subtle text-warning-emphasis">
+              <h5 class="fw-bold mb-2"><i class="fas fa-user-shield me-2"></i>Guardian Support Tip</h5>
+              <p class="mb-0 small">{{ plan_data.guardian_support_tip }}</p>
+            </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock main %}

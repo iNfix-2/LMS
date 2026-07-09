@@ -1,0 +1,129 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block main %}
+<div class="container py-5" style="margin-top: 20px;">
+    <!-- Breadcrumbs -->
+    <nav aria-label="breadcrumb" class="mb-4">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'course_list' %}" style="color: #002769; font-weight: 500;">Courses</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'course_detail' course.slug %}" style="color: #002769; font-weight: 500;">{{ course.title }}</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'course_assessments' course.slug %}" style="color: #002769; font-weight: 500;">Assessments</a></li>
+            <li class="breadcrumb-item active" aria-current="page">{{ assessment.title }}</li>
+        </ol>
+    </nav>
+
+    <div class="row">
+        <!-- Main Assessment Card -->
+        <div class="col-lg-8">
+            <div class="card border-0 shadow-sm mb-4" style="border-radius: 15px; overflow: hidden; background: #fff;">
+                <div class="card-body p-4 p-lg-5">
+                    <div class="d-flex align-items-center mb-3">
+                        <span class="badge text-white text-uppercase me-3" style="background-color: #71A20A; padding: 6px 12px; border-radius: 5px;">
+                            {{ assessment.get_assessment_type_display }}
+                        </span>
+                        {% if assessment.time_limit_minutes %}
+                        <span class="text-muted small"><i class="far fa-clock me-1"></i>{{ assessment.time_limit_minutes }} Minutes</span>
+                        {% else %}
+                        <span class="text-muted small"><i class="far fa-clock me-1"></i>No Time Limit</span>
+                        {% endif %}
+                    </div>
+
+                    <h1 class="display-6 fw-bold mb-4" style="color: #002769; font-family: 'Montserrat', sans-serif;">{{ assessment.title }}</h1>
+                    
+                    <div class="description mb-4" style="line-height: 1.7; color: #4b5563;">
+                        {{ assessment.description }}
+                    </div>
+
+                    <!-- Assessment Rules/Guidelines -->
+                    <div class="bg-light p-4 rounded mb-5">
+                        <h4 class="fw-bold mb-3" style="color: #002769; font-size: 1.1rem;"><i class="fas fa-info-circle me-2" style="color: #71A20A;"></i>Assessment Rules & Guidelines</h4>
+                        <ul class="mb-0" style="padding-left: 20px; line-height: 1.6; color: #555;">
+                            <li>Ensure you have a stable internet connection before beginning.</li>
+                            {% if assessment.time_limit_minutes %}
+                            <li>This assessment is timed and must be completed within <strong>{{ assessment.time_limit_minutes }} minutes</strong>.</li>
+                            {% else %}
+                            <li>This assessment is untimed, but it must be completed in one sitting.</li>
+                            {% endif %}
+                            <li>Do not refresh or close the browser tab while taking the assessment.</li>
+                            <li>The passing percentage for this assessment is <strong>{{ assessment.pass_mark }}%</strong>.</li>
+                        </ul>
+                    </div>
+
+                    <!-- Action Area -->
+                    <div class="d-flex flex-wrap align-items-center gap-3">
+                        <a href="{% url 'start_assessment' course.slug assessment.slug %}" class="btn btn-primary btn-lg px-5 py-3" style="background-color: #002769; border: none; border-radius: 10px; font-weight: 600; font-size: 1.1rem; box-shadow: 0 4px 15px rgba(0, 39, 105, 0.15);">
+                            Start Assessment <i class="fas fa-play ms-2"></i>
+                        </a>
+                        <a href="{% url 'course_assessments' course.slug %}" class="btn btn-outline-secondary btn-lg px-4 py-3" style="border-radius: 10px; font-weight: 600; font-size: 1.1rem;">
+                            Cancel
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sidebar / Attempt Stats -->
+        <div class="col-lg-4">
+            <!-- Assessment Specifications -->
+            <div class="card border-0 shadow-sm mb-4" style="border-radius: 15px; overflow: hidden; background: #fff;">
+                <div class="card-header bg-white py-3 border-0">
+                    <h5 class="fw-bold mb-0" style="color: #002769;">Details</h5>
+                </div>
+                <div class="card-body p-4 pt-0">
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item d-flex justify-content-between align-items-center px-0 py-3 bg-transparent">
+                            <span class="text-muted">Questions</span>
+                            <span class="fw-bold" style="color: #002769;">{{ assessment.total_questions }}</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center px-0 py-3 bg-transparent">
+                            <span class="text-muted">Total Marks</span>
+                            <span class="fw-bold" style="color: #002769;">{{ assessment.total_marks }}</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center px-0 py-3 bg-transparent">
+                            <span class="text-muted">Passing score</span>
+                            <span class="fw-bold" style="color: #71A20A;">{{ assessment.pass_mark }}%</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Attempt History -->
+            <div class="card border-0 shadow-sm" style="border-radius: 15px; overflow: hidden; background: #fff;">
+                <div class="card-header bg-white py-3 border-0">
+                    <h5 class="fw-bold mb-0" style="color: #002769;">Attempt History</h5>
+                </div>
+                <div class="card-body p-4 pt-0">
+                    {% for attempt in attempts %}
+                    <div class="attempt-item py-3 {% if not forloop.last %}border-bottom{% endif %}">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <span class="small text-muted">{{ attempt.started_at|date:"M d, Y H:i" }}</span>
+                            {% if attempt.status == 'submitted' %}
+                                {% if attempt.percentage >= assessment.pass_mark %}
+                                <span class="badge bg-success-light text-success" style="padding: 4px 8px; font-weight: 500; font-size: 0.8rem; border-radius: 5px; background-color: #d1fae5;">Passed</span>
+                                {% else %}
+                                <span class="badge bg-danger-light text-danger" style="padding: 4px 8px; font-weight: 500; font-size: 0.8rem; border-radius: 5px; background-color: #fee2e2;">Failed</span>
+                                {% endif %}
+                            {% else %}
+                            <span class="badge bg-warning-light text-warning" style="padding: 4px 8px; font-weight: 500; font-size: 0.8rem; border-radius: 5px; background-color: #fef3c7;">In Progress</span>
+                            {% endif %}
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <span class="fw-bold h5 mb-0" style="color: #002769;">{{ attempt.percentage }}%</span>
+                                <span class="small text-muted ms-1">({{ attempt.score }}/{{ attempt.total_marks }} marks)</span>
+                            </div>
+                            <a href="{% url 'assessment_result' attempt.id %}" class="btn btn-sm btn-outline-primary" style="font-size: 0.8rem; border-radius: 5px; color: #002769; border-color: #002769;">
+                                View
+                            </a>
+                        </div>
+                    </div>
+                    {% empty %}
+                    <p class="text-muted text-center py-3 mb-0">No attempts yet. Click "Start Assessment" to begin!</p>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock main %}

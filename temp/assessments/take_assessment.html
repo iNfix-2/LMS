@@ -1,0 +1,204 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block main %}
+<div class="container py-5" style="margin-top: 20px;">
+    <!-- Header/Title -->
+    <div class="card border-0 shadow-sm mb-4" style="border-radius: 15px; overflow: hidden; background: #fff;">
+        <div class="card-body p-4 d-flex justify-content-between align-items-center flex-wrap gap-3">
+            <div>
+                <h3 class="text-uppercase tracking-wider text-muted mb-1" style="color: #71A20A !important; font-weight: 600; font-size: 0.85rem; letter-spacing: 2px;">
+                    TAKING {{ assessment.get_assessment_type_display }}
+                </h3>
+                <h1 class="h2 fw-bold mb-0" style="color: #002769; font-family: 'Montserrat', sans-serif;">{{ assessment.title }}</h1>
+            </div>
+            
+            {% if assessment.time_limit_minutes %}
+            <div class="d-flex align-items-center bg-light px-4 py-3 rounded" style="border: 1px solid #e5e7eb;">
+                <i class="far fa-clock text-warning me-2" style="font-size: 1.5rem;"></i>
+                <div>
+                    <span class="small text-muted d-block" style="line-height: 1.2;">Time Limit</span>
+                    <span class="fw-bold text-dark" id="timer-display" style="font-size: 1.1rem;">{{ assessment.time_limit_minutes }}:00</span>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <form method="POST" action="{% url 'submit_assessment' course.slug assessment.slug %}" id="quiz-form">
+        {% csrf_token %}
+        <div class="row">
+            <div class="col-lg-8">
+                <!-- Loop Questions -->
+                {% for question in questions %}
+                <div class="card border-0 shadow-sm mb-4" style="border-radius: 15px; overflow: hidden; background: #fff;" id="question-card-{{ question.id }}">
+                    <div class="card-header bg-white py-3 border-0 d-flex justify-content-between align-items-center">
+                        <span class="fw-bold" style="color: #71A20A;">Question {{ forloop.counter }} of {{ assessment.total_questions }}</span>
+                        <span class="badge bg-light text-muted" style="font-size: 0.85rem; font-weight: 500;">{{ question.mark }} Mark(s)</span>
+                    </div>
+                    <div class="card-body p-4 pt-0">
+                        <h4 class="mb-4 fw-bold" style="color: #002769; font-size: 1.15rem; line-height: 1.6;">
+                            {{ question.question_text|linebreaksbr }}
+                        </h4>
+
+                        <!-- Objective & True/False Questions -->
+                        {% if question.question_type == 'objective' %}
+                            <div class="choices-container d-flex flex-column gap-3">
+                                {% for choice in question.choices.all %}
+                                <label class="choice-box p-3 rounded border transition-all d-flex align-items-center" style="cursor: pointer; background-color: #fafafa; border-color: #e5e7eb;">
+                                    <input type="radio" name="question_{{ question.id }}" value="{{ choice.id }}" class="me-3 choice-input" required>
+                                    <span style="font-size: 1rem; color: #374151;">{{ choice.choice_text }}</span>
+                                </label>
+                                {% endfor %}
+                            </div>
+                        {% elif question.question_type == 'true_false' %}
+                            <div class="choices-container d-flex flex-column gap-3">
+                                <label class="choice-box p-3 rounded border transition-all d-flex align-items-center" style="cursor: pointer; background-color: #fafafa; border-color: #e5e7eb;">
+                                    <input type="radio" name="question_{{ question.id }}" value="True" class="me-3 choice-input" required>
+                                    <span style="font-size: 1rem; color: #374151;">True</span>
+                                </label>
+                                <label class="choice-box p-3 rounded border transition-all d-flex align-items-center" style="cursor: pointer; background-color: #fafafa; border-color: #e5e7eb;">
+                                    <input type="radio" name="question_{{ question.id }}" value="False" class="me-3 choice-input" required>
+                                    <span style="font-size: 1rem; color: #374151;">False</span>
+                                </label>
+                            </div>
+                        <!-- Short Answer and Theory Questions -->
+                        {% else %}
+                            <div class="answer-container">
+                                <textarea name="question_{{ question.id }}" class="form-control" rows="5" placeholder="Type your answer here..." style="border-radius: 10px; border-color: #e5e7eb;" required></textarea>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endfor %}
+
+                <!-- Form Controls -->
+                <div class="d-flex justify-content-between align-items-center mb-5">
+                    <a href="{% url 'assessment_detail' course.slug assessment.slug %}" class="btn btn-outline-secondary btn-lg" style="border-radius: 10px; font-weight: 600; padding: 12px 25px;" onclick="return confirm('Are you sure you want to quit? Any progress on this attempt will be lost.');">
+                        Quit Assessment
+                    </a>
+                    <button type="submit" class="btn btn-primary btn-lg" style="background-color: #002769; border: none; border-radius: 10px; font-weight: 600; padding: 12px 35px; box-shadow: 0 4px 15px rgba(0, 39, 105, 0.15);">
+                        Submit Assessment <i class="fas fa-paper-plane ms-2"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Quiz Navigation Sidebar -->
+            <div class="col-lg-4 d-none d-lg-block">
+                <div class="card border-0 shadow-sm sticky-top" style="border-radius: 15px; overflow: hidden; background: #fff; top: 100px;">
+                    <div class="card-header bg-white py-3 border-0">
+                        <h5 class="fw-bold mb-0" style="color: #002769;">Question Navigation</h5>
+                    </div>
+                    <div class="card-body p-4 pt-0">
+                        <div class="d-flex flex-wrap gap-2 mb-4">
+                            {% for question in questions %}
+                            <a href="#question-card-{{ question.id }}" class="nav-question-dot d-flex align-items-center justify-content-center border text-decoration-none rounded-circle" style="width: 40px; height: 40px; color: #555; border-color: #e5e7eb; font-weight: 500; font-size: 0.95rem; transition: all 0.2s;">
+                                {{ forloop.counter }}
+                            </a>
+                            {% endfor %}
+                        </div>
+                        <div class="border-top pt-3">
+                            <span class="small text-muted d-block mb-2">Legend:</span>
+                            <div class="d-flex gap-4">
+                                <span class="small text-muted"><span class="d-inline-block rounded-circle me-1" style="width: 12px; height: 12px; background-color: #fafafa; border: 1px solid #e5e7eb;"></span> Unanswered</span>
+                                <span class="small text-muted"><span class="d-inline-block rounded-circle me-1" style="width: 12px; height: 12px; background-color: #e0f2fe; border: 1px solid #7dd3fc;"></span> Answered</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<style>
+    .choice-box:hover {
+        background-color: #f3f4f6 !important;
+        border-color: #002769 !important;
+    }
+    .choice-box.selected {
+        background-color: #eff6ff !important;
+        border-color: #002769 !important;
+    }
+    .nav-question-dot.answered {
+        background-color: #e0f2fe;
+        border-color: #002769 !important;
+        color: #002769 !important;
+    }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const choiceLabels = document.querySelectorAll('.choice-box');
+        
+        choiceLabels.forEach(label => {
+            const radio = label.querySelector('input[type="radio"]');
+            
+            // Mark initial checked elements
+            if (radio.checked) {
+                label.classList.add('selected');
+            }
+            
+            label.addEventListener('click', function() {
+                // Remove selected from siblings of this question group
+                const qName = radio.getAttribute('name');
+                const siblings = document.querySelectorAll(`input[name="${qName}"]`);
+                siblings.forEach(sib => {
+                    sib.closest('.choice-box').classList.remove('selected');
+                });
+                
+                label.classList.add('selected');
+                
+                // Update navigation dot
+                updateNavDot(qName, true);
+            });
+        });
+
+        // Watch textareas
+        const textareas = document.querySelectorAll('textarea');
+        textareas.forEach(ta => {
+            ta.addEventListener('input', function() {
+                const qName = ta.getAttribute('name');
+                updateNavDot(qName, ta.value.trim() !== '');
+            });
+        });
+
+        function updateNavDot(qName, isAnswered) {
+            const questionId = qName.replace('question_', '');
+            const dot = document.querySelector(`a[href="#question-card-${questionId}"]`);
+            if (dot) {
+                if (isAnswered) {
+                    dot.classList.add('answered');
+                } else {
+                    dot.classList.remove('answered');
+                }
+            }
+        }
+
+        {% if assessment.time_limit_minutes %}
+        // Timer Logic
+        let totalSeconds = {{ assessment.time_limit_minutes }} * 60;
+        const timerDisplay = document.getElementById('timer-display');
+        const form = document.getElementById('quiz-form');
+
+        const interval = setInterval(function() {
+            if (totalSeconds <= 0) {
+                clearInterval(interval);
+                timerDisplay.innerText = "Time's Up!";
+                timerDisplay.classList.add('text-danger');
+                alert("Time is up! Your assessment will be submitted automatically.");
+                // Disable validation to submit whatever is completed
+                const requiredFields = form.querySelectorAll('[required]');
+                requiredFields.forEach(field => field.removeAttribute('required'));
+                form.submit();
+            } else {
+                totalSeconds--;
+                const minutes = Math.floor(totalSeconds / 60);
+                const seconds = totalSeconds % 60;
+                timerDisplay.innerText = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+            }
+        }, 1000);
+        {% endif %}
+    });
+</script>
+{% endblock main %}

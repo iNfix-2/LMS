@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block main %}
+<div class="container py-5" style="margin-top: 20px;">
+    <!-- Breadcrumbs -->
+    <nav aria-label="breadcrumb" class="mb-4">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'course_list' %}" style="color: #002769; font-weight: 500;">Courses</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'course_detail' course.slug %}" style="color: #002769; font-weight: 500;">{{ course.title }}</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Assessments</li>
+        </ol>
+    </nav>
+
+    <!-- Header -->
+    <div class="row mb-5">
+        <div class="col-md-8">
+            <h3 class="text-uppercase tracking-wider text-muted mb-2" style="color: #71A20A !important; font-weight: 600; font-size: 0.9rem; letter-spacing: 2px;">COURSE EVALUATIONS</h3>
+            <h1 class="display-5 fw-bold" style="color: #002769; font-family: 'Montserrat', sans-serif;">Course Assessments</h1>
+            <p class="lead text-muted">Test your knowledge with our course quizzes, exams, and practice exercises.</p>
+        </div>
+    </div>
+
+    <!-- Assessments List -->
+    <div class="row g-4">
+        {% for assessment in assessments %}
+        <div class="col-md-6">
+            <div class="card h-100 border-0 shadow-sm hover-up transition-all" style="border-radius: 15px; overflow: hidden; background: #fff;">
+                <div class="card-body p-4 p-lg-5 d-flex flex-column justify-content-between">
+                    <div>
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <span class="badge text-white text-uppercase" style="background-color: #71A20A; font-weight: 500; padding: 6px 12px; border-radius: 5px;">
+                                {{ assessment.get_assessment_type_display }}
+                            </span>
+                            {% if assessment.time_limit_minutes %}
+                            <span class="text-muted small"><i class="far fa-clock me-1"></i>{{ assessment.time_limit_minutes }} mins limit</span>
+                            {% else %}
+                            <span class="text-muted small"><i class="far fa-clock me-1"></i>Untimed</span>
+                            {% endif %}
+                        </div>
+
+                        <h3 class="card-title h4 fw-bold mb-3" style="color: #002769;">{{ assessment.title }}</h3>
+                        <p class="text-muted mb-4" style="line-height: 1.6;">{{ assessment.description }}</p>
+                        
+                        <!-- Details Grid -->
+                        <div class="row g-3 mb-4 bg-light p-3 rounded" style="font-size: 0.9rem;">
+                            <div class="col-6">
+                                <span class="text-muted">Questions:</span> <strong class="text-dark">{{ assessment.total_questions }}</strong>
+                            </div>
+                            <div class="col-6">
+                                <span class="text-muted">Total Marks:</span> <strong class="text-dark">{{ assessment.total_marks }}</strong>
+                            </div>
+                            <div class="col-6">
+                                <span class="text-muted">Pass Mark:</span> <strong class="text-dark">{{ assessment.pass_mark }}%</strong>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="d-grid mt-auto">
+                        <a href="{% url 'assessment_detail' course.slug assessment.slug %}" class="btn btn-outline-primary btn-lg" style="color: #002769; border-color: #002769; border-radius: 10px; font-size: 0.95rem; font-weight: 600; padding: 12px;">
+                            View Assessment
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <!-- Empty State -->
+        <div class="col-12 text-center py-5">
+            <div class="mb-4">
+                <i class="fas fa-file-alt text-muted" style="font-size: 4rem; opacity: 0.3;"></i>
+            </div>
+            <h2 class="fw-bold mb-2" style="color: #002769;">No Assessments Yet</h2>
+            <p class="text-muted">There are no published assessments for this course at the moment. Check back later!</p>
+            <a href="{% url 'course_detail' course.slug %}" class="btn btn-primary mt-3" style="background-color: #002769; border: none; border-radius: 10px; padding: 10px 20px;">
+                Back to Course
+            </a>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<style>
+    .hover-up:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 25px rgba(0,0,0,0.08) !important;
+    }
+    .transition-all {
+        transition: all 0.3s ease;
+    }
+</style>
+{% endblock main %}

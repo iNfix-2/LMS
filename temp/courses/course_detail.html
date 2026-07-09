@@ -1,0 +1,335 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block main %}
+<div class="container py-5" style="margin-top: 20px;">
+    <!-- Breadcrumbs -->
+    <nav aria-label="breadcrumb" class="mb-4">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'course_list' %}" style="color: #002769; font-weight: 500;">Courses</a></li>
+            <li class="breadcrumb-item active" aria-current="page">{{ course.title }}</li>
+        </ol>
+    </nav>
+
+    <!-- Course Hero Section -->
+    <div class="card border-0 shadow-sm mb-5" style="border-radius: 15px; overflow: hidden; background: #fff;">
+        <div class="row g-0">
+            <!-- Thumbnail on Left/Top -->
+            <div class="col-md-5" style="min-height: 250px; background: #eaeaea;">
+                {% if course.thumbnail %}
+                <img src="{{ course.thumbnail.url }}" class="w-100 h-100 object-fit-cover" alt="{{ course.title }}" style="min-height: 250px;">
+                {% else %}
+                <div class="d-flex align-items-center justify-content-center h-100" style="background: linear-gradient(135deg, #002769 0%, #0040a6 100%); min-height: 250px;">
+                    <span class="text-white fw-bold fs-1" style="font-family: 'Montserrat', sans-serif;">{{ course.title|slice:":2"|upper }}</span>
+                </div>
+                {% endif %}
+            </div>
+
+            <!-- Content on Right -->
+            <div class="col-md-7 p-4 p-lg-5 d-flex flex-column justify-content-between">
+                <div>
+                    <div class="d-flex flex-wrap gap-2 mb-3">
+                        <span class="badge text-white" style="background-color: #71A20A; font-weight: 500; padding: 6px 12px; border-radius: 5px;">{{ course.subject.name }}</span>
+                        <span class="badge bg-dark text-white" style="font-weight: 500; padding: 6px 12px; border-radius: 5px;">{{ course.class_level.name }}</span>
+                        {% if course.is_free %}
+                        <span class="badge bg-success text-white" style="font-weight: 600; padding: 6px 12px; border-radius: 5px;">FREE COURSE</span>
+                        {% else %}
+                        <span class="badge bg-primary text-white" style="font-weight: 600; padding: 6px 12px; border-radius: 5px;">PAID COURSE: ₦{{ course.pricing.price }}</span>
+                        {% endif %}
+                        {% if user.is_authenticated and has_access %}
+                        <span class="badge bg-success text-white" style="font-weight: 600; padding: 6px 12px; border-radius: 5px;"><i class="fas fa-check me-1"></i>YOU HAVE ACCESS</span>
+                        {% endif %}
+                    </div>
+
+                    <h1 class="display-6 fw-bold mb-3" style="color: #002769; font-family: 'Montserrat', sans-serif;">{{ course.title }}</h1>
+                    <p class="text-muted mb-4" style="line-height: 1.6;">{{ course.description }}</p>
+                </div>
+
+                <!-- Action Button / Enrollment Status -->
+                <div class="border-top pt-4">
+                    {% if user.is_authenticated %}
+                        {% if has_access %}
+                            {% if is_enrolled %}
+                                <!-- Enrolled Progress Bar -->
+                                <div class="mb-3">
+                                    <div class="d-flex justify-content-between align-items-center mb-1">
+                                        <span class="fw-bold text-muted small">YOUR PROGRESS</span>
+                                        <span class="fw-bold text-primary small" style="color: #002769 !important;">{{ enrollment.progress_percentage }}% Complete</span>
+                                    </div>
+                                    <div class="progress" style="height: 10px; border-radius: 5px;">
+                                        <div class="progress-bar" role="progressbar" style="width: {{ enrollment.progress_percentage }}%; background-color: #71A20A;" aria-valuenow="{{ enrollment.progress_percentage }}" aria-valuemin="0" aria-valuemax="100"></div>
+                                    </div>
+                                </div>
+                                
+                                {% if first_lesson %}
+                                <a href="{% url 'lesson_detail' course.slug first_lesson.slug %}" class="btn btn-primary btn-lg" style="background-color: #002769; border: none; border-radius: 10px; font-weight: 600; font-size: 1rem; padding: 12px 25px;">
+                                    Continue Learning
+                                </a>
+                                {% else %}
+                                <button class="btn btn-secondary btn-lg" disabled style="border-radius: 10px;">
+                                    No lessons available yet
+                                </button>
+                                {% endif %}
+                            {% else %}
+                                <!-- Has access but not enrolled -->
+                                <form action="{% url 'enroll_in_course' course.slug %}" method="POST">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-primary btn-lg" style="background-color: #002769; border: none; border-radius: 10px; font-weight: 600; font-size: 1rem; padding: 12px 25px;">
+                                        Enroll Now
+                                    </button>
+                                </form>
+                            {% endif %}
+                        {% else %}
+                            <!-- Paid course, no access -->
+                            <div class="d-flex flex-wrap gap-2">
+                                <a href="{% url 'payments:course_checkout' course.slug %}" class="btn btn-success btn-lg" style="border: none; border-radius: 10px; font-weight: 600; font-size: 1rem; padding: 12px 25px;">
+                                    Buy Course (₦{{ course.pricing.price }})
+                                </a>
+                                {% if course.pricing_plans.exists %}
+                                <a href="{% url 'pricing_plans_list' %}" class="btn btn-outline-primary btn-lg" style="border-radius: 10px; font-weight: 600; font-size: 1rem; padding: 12px 25px;">
+                                    Subscribe to Access
+                                </a>
+                                {% endif %}
+                            </div>
+                        {% endif %}
+                    {% else %}
+                        <!-- Anonymous user -->
+                        <div class="d-flex flex-wrap gap-2">
+                            <a href="{% url 'login' %}?next={{ request.path }}" class="btn btn-primary btn-lg" style="background-color: #002769; border: none; border-radius: 10px; font-weight: 600; font-size: 1rem; padding: 12px 25px;">
+                                Login to Enroll
+                            </a>
+                            {% if not course.is_free %}
+                            <a href="{% url 'payments:course_checkout' course.slug %}" class="btn btn-success btn-lg" style="border: none; border-radius: 10px; font-weight: 600; font-size: 1rem; padding: 12px 25px;">
+                                Buy Course (₦{{ course.pricing.price }})
+                            </a>
+                            {% endif %}
+                        </div>
+                    {% endif %}
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Course Modules & Lessons -->
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            {% if user.is_authenticated and user.profile.role == 'tutor' or user.is_staff or user.is_superuser %}
+            <!-- Tutor AI Tools Panel -->
+            <div class="card border-0 shadow-sm mb-4 p-4" style="border-radius: 15px; border-left: 5px solid #002769;">
+                <h5 class="fw-bold mb-3" style="color: #002769; font-family: 'Montserrat', sans-serif;">
+                    <i class="fas fa-robot text-warning me-2"></i>Tutor AI Management Suite
+                </h5>
+                <p class="text-muted small mb-3">Draft educational content directly into the course timeline using OpenAI assistant tools.</p>
+                <div class="d-flex flex-wrap gap-2">
+                    <a href="{% url 'ai_tools:tutor_generate_quiz' course.slug %}" class="btn btn-primary" style="background-color: #002769; border: none; border-radius: 8px;">
+                        <i class="fas fa-magic me-2"></i>AI Quiz Generator
+                    </a>
+                    <a href="{% url 'ai_tools:tutor_generate_worksheet' course.slug %}" class="btn btn-outline-primary" style="border-radius: 8px; color: #002769; border-color: #002769;">
+                        <i class="fas fa-file-alt me-2"></i>AI Worksheet Generator
+                    </a>
+                </div>
+            </div>
+            {% endif %}
+
+            {% if is_enrolled and has_access %}
+            <!-- Student AI Study Plan -->
+            <div class="card border-0 shadow-sm mb-4 p-4" style="border-radius: 15px; border-left: 5px solid #71A20A;">
+                <h5 class="fw-bold mb-3" style="color: #002769; font-family: 'Montserrat', sans-serif;">
+                    <i class="fas fa-graduation-cap text-success me-2"></i>Your Personalized AI Study Plan
+                </h5>
+                <p class="text-muted small mb-3">Get recommendations, weak points, and custom practice guidelines from your AI Coach.</p>
+                <a href="{% url 'ai_tools:student_study_recommendations' course.slug %}" class="btn text-white" style="background-color: #71A20A; border: none; border-radius: 8px; font-weight: 600; width: fit-content;">
+                    <i class="fas fa-road me-2"></i>View AI Study Plan
+                </a>
+            </div>
+            {% endif %}
+
+            <!-- Sprint 8: Live Classes & Timetable -->
+            {% if timetable_slots or live_classes %}
+            <div class="card border-0 shadow-sm mb-5" style="border-radius: 15px; overflow: hidden; background: #fff;">
+                <div class="card-body p-4">
+                    <h3 class="fw-bold mb-4" style="color: #002769; font-family: 'Montserrat', sans-serif;">
+                        <i class="fas fa-calendar-alt text-primary me-2"></i>Live Classes & Schedule
+                    </h3>
+                    
+                    <div class="row g-4">
+                        <!-- Timetable Slots -->
+                        <div class="col-md-6">
+                            <h5 class="fw-bold mb-3 text-muted" style="font-size: 0.95rem; letter-spacing: 1px; text-uppercase;">Weekly Lecture Timetable</h5>
+                            {% if timetable_slots %}
+                                <div class="list-group list-group-flush">
+                                    {% for slot in timetable_slots %}
+                                        <div class="list-group-item px-0 py-2 border-0 bg-transparent border-bottom">
+                                            <div class="d-flex justify-content-between">
+                                                <div>
+                                                    <span class="fw-bold text-dark" style="font-size: 0.9rem;">{{ slot.day_of_week }}</span>
+                                                    <div class="text-muted small">{{ slot.start_time|time:"H:i" }} - {{ slot.end_time|time:"H:i" }}</div>
+                                                </div>
+                                                {% if slot.room %}
+                                                    <span class="badge bg-light text-dark align-self-center">{{ slot.room }}</span>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            {% else %}
+                                <p class="text-muted small">No timetable slots assigned to this course.</p>
+                            {% endif %}
+                        </div>
+
+                        <!-- Live Classes -->
+                        <div class="col-md-6">
+                            <h5 class="fw-bold mb-3 text-muted" style="font-size: 0.95rem; letter-spacing: 1px; text-uppercase;">Interactive Virtual Classes</h5>
+                            {% if live_classes %}
+                                <div class="list-group list-group-flush">
+                                    {% for live in live_classes %}
+                                        <div class="list-group-item px-0 py-3 border-0 bg-transparent border-bottom">
+                                            <div class="d-flex justify-content-between align-items-start">
+                                                <div>
+                                                    <a href="{% url 'academics:live_class_detail' live.id %}" class="fw-bold text-dark text-decoration-none hover-primary" style="font-size: 0.9rem;">{{ live.title }}</a>
+                                                    <div class="text-muted small">{{ live.scheduled_start|date:"M d, Y @ H:i" }}</div>
+                                                </div>
+                                                {% if live.status == 'live' %}
+                                                    {% if is_enrolled or user.is_staff or user.is_superuser %}
+                                                        <a href="{% url 'academics:join_live_class' live.id %}" target="_blank" class="btn btn-sm btn-danger px-3 rounded-pill fw-bold animate-pulse">Join Live</a>
+                                                    {% else %}
+                                                        <span class="badge bg-danger">Live Now</span>
+                                                    {% endif %}
+                                                {% else %}
+                                                    <span class="badge bg-light text-dark text-capitalize" style="font-size: 0.75rem;">{{ live.status }}</span>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            {% else %}
+                                <p class="text-muted small">No live classes scheduled for this course.</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+
+            <h2 class="fw-bold mb-4" style="color: #002769; font-family: 'Montserrat', sans-serif;">Course Curriculum</h2>
+            
+            {% if modules %}
+            <div class="accordion shadow-sm" id="curriculumAccordion" style="border-radius: 15px; overflow: hidden; border: none;">
+                {% for module in modules %}
+                <div class="accordion-item border-0 border-bottom">
+                    <h2 class="accordion-header" id="heading-{{ module.id }}">
+                        <button class="accordion-button {% if not forloop.first %}collapsed{% endif %} fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-{{ module.id }}" aria-expanded="{% if forloop.first %}true{% else %}false{% endif %}" aria-controls="collapse-{{ module.id }}" style="color: #002769; font-size: 1.1rem; padding: 20px;">
+                            Module {{ module.order }}: {{ module.title }}
+                        </button>
+                    </h2>
+                    <div id="collapse-{{ module.id }}" class="accordion-collapse collapse {% if forloop.first %}show{% endif %}" aria-labelledby="heading-{{ module.id }}" data-bs-parent="#curriculumAccordion">
+                        <div class="accordion-body p-0 bg-white">
+                            <ul class="list-group list-group-flush">
+                                {% for lesson in module.lessons.all %}
+                                <li class="list-group-item d-flex justify-content-between align-items-center py-3 px-4">
+                                    <div class="d-flex align-items-center gap-3">
+                                        <!-- Checkbox or Completion status -->
+                                        {% if is_enrolled and has_access %}
+                                            {% if lesson.id in completed_lesson_ids %}
+                                            <i class="fas fa-check-circle text-success" style="font-size: 1.25rem;"></i>
+                                            {% else %}
+                                            <i class="far fa-circle text-muted" style="font-size: 1.25rem;"></i>
+                                            {% endif %}
+                                        {% else %}
+                                            {% if lesson.is_preview %}
+                                            <i class="fas fa-play-circle text-primary" style="font-size: 1.25rem; color: #002769 !important;"></i>
+                                            {% else %}
+                                            <i class="fas fa-lock text-muted" style="font-size: 1.1rem;"></i>
+                                            {% endif %}
+                                        {% endif %}
+
+                                        <!-- Title -->
+                                        <div>
+                                            {% if lesson.is_preview or is_enrolled and has_access %}
+                                            <a href="{% url 'lesson_detail' course.slug lesson.slug %}" class="fw-semibold text-decoration-none text-dark hover-primary">{{ lesson.title }}</a>
+                                            {% else %}
+                                            <span class="text-muted fw-normal">{{ lesson.title }}</span>
+                                            {% endif %}
+                                            
+                                            {% if lesson.duration_minutes %}
+                                            <div class="text-muted small mt-1">
+                                                <i class="far fa-clock me-1"></i>{{ lesson.duration_minutes }} mins
+                                            </div>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+
+                                    <div>
+                                        {% if lesson.is_preview %}
+                                        <span class="badge text-white" style="background-color: #71A20A; font-weight: 500; font-size: 0.7rem; border-radius: 4px; padding: 4px 8px;">PREVIEW</span>
+                                        {% elif not has_access %}
+                                        <span class="text-muted small"><i class="fas fa-lock me-1"></i>Locked</span>
+                                        {% endif %}
+                                    </div>
+
+                                </li>
+                                {% empty %}
+                                <li class="list-group-item py-3 text-muted px-4">No lessons in this module yet.</li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <div class="card border-0 shadow-sm p-4 text-center" style="border-radius: 15px;">
+                <p class="text-muted mb-0">No curriculum modules have been added to this course yet.</p>
+            </div>
+            {% endif %}
+
+            <!-- Assessments & Assignments (Only visible to enrolled students or staff/superusers) -->
+            {% if is_enrolled or user.is_staff or user.is_superuser %}
+            <div class="row g-4 mt-4">
+                <div class="col-md-6">
+                    <div class="card border-0 shadow-sm p-4 h-100" style="border-radius: 15px; border-top: 4px solid #71A20A !important;">
+                        <h4 class="fw-bold mb-3" style="color: #002769; font-family: 'Montserrat', sans-serif;">
+                            <i class="fas fa-file-signature me-2" style="color: #71A20A;"></i>Assessments
+                        </h4>
+                        <p class="text-muted small mb-4">Complete practice quizzes, exam prep, and checks to test your understanding of the course material.</p>
+                        <a href="{% url 'course_assessments' course.slug %}" class="btn btn-outline-primary mt-auto" style="border-radius: 8px; color: #002769; border-color: #002769;">
+                            Go to Assessments
+                        </a>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card border-0 shadow-sm p-4 h-100" style="border-radius: 15px; border-top: 4px solid #002769 !important;">
+                        <h4 class="fw-bold mb-3" style="color: #002769; font-family: 'Montserrat', sans-serif;">
+                            <i class="fas fa-tasks me-2" style="color: #002769;"></i>Assignments
+                        </h4>
+                        <p class="text-muted small mb-4">Submit practical homework exercises, essays, and files for tutor grading and direct feedback.</p>
+                        <a href="{% url 'course_assignments' course.slug %}" class="btn btn-outline-primary mt-auto" style="border-radius: 8px; color: #002769; border-color: #002769;">
+                            Go to Assignments
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<style>
+    .accordion-button:not(.collapsed) {
+        background-color: #f8fafc;
+        box-shadow: none;
+    }
+    .accordion-button:focus {
+        box-shadow: none;
+        border-color: rgba(0,0,0,.125);
+    }
+    .hover-primary:hover {
+        color: #002769 !important;
+        text-decoration: underline !important;
+    }
+    .object-fit-cover {
+        object-fit: cover;
+    }
+</style>
+{% endblock main %}

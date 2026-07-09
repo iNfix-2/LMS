@@ -1,0 +1,35 @@
+<div class="row row-cols-1 row-cols-lg-7 g-3">
+    {% for day, slots in timetable.items %}
+        <div class="col">
+            <div class="card h-100 border-0 bg-light" style="border-radius: 10px;">
+                <div class="card-header text-center fw-bold text-white py-2" style="background-color: #002769; border-top-left-radius: 10px; border-top-right-radius: 10px; font-size: 0.9rem;">
+                    {{ day }}
+                </div>
+                <div class="card-body p-2 d-flex flex-column gap-2" style="min-height: 250px;">
+                    {% for slot in slots %}
+                        <div class="p-2 bg-white rounded shadow-sm border-start border-3 {% if slot.slot_type == 'recess' or slot.slot_type == 'break' %}border-warning{% elif slot.slot_type == 'fellowship' or slot.slot_type == 'assembly' %}border-success{% else %}border-primary{% endif %}" style="font-size: 0.8rem;">
+                            <div class="fw-bold text-dark">{{ slot.start_time|time:"H:i" }} - {{ slot.end_time|time:"H:i" }}</div>
+                            <div class="text-primary fw-semibold mt-1">
+                                {% if slot.title %}
+                                    {{ slot.title }}
+                                {% elif slot.subject %}
+                                    {{ slot.subject.name }}
+                                {% else %}
+                                    {{ slot.get_slot_type_display }}
+                                {% endif %}
+                            </div>
+                            {% if slot.room %}
+                                <div class="text-muted mt-1" style="font-size: 0.75rem;"><i class="fas fa-map-marker-alt me-1"></i>{{ slot.room }}</div>
+                            {% endif %}
+                            {% if slot.tutor %}
+                                <div class="text-muted mt-0.5" style="font-size: 0.75rem;"><i class="fas fa-chalkboard-teacher me-1"></i>{{ slot.tutor.get_full_name|default:slot.tutor.username }}</div>
+                            {% endif %}
+                        </div>
+                    {% empty %}
+                        <div class="text-center text-muted my-auto" style="font-size: 0.75rem;">No slots scheduled</div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+</div>

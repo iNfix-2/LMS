@@ -1,0 +1,200 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block main %}
+<div class="container py-5" style="margin-top: 20px;">
+    <!-- Dashboard Header -->
+    <div class="row mb-5 align-items-center">
+        <div class="col-md-8">
+            <h3 class="text-uppercase tracking-wider text-muted mb-2" style="color: #71A20A !important; font-weight: 600; font-size: 0.9rem; letter-spacing: 2px;">TUTOR PORTAL</h3>
+            <h1 class="display-5 fw-bold" style="color: #002769; font-family: 'Montserrat', sans-serif;">Tutor Dashboard</h1>
+            <p class="lead text-muted">Manage your assigned courses, view enrolled learners, and grade assignments or exams.</p>
+        </div>
+        <div class="col-md-4 text-md-end">
+            {% if request.user.is_staff or request.user.is_superuser %}
+                <a href="{% url 'admin_lms_dashboard' %}" class="btn btn-outline-primary px-4 py-2" style="border-color: #002769; color: #002769; border-radius: 50px; font-weight: 600;">
+                    <i class="fas fa-cog me-2"></i> Admin LMS Overview
+                </a>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Academics Quick Actions & Live Classes Row -->
+    <div class="row mb-5 g-4">
+        <!-- Quick Actions Card -->
+        <div class="col-md-6 col-lg-4">
+            <div class="card border-0 shadow-sm h-100" style="border-radius: 15px; border-left: 5px solid #002769;">
+                <div class="card-body p-4 d-flex flex-column justify-content-between">
+                    <div>
+                        <h5 class="fw-bold mb-3" style="color: #002769;"><i class="fas fa-graduation-cap me-2 text-primary"></i> Academic Tools</h5>
+                        <p class="text-muted small">Access schedules, session timelines, and manage student attendance registries.</p>
+                    </div>
+                    <div class="d-grid gap-2">
+                        <a href="{% url 'academics:academic_calendar' %}" class="btn btn-outline-primary btn-sm rounded-pill py-2">
+                            <i class="far fa-calendar-alt me-2"></i> Academic Calendar
+                        </a>
+                        <a href="{% url 'academics:my_timetable' %}" class="btn btn-outline-primary btn-sm rounded-pill py-2">
+                            <i class="fas fa-clock me-2"></i> Teaching Timetable
+                        </a>
+                        <a href="{% url 'academics:tutor_attendance_dashboard' %}" class="btn btn-primary btn-sm rounded-pill py-2" style="background-color: #002769; border-color: #002769;">
+                            <i class="fas fa-check-double me-2"></i> Attendance Dashboard
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Live Classes List -->
+        <div class="col-md-6 col-lg-8">
+            <div class="card border-0 shadow-sm h-100" style="border-radius: 15px; border-left: 5px solid #71A20A;">
+                <div class="card-body p-4">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h5 class="fw-bold mb-0" style="color: #002769;"><i class="fas fa-broadcast-tower me-2 text-success"></i> Scheduled Live Classes</h5>
+                        <a href="{% url 'academics:live_class_list' %}" class="small text-decoration-none">View All</a>
+                    </div>
+                    <div class="list-group list-group-flush">
+                        {% for live in scheduled_live %}
+                            <div class="list-group-item px-0 py-2 border-0 d-flex justify-content-between align-items-center">
+                                <div>
+                                    <a href="{% url 'academics:live_class_detail' live.id %}" class="fw-bold text-dark text-decoration-none hover-primary" style="font-size: 0.9rem;">{{ live.title }}</a>
+                                    <div class="text-muted small">{{ live.course.title }} — {{ live.scheduled_start|date:"M d, H:i" }}</div>
+                                </div>
+                                {% if live.status == 'live' %}
+                                    <span class="badge bg-danger rounded-pill px-3 py-1">Live Now</span>
+                                {% else %}
+                                    <span class="badge bg-light text-dark rounded-pill px-3 py-1 text-uppercase" style="font-size: 0.7rem;">{{ live.status }}</span>
+                                {% endif %}
+                            </div>
+                        {% empty %}
+                            <div class="text-muted small py-4 text-center">No upcoming live classes scheduled.</div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notifications Quick Widget -->
+    {% if unread_notifications_count > 0 or recent_notifications %}
+    <div class="row mb-5">
+        <div class="col-12">
+            <div class="card border-0 shadow-sm" style="border-radius: 15px; border-left: 5px solid #002769; background: #fff;">
+                <div class="card-body p-4">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h4 class="fw-bold mb-0" style="color: #002769; font-family: 'Montserrat', sans-serif;">
+                            <i class="fas fa-bell me-2" style="color: #71A20A;"></i> Recent Notifications 
+                            {% if unread_notifications_count > 0 %}
+                            <span class="badge rounded-pill bg-danger" style="font-size: 0.8rem; vertical-align: middle;">{{ unread_notifications_count }} New</span>
+                            {% endif %}
+                        </h4>
+                        <a href="{% url 'notifications:notification_list' %}" class="btn btn-sm btn-outline-primary px-3" style="border-radius: 20px; font-size: 0.85rem; border-color: #002769; color: #002769;">View All</a>
+                    </div>
+                    <div class="list-group list-group-flush">
+                        {% for n in recent_notifications %}
+                        <div class="list-group-item px-0 py-3 bg-transparent border-bottom">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <h6 class="fw-bold mb-1 {% if n.status == 'pending' %}text-primary{% else %}text-dark{% endif %}" style="font-size: 0.95rem;">
+                                    {{ n.title }}
+                                </h6>
+                                <small class="text-muted">{{ n.created_at|timesince }} ago</small>
+                            </div>
+                            <p class="text-muted mb-0 small">{{ n.message }}</p>
+                            {% if n.status == 'pending' %}
+                            <span class="badge bg-warning text-dark rounded-pill mt-1" style="font-size: 0.65rem; font-weight: 500;">New</span>
+                            {% endif %}
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Courses Grid -->
+    <div class="row g-4">
+        {% for item in course_list %}
+            <div class="col-lg-6">
+                <div class="card border-0 shadow-sm h-100" style="border-radius: 20px;">
+                    <div class="card-body p-4 d-flex flex-column">
+                        <div class="d-flex justify-content-between align-items-start mb-3">
+                            <div>
+                                <span class="badge px-3 py-1 mb-2" style="background-color: rgba(113, 162, 10, 0.1); color: #71A20A; border-radius: 50px; font-weight: 600;">
+                                    {{ item.course.subject.name }}
+                                </span>
+                                <h3 class="fw-bold mb-1" style="color: #002769;">{{ item.course.title }}</h3>
+                                <p class="text-muted small mb-0">Class Level: {{ item.course.class_level }}</p>
+                            </div>
+                        </div>
+
+                        <!-- Statistics Grid -->
+                        <div class="row g-3 text-center mb-4 mt-2">
+                            <div class="col-4">
+                                <div class="p-2 border rounded-3 bg-light">
+                                    <div class="small text-muted" style="font-size: 0.75rem;">Enrolled</div>
+                                    <span class="fs-5 fw-bold" style="color: #002769;">{{ item.enrolled_count }}</span>
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <div class="p-2 border rounded-3 bg-light">
+                                    <div class="small text-muted" style="font-size: 0.75rem;">Modules/Lessons</div>
+                                    <span class="fs-5 fw-bold" style="color: #002769;">{{ item.modules_count }}/{{ item.lessons_count }}</span>
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <div class="p-2 border rounded-3 bg-light">
+                                    <div class="small text-muted" style="font-size: 0.75rem;">Assessments</div>
+                                    <span class="fs-5 fw-bold" style="color: #002769;">{{ item.assessments_count }}</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Pending Tasks Alerts -->
+                        <div class="mt-auto">
+                            {% if item.pending_theory > 0 or item.pending_assignments > 0 %}
+                                <div class="alert alert-warning border-0 p-3 mb-3 d-flex flex-column gap-2" style="border-radius: 12px; background-color: rgba(255, 193, 7, 0.1); color: #856404;">
+                                    {% if item.pending_theory > 0 %}
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <span class="small"><i class="fas fa-exclamation-circle me-2"></i><strong>{{ item.pending_theory }}</strong> pending theory/quiz marking</span>
+                                        </div>
+                                    {% endif %}
+                                    {% if item.pending_assignments > 0 %}
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <span class="small"><i class="fas fa-file-signature me-2"></i><strong>{{ item.pending_assignments }}</strong> pending homework marking</span>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            {% else %}
+                                <div class="alert alert-success border-0 p-3 mb-3" style="border-radius: 12px; background-color: rgba(40, 167, 69, 0.1); color: #155724;">
+                                    <span class="small"><i class="fas fa-check-circle me-2"></i> All assessments and assignments are graded!</span>
+                                </div>
+                            {% endif %}
+
+                            <div class="row g-2">
+                                <div class="col-6">
+                                    <a href="{% url 'course_learners' item.course.slug %}" class="btn btn-primary w-100 py-2" style="background-color: #002769; border-color: #002769; border-radius: 50px; font-weight: 600;">
+                                        Manage Learners
+                                    </a>
+                                </div>
+                                <div class="col-6">
+                                    <a href="{% url 'course_detail' item.course.slug %}" class="btn btn-outline-primary w-100 py-2" style="border-color: #002769; color: #002769; border-radius: 50px; font-weight: 600;">
+                                        Course View
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% empty %}
+            <div class="col-12 text-center py-5">
+                <div class="card border-0 shadow-sm p-5" style="border-radius: 20px;">
+                    <i class="fas fa-chalkboard-teacher fa-3x mb-3 text-muted"></i>
+                    <h3 class="fw-bold" style="color: #002769;">No Assigned Courses</h3>
+                    <p class="text-muted">You are not currently assigned as a tutor to any courses.</p>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

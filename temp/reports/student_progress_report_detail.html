@@ -1,0 +1,205 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block main %}
+<div class="container py-5" style="margin-top: 20px;">
+    <!-- Navigation Back -->
+    <div class="mb-4">
+        {% if request.user.profile.role == 'student' %}
+            <a href="{% url 'student_report_dashboard' %}" class="btn btn-outline-primary px-4 py-2" style="border-color: #002769; color: #002769; border-radius: 50px; font-weight: 600;">
+                <i class="fas fa-arrow-left me-2"></i> Back to Reports
+            </a>
+        {% elif request.user.profile.role == 'guardian' %}
+            <a href="{% url 'guardian_dashboard' %}" class="btn btn-outline-primary px-4 py-2" style="border-color: #002769; color: #002769; border-radius: 50px; font-weight: 600;">
+                <i class="fas fa-arrow-left me-2"></i> Back to Guardian Dashboard
+            </a>
+        {% else %}
+            <a href="{% url 'course_learners' report.course.slug %}" class="btn btn-outline-primary px-4 py-2" style="border-color: #002769; color: #002769; border-radius: 50px; font-weight: 600;">
+                <i class="fas fa-arrow-left me-2"></i> Back to Learners
+            </a>
+        {% endif %}
+    </div>
+
+    <!-- Report Document Card -->
+    <div class="card border-0 shadow-sm mb-5 p-4 p-md-5" style="border-radius: 20px; background-color: #ffffff;" id="printable-report">
+        <!-- Document Header -->
+        <div class="row align-items-center mb-5 pb-4 border-bottom">
+            <div class="col-md-8">
+                <div class="d-flex align-items-center mb-2">
+                    <img src="{% static 'images/logo.png' %}" alt="Edukom" style="height: 40px; margin-right: 15px;" onerror="this.style.display='none'">
+                    <span class="fs-4 fw-bold text-uppercase tracking-wider" style="color: #71A20A; letter-spacing: 2px;">EDUKOM LEARNING</span>
+                </div>
+                <h1 class="display-6 fw-bold" style="color: #002769; font-family: 'Montserrat', sans-serif;">{{ report.title }}</h1>
+                <p class="text-muted mb-0">Generated on {{ report.created_at|date:"F d, Y" }} by {{ report.generated_by.get_full_name|default:report.generated_by.username }}</p>
+            </div>
+            <div class="col-md-4 text-md-end mt-3 mt-md-0">
+                <button onclick="window.print();" class="btn btn-success px-4 py-2" style="background-color: #71A20A; border-color: #71A20A; border-radius: 50px; font-weight: 600;">
+                    <i class="fas fa-print me-2"></i> Print / Save PDF
+                </button>
+            </div>
+        </div>
+
+        <!-- Student & Course Details -->
+        <div class="row g-4 mb-5 p-4 rounded-4" style="background-color: #f8f9fa;">
+            <div class="col-md-6">
+                <h5 class="text-uppercase tracking-wider small text-muted font-weight-bold mb-3">Student Details</h5>
+                <table class="table table-borderless table-sm mb-0">
+                    <tr>
+                        <th style="color: #002769; width: 120px;">Name:</th>
+                        <td>{{ student.get_full_name|default:student.username }}</td>
+                    </tr>
+                    <tr>
+                        <th style="color: #002769;">Username:</th>
+                        <td>{{ student.username }}</td>
+                    </tr>
+                    <tr>
+                        <th style="color: #002769;">Email:</th>
+                        <td>{{ student.email }}</td>
+                    </tr>
+                </table>
+            </div>
+            <div class="col-md-6 border-start-md">
+                <h5 class="text-uppercase tracking-wider small text-muted font-weight-bold mb-3">Course Details</h5>
+                <table class="table table-borderless table-sm mb-0">
+                    <tr>
+                        <th style="color: #002769; width: 120px;">Subject:</th>
+                        <td>{{ course.subject.name }}</td>
+                    </tr>
+                    <tr>
+                        <th style="color: #002769;">Course Title:</th>
+                        <td>{{ course.title }}</td>
+                    </tr>
+                    <tr>
+                        <th style="color: #002769;">Class Level:</th>
+                        <td>{{ course.class_level }}</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+        <!-- Metrics Grid -->
+        <h4 class="fw-bold mb-4" style="color: #002769; font-family: 'Montserrat', sans-serif;">Performance Indicators</h4>
+        <div class="row g-4 mb-5 text-center">
+            <div class="col-6 col-lg-3">
+                <div class="p-4 border rounded-4 h-100" style="background-color: #ffffff;">
+                    <h6 class="text-uppercase text-muted small mb-2">Lesson Progress</h6>
+                    <div class="fs-2 fw-bold" style="color: #002769;">{{ report.lesson_progress_percentage|floatformat:1 }}%</div>
+                    <div class="progress mt-2" style="height: 6px; border-radius: 10px;">
+                        <div class="progress-bar" role="progressbar" style="width: {{ report.lesson_progress_percentage }}%; background-color: #71A20A;" aria-valuenow="{{ report.lesson_progress_percentage }}" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6 col-lg-3">
+                <div class="p-4 border rounded-4 h-100" style="background-color: #ffffff;">
+                    <h6 class="text-uppercase text-muted small mb-2">Quiz Average</h6>
+                    <div class="fs-2 fw-bold" style="color: #002769;">
+                        {% if report.assessment_average > 0 %}{{ report.assessment_average|floatformat:1 }}%{% else %}-{% endif %}
+                    </div>
+                    <small class="text-muted small">Based on submitted attempts</small>
+                </div>
+            </div>
+            <div class="col-6 col-lg-3">
+                <div class="p-4 border rounded-4 h-100" style="background-color: #ffffff;">
+                    <h6 class="text-uppercase text-muted small mb-2">Homework Average</h6>
+                    <div class="fs-2 fw-bold" style="color: #002769;">
+                        {% if report.assignment_average > 0 %}{{ report.assignment_average|floatformat:1 }}%{% else %}-{% endif %}
+                    </div>
+                    <small class="text-muted small">Based on graded assignments</small>
+                </div>
+            </div>
+            <div class="col-6 col-lg-3">
+                <div class="p-4 border rounded-4 h-100" style="background-color: rgba(113, 162, 10, 0.05); border-color: rgba(113, 162, 10, 0.3) !important;">
+                    <h6 class="text-uppercase text-muted small mb-2">Overall Score</h6>
+                    <div class="fs-1 fw-bold" style="color: #71A20A;">{{ report.overall_percentage|floatformat:1 }}%</div>
+                    <span class="badge px-3 py-1 mt-1" style="background-color: #71A20A; color: white;">
+                        {% if report.overall_percentage >= 75 %}Excellent{% elif report.overall_percentage >= 50 %}Passing{% else %}Needs Improvement{% endif %}
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Comments Section -->
+        <h4 class="fw-bold mb-4" style="color: #002769; font-family: 'Montserrat', sans-serif;">Remarks & Feedback</h4>
+        <div class="row g-4">
+            <!-- Tutor Comment -->
+            <div class="col-md-6">
+                <div class="card h-100 border-0 p-4 rounded-4" style="background-color: #fcfcfc; border: 1px solid #f0f0f0 !important;">
+                    <h5 class="fw-bold mb-3" style="color: #002769;"><i class="fas fa-chalkboard-teacher me-2" style="color: #71A20A;"></i> Tutor Comments</h5>
+                    {% if report.tutor_comment %}
+                        <p class="text-muted mb-0" style="white-space: pre-line;">{{ report.tutor_comment }}</p>
+                    {% else %}
+                        <p class="text-muted small italic mb-0">No tutor comments added yet.</p>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Guardian Comment -->
+            <div class="col-md-6">
+                <div class="card h-100 border-0 p-4 rounded-4" style="background-color: #fcfcfc; border: 1px solid #f0f0f0 !important;">
+                    <h5 class="fw-bold mb-3" style="color: #002769;"><i class="fas fa-user-shield me-2" style="color: #71A20A;"></i> Guardian Acknowledgement</h5>
+                    {% if report.guardian_comment %}
+                        <p class="text-muted mb-0" style="white-space: pre-line;">{{ report.guardian_comment }}</p>
+                    {% else %}
+                        <p class="text-muted small italic mb-0">No guardian comments/acknowledgements added yet.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Comments Action Form -->
+        {% if request.user.profile.role == 'tutor' or request.user.profile.role == 'guardian' or request.user.is_staff or request.user.is_superuser %}
+            <div class="card border-0 p-4 rounded-4 mt-5 d-print-none" style="background-color: #f8f9fa;">
+                <h5 class="fw-bold mb-3" style="color: #002769;">Add/Update Feedback Comments</h5>
+                <form method="POST">
+                    {% csrf_token %}
+                    
+                    {% if request.user.profile.role == 'tutor' or request.user.is_staff or request.user.is_superuser %}
+                        <div class="mb-3">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <label for="tutor_comment" class="form-label fw-bold mb-0" style="color: #002769;">Tutor Feedback Remarks</label>
+                                <a href="{% url 'ai_tools:generate_report_comment' report.id %}" class="btn btn-warning btn-sm" style="border-radius: 5px; font-weight: 600;">
+                                    <i class="fas fa-magic me-1"></i> Generate AI Comment Draft
+                                </a>
+                            </div>
+                            <textarea class="form-control" id="tutor_comment" name="tutor_comment" rows="4" placeholder="Enter remarks on student progress, attitude, and recommended study tasks...">{{ report.tutor_comment }}</textarea>
+                        </div>
+                    {% endif %}
+                    
+                    {% if request.user.profile.role == 'guardian' or request.user.is_staff or request.user.is_superuser %}
+                        <div class="mb-3">
+                            <label for="guardian_comment" class="form-label fw-bold" style="color: #002769;">Guardian Remarks / Signature Acknowledgement</label>
+                            <textarea class="form-control" id="guardian_comment" name="guardian_comment" rows="4" placeholder="Acknowledge the report, note home study progress, or ask questions to the tutor...">{{ report.guardian_comment }}</textarea>
+                        </div>
+                    {% endif %}
+                    
+                    <button type="submit" class="btn btn-primary px-4 py-2" style="background-color: #002769; border-color: #002769; border-radius: 50px; font-weight: 600;">
+                        Save Comments
+                    </button>
+                </form>
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+<style>
+@media print {
+    body * {
+        visibility: hidden;
+    }
+    #printable-report, #printable-report * {
+        visibility: visible;
+    }
+    #printable-report {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        box-shadow: none !important;
+        padding: 0 !important;
+    }
+    .d-print-none {
+        display: none !important;
+    }
+}
+</style>
+{% endblock %}

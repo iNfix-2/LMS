@@ -1,0 +1,125 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block main %}
+<div class="container py-5" style="margin-top: 20px;">
+    <!-- Live Class Header -->
+    <div class="row mb-5 align-items-center">
+        <div class="col-md-8">
+            <h3 class="text-uppercase tracking-wider text-muted mb-2" style="color: #71A20A !important; font-weight: 600; font-size: 0.9rem; letter-spacing: 2px;">VIRTUAL CLASSROOMS</h3>
+            <h1 class="display-5 fw-bold" style="color: #002769; font-family: 'Montserrat', sans-serif;">Live Virtual Classes</h1>
+            <p class="lead text-muted">Join interactive live streaming lectures, view schedules, or watch recorded archives.</p>
+        </div>
+        <div class="col-md-4 text-md-end">
+            {% if is_admin or role == 'tutor' %}
+                <a href="{% url 'academics:create_live_class' %}" class="btn btn-primary rounded-pill px-4 py-2" style="background-color: #002769; border-color: #002769; font-weight: 600;">
+                    <i class="fas fa-plus me-2"></i> Schedule Live Class
+                </a>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Live Classes Grid/List -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card border-0 shadow-sm" style="border-radius: 15px;">
+                <div class="card-body p-4">
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Class Title</th>
+                                    <th>Course</th>
+                                    <th>Tutor</th>
+                                    <th>Schedule</th>
+                                    <th>Platform</th>
+                                    <th>Status</th>
+                                    <th class="text-end">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for live in live_classes %}
+                                    <tr>
+                                        <td>
+                                            <h6 class="fw-bold mb-1" style="color: #002769;">{{ live.title }}</h6>
+                                            {% if live.description %}
+                                                <small class="text-muted d-block text-truncate" style="max-width: 250px;">{{ live.description }}</small>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            <span class="badge bg-secondary rounded-pill px-3 py-1.5">{{ live.course.title }}</span>
+                                        </td>
+                                        <td>
+                                            <small class="fw-semibold">{{ live.tutor.get_full_name|default:live.tutor.username }}</small>
+                                        </td>
+                                        <td>
+                                            <small class="text-muted d-block">
+                                                <i class="far fa-calendar-alt me-1"></i> {{ live.scheduled_start|date:"M d, Y" }}
+                                            </small>
+                                            <small class="text-muted d-block">
+                                                <i class="far fa-clock me-1"></i> {{ live.scheduled_start|date:"H:i" }} — {{ live.scheduled_end|date:"H:i" }}
+                                            </small>
+                                        </td>
+                                        <td>
+                                            <span class="text-uppercase fw-semibold" style="font-size: 0.8rem;">
+                                                {% if live.provider == 'zoom' %}
+                                                    <i class="fas fa-video me-1 text-primary"></i> Zoom
+                                                {% elif live.provider == 'google_meet' %}
+                                                    <i class="fas fa-video me-1 text-success"></i> Google Meet
+                                                {% elif live.provider == 'microsoft_teams' %}
+                                                    <i class="fas fa-video me-1 text-info"></i> MS Teams
+                                                {% else %}
+                                                    <i class="fas fa-link me-1 text-secondary"></i> Custom
+                                                {% endif %}
+                                            </span>
+                                        </td>
+                                        <td>
+                                            {% if live.status == 'live' %}
+                                                <span class="badge bg-danger text-white px-3 py-1.5 rounded-pill animate-pulse"><i class="fas fa-broadcast-tower me-1"></i> Live Now</span>
+                                            {% elif live.status == 'scheduled' %}
+                                                <span class="badge bg-primary text-white px-3 py-1.5 rounded-pill">Scheduled</span>
+                                            {% elif live.status == 'completed' %}
+                                                <span class="badge bg-success text-white px-3 py-1.5 rounded-pill">Completed</span>
+                                            {% elif live.status == 'cancelled' %}
+                                                <span class="badge bg-secondary text-white px-3 py-1.5 rounded-pill">Cancelled</span>
+                                            {% endif %}
+                                        </td>
+                                        <td class="text-end">
+                                            <a href="{% url 'academics:live_class_detail' live.id %}" class="btn btn-sm btn-outline-primary rounded-pill px-3">
+                                                View details
+                                            </a>
+                                            {% if is_admin or live.tutor == request.user %}
+                                                <a href="{% url 'academics:edit_live_class' live.id %}" class="btn btn-sm btn-outline-secondary rounded-pill px-3 ms-1">
+                                                    Edit
+                                                </a>
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                {% empty %}
+                                    <tr>
+                                        <td colspan="7" class="text-center py-5 text-muted">
+                                            <i class="fas fa-video-slash fa-2x mb-3 text-muted"></i>
+                                            <p class="mb-0">No live classes scheduled currently.</p>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    @keyframes pulse {
+        0% { opacity: 1; }
+        50% { opacity: 0.5; }
+        100% { opacity: 1; }
+    }
+    .animate-pulse {
+        animation: pulse 1.5s infinite ease-in-out;
+    }
+</style>
+{% endblock %}

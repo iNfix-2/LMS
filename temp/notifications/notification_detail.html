@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block main %}
+<div class="container py-5" style="margin-top: 20px;">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <!-- Back link -->
+            <a href="{% url 'notifications:notification_list' %}" class="btn btn-link text-decoration-none mb-3 text-secondary p-0">
+                <i class="fas fa-arrow-left me-1"></i> Back to Notifications
+            </a>
+
+            <div class="card border-0 shadow-lg" style="border-radius: 20px; overflow: hidden;">
+                <div class="p-4 text-white" style="background: linear-gradient(135deg, #002769 0%, #0040a6 100%);">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span class="badge rounded-pill bg-warning text-dark text-capitalize px-3 py-2" style="font-weight: 700;">
+                            {{ notification.get_notification_type_display }}
+                        </span>
+                        <small class="opacity-75"><i class="far fa-clock me-1"></i> {{ notification.created_at|date:"M d, Y - h:i A" }}</small>
+                    </div>
+                    <h3 class="fw-bold mt-3 mb-0" style="font-family: 'Montserrat', sans-serif;">{{ notification.title }}</h3>
+                </div>
+
+                <div class="card-body p-4 p-lg-5">
+                    <p class="text-dark fs-5" style="white-space: pre-line; line-height: 1.6;">{{ notification.message }}</p>
+                    
+                    <hr class="my-4">
+
+                    <!-- Metadata details -->
+                    <div class="row row-cols-1 row-cols-sm-2 g-3 small text-muted mb-4">
+                        <div>
+                            <strong>Delivery Channel:</strong> <span class="text-dark text-capitalize">{{ notification.get_delivery_channel_display }}</span>
+                        </div>
+                        <div>
+                            <strong>Status:</strong> 
+                            {% if notification.status == 'read' %}
+                                <span class="badge bg-success">Read</span>
+                            {% elif notification.status == 'sent' %}
+                                <span class="badge bg-primary">Delivered</span>
+                            {% elif notification.status == 'failed' %}
+                                <span class="badge bg-danger">Failed</span>
+                            {% else %}
+                                <span class="badge bg-secondary">Pending</span>
+                            {% endif %}
+                        </div>
+                        {% if notification.email_sent_at %}
+                            <div>
+                                <strong>Email Sent:</strong> <span class="text-dark">{{ notification.email_sent_at|date:"M d, Y - h:i A" }}</span>
+                            </div>
+                        {% endif %}
+                        {% if notification.read_at %}
+                            <div>
+                                <strong>Read Time:</strong> <span class="text-dark">{{ notification.read_at|date:"M d, Y - h:i A" }}</span>
+                            </div>
+                        {% endif %}
+                        {% if notification.error_message %}
+                            <div class="col-12 text-danger mt-2">
+                                <strong>Error Log:</strong> {{ notification.error_message }}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Associated Actions -->
+                    {% if notification.related_invoice or notification.related_payment or notification.related_course or notification.related_report %}
+                        <div class="card bg-light border-0 p-3 mb-4" style="border-radius: 12px;">
+                            <h6 class="fw-bold text-dark mb-2">Related Information</h6>
+                            <div class="d-flex flex-wrap gap-2">
+                                {% if notification.related_invoice %}
+                                    <a href="{% url 'payments:invoice_detail' notification.related_invoice.id %}" class="btn btn-sm btn-primary" style="background-color: #002769; border: none;">
+                                        <i class="fas fa-file-invoice-dollar me-1"></i> View Invoice
+                                    </a>
+                                {% endif %}
+                                {% if notification.related_payment %}
+                                    <a href="{% url 'notifications:download_receipt_pdf' notification.related_payment.id %}" class="btn btn-sm btn-success">
+                                        <i class="fas fa-download me-1"></i> Download Receipt
+                                    </a>
+                                {% endif %}
+                                {% if notification.related_course %}
+                                    <a href="{% url 'course_detail' notification.related_course.slug %}" class="btn btn-sm btn-info text-white">
+                                        <i class="fas fa-book-open me-1"></i> Course Details
+                                    </a>
+                                {% endif %}
+                                {% if notification.related_report %}
+                                    <a href="{% url 'student_progress_report_detail' notification.related_report.id %}" class="btn btn-sm btn-success">
+                                        <i class="fas fa-file-alt me-1"></i> Progress Report
+                                    </a>
+                                {% endif %}
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock main %}

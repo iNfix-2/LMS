@@ -1,0 +1,15 @@
+{% extends "emails/base_email.html" %}
+
+{% block content %}
+<h2>Reminder: Unpaid Invoice</h2>
+<p>Hello {{ recipient.username }},</p>
+<p>This is a reminder that you have an outstanding invoice (<strong>{{ invoice.invoice_number }}</strong>) of <strong>₦{{ invoice.amount }}</strong>.</p>
+<p>Please click the button below to proceed to checkout and make a payment online.</p>
+
+<div class="button-container">
+    <a href="{{ site_url }}/learn/invoice/{{ invoice.id }}/" class="button">Pay Invoice Now</a>
+</div>
+
+<p>Thank you for choosing Edukom!</p>
+<p>Best regards,<br>The Edukom Team</p>
+{% endblock %}

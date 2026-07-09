@@ -1,0 +1,153 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block main %}
+<div class="container py-5" style="margin-top: 20px;">
+    <div class="mb-4">
+        <a href="{% url 'payments:invoice_list' %}" class="text-muted text-decoration-none">
+            <i class="fas fa-arrow-left me-2"></i> Back to Invoices
+        </a>
+    </div>
+
+    <div class="row g-4">
+        <!-- Invoice Details Card -->
+        <div class="col-lg-8">
+            <div class="card border-0 shadow-sm p-4 p-md-5 mb-4" style="border-radius: 15px; background: #fff;">
+                <div class="d-flex justify-content-between align-items-start mb-4 flex-wrap">
+                    <div>
+                        <h2 class="fw-bold" style="color: #002769; font-family: 'Montserrat', sans-serif;">Invoice</h2>
+                        <span class="font-monospace text-muted">#{{ invoice.invoice_number }}</span>
+                    </div>
+                    <div class="text-end">
+                        <span class="badge fs-6 py-2 px-3 {% if invoice.status == 'paid' %}bg-success{% elif invoice.status == 'pending' %}bg-warning text-dark{% else %}bg-danger{% endif %}">
+                            {{ invoice.get_status_display }}
+                        </span>
+                    </div>
+                </div>
+
+                <div class="row g-4 mb-4 border-bottom pb-4">
+                    <div class="col-sm-6">
+                        <span class="text-muted text-uppercase small font-monospace d-block">Billed To</span>
+                        <strong class="text-dark">{{ invoice.user.get_full_name|default:invoice.user.username }}</strong>
+                        <p class="text-muted mb-0 small">{{ invoice.user.email }}</p>
+                    </div>
+                    <div class="col-sm-6 text-sm-end">
+                        <span class="text-muted text-uppercase small font-monospace d-block">Billed By</span>
+                        <strong style="color: #002769;">Edukom Learning</strong>
+                        <p class="text-muted mb-0 small">billing@edukom.com</p>
+                    </div>
+                </div>
+
+                <div class="row g-4 mb-4 border-bottom pb-4">
+                    <div class="col-sm-6">
+                        <span class="text-muted text-uppercase small font-monospace d-block">Date Issued</span>
+                        <strong class="text-dark">{{ invoice.created_at|date:"M d, Y" }}</strong>
+                    </div>
+                    <div class="col-sm-6 text-sm-end">
+                        <span class="text-muted text-uppercase small font-monospace d-block">Due Date</span>
+                        <strong class="text-dark">{{ invoice.due_date|date:"M d, Y"|default:"Upon Receipt" }}</strong>
+                    </div>
+                </div>
+
+                <div class="table-responsive mb-4">
+                    <table class="table align-middle">
+                        <thead class="bg-light">
+                            <tr>
+                                <th>Description</th>
+                                <th class="text-end">Amount</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <strong>
+                                        {% if invoice.course %}
+                                            Course access: {{ invoice.course.title }}
+                                        {% elif invoice.plan %}
+                                            Plan subscription: {{ invoice.plan.name }}
+                                        {% else %}
+                                            {{ invoice.notes|default:"General Learning Invoice" }}
+                                        {% endif %}
+                                    </strong>
+                                    <p class="text-muted mb-0 small">
+                                        {% if invoice.course %}
+                                            Single purchase for course content access.
+                                        {% elif invoice.plan %}
+                                            {{ invoice.plan.description }} ({{ invoice.plan.duration_days }} days duration).
+                                        {% endif %}
+                                    </p>
+                                </td>
+                                <td class="text-end fw-bold fs-5">₦{{ invoice.amount }}</td>
+                            </tr>
+                            <tr class="bg-light fw-bold">
+                                <td class="text-end">Total Due:</td>
+                                <td class="text-end text-primary fs-5" style="color: #002769 !important;">₦{{ invoice.amount }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                {% if invoice.notes %}
+                <div class="bg-light p-3 rounded-3 mb-4">
+                    <span class="text-muted text-uppercase small font-monospace d-block mb-1">Invoice Notes</span>
+                    <p class="mb-0 small text-secondary">{{ invoice.notes }}</p>
+                </div>
+                {% endif %}
+
+                <!-- Document Actions & Pay Now -->
+                <div class="d-flex flex-wrap gap-2 mt-4">
+                    {% if invoice.status == 'pending' %}
+                    <a href="{% url 'payments:initialize_invoice_payment' invoice.id %}" class="btn btn-primary px-4 py-3 flex-grow-1" style="background-color: #002769; border: none; border-radius: 10px; font-weight: 600;">
+                        <i class="fas fa-credit-card me-2"></i> Pay Now with Paystack
+                    </a>
+                    {% endif %}
+                    
+                    {% if invoice.status == 'paid' and successful_transaction %}
+                    <a href="{% url 'notifications:download_receipt_pdf' successful_transaction.id %}" class="btn btn-success px-4 py-3" style="border-radius: 10px; font-weight: 600;">
+                        <i class="fas fa-file-invoice-dollar me-2"></i> Download Receipt (PDF)
+                    </a>
+                    {% endif %}
+                    
+                    <a href="{% url 'notifications:download_invoice_pdf' invoice.id %}" class="btn btn-outline-secondary px-4 py-3" style="border-radius: 10px; font-weight: 600;">
+                        <i class="fas fa-file-pdf me-2"></i> Download Invoice (PDF)
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Transaction History Sidebar -->
+        <div class="col-lg-4">
+            <div class="card border-0 shadow-sm p-4" style="border-radius: 15px; background: #fff;">
+                <h4 class="fw-bold mb-3" style="color: #002769; font-family: 'Montserrat', sans-serif;">Payment Transactions</h4>
+                <hr class="mt-0">
+
+                {% if transactions %}
+                <div class="list-group list-group-flush">
+                    {% for tx in transactions %}
+                    <div class="list-group-item px-0 py-3">
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+                            <span class="small font-monospace text-muted">{{ tx.reference }}</span>
+                            <span class="badge {% if tx.status == 'success' %}bg-success{% elif tx.status == 'pending' %}bg-warning text-dark{% else %}bg-danger{% endif %}">
+                                {{ tx.status }}
+                            </span>
+                        </div>
+                        <div class="d-flex justify-content-between">
+                            <strong class="small text-dark">₦{{ tx.amount }} via {{ tx.provider|upper }}</strong>
+                            <span class="small text-muted">{{ tx.created_at|date:"M d, Y" }}</span>
+                        </div>
+                        {% if tx.gateway_response %}
+                        <div class="mt-2 text-muted small bg-light p-2 rounded">
+                            {{ tx.gateway_response }}
+                        </div>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <p class="text-muted small mb-0">No payment transaction records exist for this invoice yet.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock main %}

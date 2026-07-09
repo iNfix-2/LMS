@@ -1,0 +1,14 @@
+{% extends "emails/base_email.html" %}
+
+{% block content %}
+<h2>Subscription Expiration Warning</h2>
+<p>Hello {{ recipient.username }},</p>
+<p>This is a friendly reminder that your Edukom membership subscription is expiring soon.</p>
+<p>To avoid any disruption to your course progress, lessons, and grading features, please renew your subscription.</p>
+
+<div class="button-container">
+    <a href="{{ site_url }}/learn/plans/" class="button">Renew Subscription</a>
+</div>
+
+<p>Best regards,<br>The Edukom Team</p>
+{% endblock %}

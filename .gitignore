@@ -1,0 +1,35 @@
+# Database
+db.sqlite3
+
+# Environment secrets
+.env
+
+# Virtual environments
+.venv/
+venv/
+venv_linux/
+
+# Byte-compiled / cached
+__pycache__/
+*.pyc
+
+# Collected static files
+staticfiles/
+
+# App caches
+edukom/__pycache__
+homepage/__pycache__
+tutors/__pycache__
+user/__pycache__
+accounts/__pycache__
+courses/__pycache__
+enrollments/__pycache__
+
+# Migrations
+edukom/migrations
+homepage/migrations
+tutors/migrations
+user/migrations
+accounts/migrations
+courses/migrations
+enrollments/migrations

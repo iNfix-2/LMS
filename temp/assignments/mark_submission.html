@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block main %}
+<div class="container py-5" style="margin-top: 20px;">
+    <!-- Dashboard Header -->
+    <div class="row mb-5 align-items-center">
+        <div class="col-md-8">
+            <h3 class="text-uppercase tracking-wider text-muted mb-2" style="color: #71A20A !important; font-weight: 600; font-size: 0.9rem; letter-spacing: 2px;">ASSIGNMENT PORTAL</h3>
+            <h1 class="display-5 fw-bold" style="color: #002769; font-family: 'Montserrat', sans-serif;">Grade Homework Submission</h1>
+            <p class="lead text-muted">Student: <strong>{{ submission.student.get_full_name|default:submission.student.username }}</strong> | Assignment: <strong>{{ assignment.title }}</strong></p>
+        </div>
+        <div class="col-md-4 text-md-end">
+            <a href="{% url 'course_learners' course.slug %}" class="btn btn-outline-primary px-4 py-2" style="border-color: #002769; color: #002769; border-radius: 50px; font-weight: 600;">
+                <i class="fas fa-arrow-left me-2"></i> Back to Learners
+            </a>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <!-- Submission Details -->
+        <div class="col-lg-7">
+            <div class="card border-0 shadow-sm mb-4" style="border-radius: 20px;">
+                <div class="card-body p-4">
+                    <h4 class="fw-bold mb-3" style="color: #002769;">Submission Details</h4>
+                    <p class="text-muted small">Submitted on: <strong>{{ submission.submitted_at|date:"F d, Y H:i" }}</strong></p>
+                    
+                    {% if submission.answer_text %}
+                        <div class="mb-4">
+                            <label class="fw-bold text-muted small d-block mb-2">Student's Response Text:</label>
+                            <div class="p-3 border rounded-3 bg-light text-dark" style="white-space: pre-line;">{{ submission.answer_text }}</div>
+                        </div>
+                    {% endif %}
+
+                    {% if submission.submitted_file %}
+                        <div class="mb-3">
+                            <label class="fw-bold text-muted small d-block mb-2">Submitted File Attachment:</label>
+                            <a href="{{ submission.submitted_file.url }}" class="btn btn-outline-success px-4" target="_blank" style="border-radius: 50px;">
+                                <i class="fas fa-download me-2"></i> Download File Attachment
+                            </a>
+                        </div>
+                    {% else %}
+                        <p class="text-muted italic small"><i class="fas fa-info-circle me-1"></i> No file attachment submitted.</p>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Assignment Description -->
+            <div class="card border-0 shadow-sm" style="border-radius: 20px;">
+                <div class="card-body p-4">
+                    <h5 class="fw-bold mb-2" style="color: #002769;">Assignment Prompt</h5>
+                    <p class="text-muted mb-0" style="white-space: pre-line;">{{ assignment.description }}</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Grading Form Card -->
+        <div class="col-lg-5">
+            <div class="card border-0 shadow-sm p-4" style="border-radius: 20px; background-color: #ffffff;">
+                <h4 class="fw-bold mb-4" style="color: #002769; font-family: 'Montserrat', sans-serif;">Grade Submission</h4>
+                
+                <form method="POST">
+                    {% csrf_token %}
+                    
+                    <div class="mb-3">
+                        <label for="score" class="form-label fw-bold" style="color: #002769;">Score / Grade</label>
+                        <div class="input-group">
+                            <input type="number" step="0.5" min="0" max="{{ assignment.total_marks }}" class="form-control form-control-lg" id="score" name="score" value="{% if score_val is not None %}{{ score_val }}{% elif submission.score is not None %}{{ submission.score }}{% else %}0{% endif %}" required>
+                            <span class="input-group-text bg-light fw-bold">/ {{ assignment.total_marks }}</span>
+                        </div>
+                        <div class="form-text small text-muted">Award a grade not exceeding the total possible marks.</div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="status" class="form-label fw-bold" style="color: #002769;">Marking Status</label>
+                        <select class="form-select form-select-lg" id="status" name="status" style="border-radius: 10px;">
+                            <option value="marked" {% if status_val == 'marked' or submission.status == 'marked' %}selected{% endif %}>Marked (Approved)</option>
+                            <option value="returned" {% if status_val == 'returned' or submission.status == 'returned' %}selected{% endif %}>Returned (Requires Revision)</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="feedback" class="form-label fw-bold" style="color: #002769;">Tutor Feedback Remarks</label>
+                        <textarea class="form-control" id="feedback" name="feedback" rows="6" placeholder="Write constructive feedback to help the student learn and improve..." style="border-radius: 10px;">{% if feedback_val %}{{ feedback_val }}{% else %}{{ submission.feedback }}{% endif %}</textarea>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary w-100 py-3" style="background-color: #002769; border-color: #002769; border-radius: 50px; font-weight: 600;">
+                        <i class="fas fa-check me-2"></i> Submit Grade
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,177 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block main %}
+<div class="container py-5" style="margin-top: 20px;">
+    <!-- Dashboard Header -->
+    <div class="row mb-5 align-items-center">
+        <div class="col-md-8">
+            <h3 class="text-uppercase tracking-wider text-muted mb-2" style="color: #71A20A !important; font-weight: 600; font-size: 0.9rem; letter-spacing: 2px;">ADMIN CONTROL</h3>
+            <h1 class="display-5 fw-bold" style="color: #002769; font-family: 'Montserrat', sans-serif;">LMS Overview Dashboard</h1>
+            <p class="lead text-muted">System-wide metrics, active enrollments, and grading workflow status.</p>
+        </div>
+        <div class="col-md-4 text-md-end d-flex flex-column gap-2 align-items-md-end">
+            <a href="{% url 'academics:academic_admin_dashboard' %}" class="btn btn-primary px-4 py-2 text-white" style="background-color: #002769; border-color: #002769; border-radius: 50px; font-weight: 600; width: fit-content;">
+                <i class="fas fa-graduation-cap me-2"></i> Academic Admin Dashboard
+            </a>
+            <a href="{% url 'tutor_dashboard' %}" class="btn btn-outline-primary px-4 py-2" style="border-color: #002769; color: #002769; border-radius: 50px; font-weight: 600; width: fit-content;">
+                <i class="fas fa-chalkboard-teacher me-2"></i> Tutor Dashboard
+            </a>
+            <a href="{% url 'ai_tools:ai_usage_dashboard' %}" class="btn btn-warning px-4 py-2 text-dark" style="border-radius: 50px; font-weight: 600; width: fit-content;">
+                <i class="fas fa-robot me-2"></i> AI Usage Dashboard
+            </a>
+        </div>
+    </div>
+
+    <!-- Notifications Quick Widget -->
+    {% if unread_notifications_count > 0 or recent_notifications %}
+    <div class="row mb-5">
+        <div class="col-12">
+            <div class="card border-0 shadow-sm" style="border-radius: 15px; border-left: 5px solid #002769; background: #fff;">
+                <div class="card-body p-4">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h4 class="fw-bold mb-0" style="color: #002769; font-family: 'Montserrat', sans-serif;">
+                            <i class="fas fa-bell me-2" style="color: #71A20A;"></i> Recent Notifications 
+                            {% if unread_notifications_count > 0 %}
+                            <span class="badge rounded-pill bg-danger" style="font-size: 0.8rem; vertical-align: middle;">{{ unread_notifications_count }} New</span>
+                            {% endif %}
+                        </h4>
+                        <a href="{% url 'notifications:notification_list' %}" class="btn btn-sm btn-outline-primary px-3" style="border-radius: 20px; font-size: 0.85rem; border-color: #002769; color: #002769;">View All</a>
+                    </div>
+                    <div class="list-group list-group-flush">
+                        {% for n in recent_notifications %}
+                        <div class="list-group-item px-0 py-3 bg-transparent border-bottom">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <h6 class="fw-bold mb-1 {% if n.status == 'pending' %}text-primary{% else %}text-dark{% endif %}" style="font-size: 0.95rem;">
+                                    {{ n.title }}
+                                </h6>
+                                <small class="text-muted">{{ n.created_at|timesince }} ago</small>
+                            </div>
+                            <p class="text-muted mb-0 small">{{ n.message }}</p>
+                            {% if n.status == 'pending' %}
+                            <span class="badge bg-warning text-dark rounded-pill mt-1" style="font-size: 0.65rem; font-weight: 500;">New</span>
+                            {% endif %}
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Stats Count Cards -->
+    <div class="row g-4 mb-5">
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm text-center p-3 h-100" style="border-radius: 15px;">
+                <div class="fs-1 fw-bold mb-1" style="color: #002769;">{{ total_students }}</div>
+                <div class="text-uppercase tracking-wider small text-muted font-weight-bold">Total Students</div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm text-center p-3 h-100" style="border-radius: 15px;">
+                <div class="fs-1 fw-bold mb-1" style="color: #002769;">{{ total_tutors }}</div>
+                <div class="text-uppercase tracking-wider small text-muted font-weight-bold">Total Tutors</div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm text-center p-3 h-100" style="border-radius: 15px;">
+                <div class="fs-1 fw-bold mb-1" style="color: #002769;">{{ total_courses }}</div>
+                <div class="text-uppercase tracking-wider small text-muted font-weight-bold">Active Courses</div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm text-center p-3 h-100" style="border-radius: 15px; background: linear-gradient(135deg, #fff3cd, #fff);">
+                <div class="fs-1 fw-bold mb-1" style="color: #856404;">{{ total_pending_markings }}</div>
+                <div class="text-uppercase tracking-wider small text-muted font-weight-bold">Pending Markings</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- More Stats Cards -->
+    <div class="row g-4 mb-5">
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm p-4 text-center h-100" style="border-radius: 15px;">
+                <h5 class="fw-bold text-muted mb-2">Total Enrollments</h5>
+                <span class="fs-3 fw-bold" style="color: #71A20A;">{{ total_enrollments }}</span>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm p-4 text-center h-100" style="border-radius: 15px;">
+                <h5 class="fw-bold text-muted mb-2">Total Quizzes Done</h5>
+                <span class="fs-3 fw-bold" style="color: #002769;">{{ total_attempts }}</span>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm p-4 text-center h-100" style="border-radius: 15px;">
+                <h5 class="fw-bold text-muted mb-2">Homework Submissions</h5>
+                <span class="fs-3 fw-bold" style="color: #002769;">{{ total_submissions }}</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Actions -->
+    <div class="row g-4">
+        <!-- Recent Enrollments -->
+        <div class="col-lg-6">
+            <div class="card border-0 shadow-sm h-100" style="border-radius: 20px;">
+                <div class="card-header bg-white border-0 p-4 pb-0">
+                    <h3 class="fw-bold mb-1" style="color: #002769; font-family: 'Montserrat', sans-serif;">Recent Enrollments</h3>
+                    <p class="text-muted small">Latest student registrations in courses.</p>
+                </div>
+                <div class="card-body p-4">
+                    {% if recent_enrollments %}
+                        <div class="list-group list-group-flush">
+                            {% for enr in recent_enrollments %}
+                                <div class="list-group-item px-0 d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <div class="fw-bold" style="color: #002769;">{{ enr.student.get_full_name|default:enr.student.username }}</div>
+                                        <small class="text-muted">Enrolled in: {{ enr.course.title }}</small>
+                                    </div>
+                                    <span class="text-muted small">{{ enr.enrolled_at|date:"M d, Y" }}</span>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <p class="text-muted text-center py-4">No recent enrollments found.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Submissions -->
+        <div class="col-lg-6">
+            <div class="card border-0 shadow-sm h-100" style="border-radius: 20px;">
+                <div class="card-header bg-white border-0 p-4 pb-0">
+                    <h3 class="fw-bold mb-1" style="color: #002769; font-family: 'Montserrat', sans-serif;">Recent Homework Submissions</h3>
+                    <p class="text-muted small">Latest uploaded assignment papers from students.</p>
+                </div>
+                <div class="card-body p-4">
+                    {% if recent_submissions %}
+                        <div class="list-group list-group-flush">
+                            {% for sub in recent_submissions %}
+                                <div class="list-group-item px-0 d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <div class="fw-bold" style="color: #002769;">{{ sub.student.get_full_name|default:sub.student.username }}</div>
+                                        <small class="text-muted">Assignment: {{ sub.assignment.title }}</small>
+                                    </div>
+                                    <div class="text-end">
+                                        <span class="text-muted small d-block">{{ sub.submitted_at|date:"M d, Y" }}</span>
+                                        {% if sub.status == 'submitted' %}
+                                            <span class="badge bg-warning text-dark small">Pending Grade</span>
+                                        {% else %}
+                                            <span class="badge bg-success small">Graded</span>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <p class="text-muted text-center py-4">No recent homework submissions found.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

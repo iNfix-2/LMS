@@ -1,0 +1,30 @@
+{% extends "emails/base_email.html" %}
+
+{% block content %}
+<h2>New Invoice Created</h2>
+<p>Hello {{ recipient.username }},</p>
+<p>A new invoice has been generated for your Edukom account. Below are the details:</p>
+
+<table style="width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 14px;">
+    <tr style="border-bottom: 1px solid #eeeeee;">
+        <th style="text-align: left; padding: 8px 0;">Invoice Number:</th>
+        <td style="padding: 8px 0;">{{ invoice.invoice_number }}</td>
+    </tr>
+    <tr style="border-bottom: 1px solid #eeeeee;">
+        <th style="text-align: left; padding: 8px 0;">Amount Due:</th>
+        <td style="padding: 8px 0; font-weight: bold; color: #002769;">₦{{ invoice.amount }}</td>
+    </tr>
+    <tr style="border-bottom: 1px solid #eeeeee;">
+        <th style="text-align: left; padding: 8px 0;">Status:</th>
+        <td style="padding: 8px 0;"><span class="badge" style="background-color: #ffeeba; color: #856404;">Unpaid</span></td>
+    </tr>
+</table>
+
+<p>Your PDF invoice is attached. You can pay securely online by clicking the link below:</p>
+
+<div class="button-container">
+    <a href="{{ site_url }}/learn/invoice/{{ invoice.id }}/" class="button">Pay Invoice Online</a>
+</div>
+
+<p>Best regards,<br>The Edukom Team</p>
+{% endblock %}

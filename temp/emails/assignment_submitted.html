@@ -1,0 +1,15 @@
+{% extends "emails/base_email.html" %}
+
+{% block content %}
+<h2>Assignment Update</h2>
+<p>Hello {{ recipient.username }},</p>
+<p>{{ message }}</p>
+
+<p>Log in to your dashboard to view more details.</p>
+
+<div class="button-container">
+    <a href="{{ site_url }}/" class="button">Go to Dashboard</a>
+</div>
+
+<p>Best regards,<br>The Edukom Team</p>
+{% endblock %}

@@ -1,0 +1,159 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block main %}
+<div class="container py-5" style="margin-top: 20px;">
+    <!-- Dashboard Header -->
+    <div class="row mb-5 align-items-center">
+        <div class="col-md-8">
+            <h3 class="text-uppercase tracking-wider text-muted mb-2" style="color: #71A20A !important; font-weight: 600; font-size: 0.9rem; letter-spacing: 2px;">STUDENT AREA</h3>
+            <h1 class="display-5 fw-bold" style="color: #002769; font-family: 'Montserrat', sans-serif;">My Progress & Reports</h1>
+            <p class="lead text-muted">Track your course performance, averages, and formal progress reports.</p>
+        </div>
+        <div class="col-md-4 text-md-end">
+            <a href="{% url 'student_dashboard' %}" class="btn btn-outline-primary px-4 py-2" style="border-color: #002769; color: #002769; border-radius: 50px; font-weight: 600;">
+                <i class="fas fa-arrow-left me-2"></i> Back to Dashboard
+            </a>
+        </div>
+    </div>
+
+    <!-- Course Performance Cards -->
+    <div class="row g-4 mb-5">
+        {% for data in course_data %}
+            <div class="col-lg-6">
+                <div class="card border-0 shadow-sm h-100" style="border-radius: 20px; transition: transform 0.2s; background: linear-gradient(145deg, #ffffff, #fcfcfc);">
+                    <div class="card-body p-4">
+                        <div class="d-flex justify-content-between align-items-start mb-3">
+                            <div>
+                                <span class="badge px-3 py-2 mb-2" style="background-color: rgba(113, 162, 10, 0.1); color: #71A20A; border-radius: 50px; font-weight: 600;">
+                                    {{ data.course.subject.name }}
+                                </span>
+                                <h4 class="card-title fw-bold mb-1" style="color: #002769;">{{ data.course.title }}</h4>
+                            </div>
+                        </div>
+
+                        <!-- Progress Bar -->
+                        <div class="mb-4">
+                            <div class="d-flex justify-content-between mb-1">
+                                <span class="text-muted font-weight-bold">Lesson Progress</span>
+                                <span class="fw-bold" style="color: #002769;">{{ data.progress }}%</span>
+                            </div>
+                            <div class="progress" style="height: 12px; border-radius: 10px; background-color: #e9ecef;">
+                                <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" 
+                                     style="width: {{ data.progress }}%; background-color: #71A20A; border-radius: 10px;" 
+                                     aria-valuenow="{{ data.progress }}" aria-valuemin="0" aria-valuemax="100"></div>
+                            </div>
+                        </div>
+
+                        <!-- Averages Grid -->
+                        <div class="row g-3 text-center mb-3">
+                            <div class="col-6">
+                                <div class="p-3 border rounded-3" style="background-color: #f8f9fa;">
+                                    <h6 class="text-uppercase text-muted small mb-1">Assessment Avg</h6>
+                                    <span class="fs-4 fw-bold" style="color: #002769;">
+                                        {% if data.assessment_average > 0 %}{{ data.assessment_average }}%{% else %}-{% endif %}
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="p-3 border rounded-3" style="background-color: #f8f9fa;">
+                                    <h6 class="text-uppercase text-muted small mb-1">Assignment Avg</h6>
+                                    <span class="fs-4 fw-bold" style="color: #002769;">
+                                        {% if data.assignment_average > 0 %}{{ data.assignment_average }}%{% else %}-{% endif %}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="d-grid mt-4">
+                            <a href="{% url 'course_detail' data.course.slug %}" class="btn btn-primary" style="background-color: #002769; border-color: #002769; border-radius: 50px; font-weight: 600; padding: 10px 20px;">
+                                Continue Learning
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% empty %}
+            <div class="col-12 text-center py-5">
+                <div class="card border-0 shadow-sm p-5" style="border-radius: 20px;">
+                    <i class="fas fa-book-open fa-3x mb-3 text-muted"></i>
+                    <h3 class="fw-bold" style="color: #002769;">Not Enrolled Yet</h3>
+                    <p class="text-muted">You are not currently enrolled in any active courses.</p>
+                    <a href="{% url 'course_list' %}" class="btn btn-primary px-4 py-2 mt-3" style="background-color: #002769; border-color: #002769; border-radius: 50px;">
+                        Browse Course Catalogue
+                    </a>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+
+    <!-- Progress Reports Section -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card border-0 shadow-sm" style="border-radius: 20px;">
+                <div class="card-header bg-white border-0 p-4 pb-0 d-flex justify-content-between align-items-center">
+                    <h3 class="fw-bold m-0" style="color: #002769; font-family: 'Montserrat', sans-serif;">Formal Progress Reports</h3>
+                </div>
+                <div class="card-body p-4">
+                    {% if reports %}
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Report Title</th>
+                                        <th>Course</th>
+                                        <th class="text-center">Lesson Progress</th>
+                                        <th class="text-center">Quiz Average</th>
+                                        <th class="text-center">Assignment Average</th>
+                                        <th class="text-center">Overall Score</th>
+                                        <th>Date Generated</th>
+                                        <th class="text-end">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for report in reports %}
+                                        <tr>
+                                            <td>
+                                                <div class="fw-bold" style="color: #002769;">{{ report.title }}</div>
+                                                <small class="text-muted">Issued by {{ report.generated_by.get_full_name|default:report.generated_by.username }}</small>
+                                            </td>
+                                            <td>{{ report.course.title }}</td>
+                                            <td class="text-center fw-bold">{{ report.lesson_progress_percentage|floatformat:1 }}%</td>
+                                            <td class="text-center fw-bold">
+                                                {% if report.assessment_average > 0 %}{{ report.assessment_average|floatformat:1 }}%{% else %}-{% endif %}
+                                            </td>
+                                            <td class="text-center fw-bold">
+                                                {% if report.assignment_average > 0 %}{{ report.assignment_average|floatformat:1 }}%{% else %}-{% endif %}
+                                            </td>
+                                            <td class="text-center">
+                                                <span class="badge px-3 py-2 fs-6" 
+                                                      style="background-color: {% if report.overall_percentage >= 75 %}rgba(113, 162, 10, 0.1){% else %}rgba(0, 39, 105, 0.1){% endif %}; 
+                                                             color: {% if report.overall_percentage >= 75 %}#71A20A{% else %}#002769{% endif %}; 
+                                                             border-radius: 50px;">
+                                                    {{ report.overall_percentage|floatformat:1 }}%
+                                                </span>
+                                            </td>
+                                            <td>{{ report.created_at|date:"M d, Y" }}</td>
+                                            <td class="text-end">
+                                                <a href="{% url 'student_progress_report_detail' report.id %}" class="btn btn-sm btn-outline-primary px-3" style="border-radius: 50px; border-color: #002769; color: #002769;">
+                                                    View Report
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% else %}
+                        <div class="text-center py-5">
+                            <i class="fas fa-clipboard-list fa-3x text-muted mb-3"></i>
+                            <h5 class="text-muted">No progress reports have been generated for you yet.</h5>
+                            <p class="small text-muted">Your tutor will generate a report once they assess your progress.</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

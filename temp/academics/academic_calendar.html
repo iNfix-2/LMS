@@ -1,0 +1,166 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block main %}
+<div class="container py-5" style="margin-top: 20px;">
+    <!-- Calendar Header -->
+    <div class="row mb-5 align-items-center">
+        <div class="col-md-8">
+            <h3 class="text-uppercase tracking-wider text-muted mb-2" style="color: #71A20A !important; font-weight: 600; font-size: 0.9rem; letter-spacing: 2px;">SCHOOL CALENDAR</h3>
+            <h1 class="display-5 fw-bold" style="color: #002769; font-family: 'Montserrat', sans-serif;">Academic Calendar</h1>
+            <p class="lead text-muted">View school terms, schedules, events, and key academic weeks.</p>
+        </div>
+        <div class="col-md-4 text-md-end">
+            <!-- AI Weekly Study Planner Hook (Task 22) -->
+            <!-- TODO: Integrate AI weekly study planner here -->
+            <div class="card border-0 bg-light-green shadow-sm p-3 inline-block" style="border-radius: 12px; display: inline-block; border-left: 4px solid #71A20A;">
+                <div class="d-flex align-items-center">
+                    <div class="me-2"><i class="fas fa-magic text-success"></i></div>
+                    <div>
+                        <span class="fw-bold text-success" style="font-size: 0.85rem;">AI Weekly Study Planner</span>
+                        <br><span class="text-muted" style="font-size: 0.75rem;">Generate customized plans based on calendar events (Coming Soon)</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Active Details Widget -->
+    <div class="row mb-5">
+        <div class="col-md-6 mb-4 mb-md-0">
+            <div class="card border-0 shadow-sm h-100" style="border-radius: 15px; border-left: 5px solid #002769;">
+                <div class="card-body p-4">
+                    <h5 class="text-muted text-uppercase mb-2" style="font-size: 0.8rem; letter-spacing: 1px;">Current Academic Session</h5>
+                    <h3 class="fw-bold" style="color: #002769;">
+                        {% if current_session %}
+                            {{ current_session.name }}
+                        {% else %}
+                            No active session configured
+                        {% endif %}
+                    </h3>
+                    {% if current_session %}
+                        <p class="mb-0 text-muted">
+                            <i class="far fa-calendar-alt me-2"></i> Duration: {{ current_session.start_date }} to {{ current_session.end_date }}
+                        </p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card border-0 shadow-sm h-100" style="border-radius: 15px; border-left: 5px solid #71A20A;">
+                <div class="card-body p-4">
+                    <h5 class="text-muted text-uppercase mb-2" style="font-size: 0.8rem; letter-spacing: 1px;">Current Term</h5>
+                    <h3 class="fw-bold" style="color: #71A20A;">
+                        {% if current_term %}
+                            {{ current_term.name }}
+                        {% else %}
+                            No active term configured
+                        {% endif %}
+                    </h3>
+                    {% if current_term %}
+                        <p class="mb-0 text-muted">
+                            <i class="far fa-clock me-2"></i> Term Duration: {{ current_term.start_date }} to {{ current_term.end_date }}
+                        </p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Terms list / Weeks schedule -->
+    <div class="row">
+        <div class="col-lg-4 mb-4">
+            <div class="card border-0 shadow-sm" style="border-radius: 15px;">
+                <div class="card-body p-4">
+                    <h4 class="fw-bold mb-4" style="color: #002769;">Academic Terms</h4>
+                    <div class="list-group list-group-flush">
+                        {% for term in terms %}
+                            <div class="list-group-item px-0 py-3 {% if term.is_current %}bg-light-green border-0 px-3{% endif %}" style="border-radius: 8px;">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <h6 class="fw-bold mb-1 {% if term.is_current %}text-success{% else %}text-dark{% endif %}">
+                                        {{ term.name }}
+                                    </h6>
+                                    {% if term.is_current %}
+                                        <span class="badge bg-success rounded-pill px-3 py-1">Current</span>
+                                    {% endif %}
+                                </div>
+                                <small class="text-muted d-block mt-1">
+                                    Session: {{ term.session.name }}
+                                </small>
+                                <small class="text-muted d-block">
+                                    {{ term.start_date }} — {{ term.end_date }}
+                                </small>
+                            </div>
+                        {% empty %}
+                            <p class="text-muted mb-0">No terms configured.</p>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-8">
+            <div class="card border-0 shadow-sm" style="border-radius: 15px;">
+                <div class="card-body p-4">
+                    <h4 class="fw-bold mb-4" style="color: #002769;">Weekly Activity Schedule</h4>
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle">
+                            <thead class="table-light">
+                                <tr>
+                                    <th style="width: 10%;">Week</th>
+                                    <th style="width: 25%;">Dates</th>
+                                    <th style="width: 40%;">Primary Activity</th>
+                                    <th style="width: 25%;">Type</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for week in weeks %}
+                                    <tr {% if week.term.is_current and week.start_date <= today and week.end_date >= today %}class="table-warning"{% endif %}>
+                                        <td class="fw-bold text-center">
+                                            <span class="badge bg-secondary rounded-pill px-3">{{ week.week_number }}</span>
+                                        </td>
+                                        <td>
+                                            <small class="fw-semibold text-muted">
+                                                {{ week.start_date|date:"M d" }} — {{ week.end_date|date:"M d, Y" }}
+                                            </small>
+                                        </td>
+                                        <td>
+                                            <h6 class="mb-0 fw-bold" style="color: #002769;">{{ week.activity }}</h6>
+                                            {% if week.description %}
+                                                <small class="text-muted d-block mt-1">{{ week.description }}</small>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            {% if week.week_type == 'normal' %}
+                                                <span class="badge bg-info text-white px-3 py-1.5 rounded-pill">Normal</span>
+                                            {% elif week.week_type == 'test' or week.week_type == 'exam' %}
+                                                <span class="badge bg-danger text-white px-3 py-1.5 rounded-pill">{{ week.get_week_type_display }}</span>
+                                            {% elif week.week_type == 'break' %}
+                                                <span class="badge bg-warning text-dark px-3 py-1.5 rounded-pill">Break</span>
+                                            {% elif week.week_type == 'holiday' %}
+                                                <span class="badge bg-dark text-white px-3 py-1.5 rounded-pill">Holiday</span>
+                                            {% else %}
+                                                <span class="badge bg-primary text-white px-3 py-1.5 rounded-pill">{{ week.get_week_type_display }}</span>
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                {% empty %}
+                                    <tr>
+                                        <td colspan="4" class="text-center py-4 text-muted">No weeks defined for the selected term(s).</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .bg-light-green {
+        background-color: rgba(113, 162, 10, 0.1) !important;
+    }
+</style>
+{% endblock %}

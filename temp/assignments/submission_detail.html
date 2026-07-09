@@ -1,0 +1,116 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block main %}
+<div class="container py-5" style="margin-top: 20px;">
+    <!-- Breadcrumbs -->
+    <nav aria-label="breadcrumb" class="mb-4">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'course_list' %}" style="color: #002769; font-weight: 500;">Courses</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'course_detail' course.slug %}" style="color: #002769; font-weight: 500;">{{ course.title }}</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'course_assignments' course.slug %}" style="color: #002769; font-weight: 500;">Assignments</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Submission Detail</li>
+        </ol>
+    </nav>
+
+    <div class="row">
+        <!-- Main Submission Content -->
+        <div class="col-lg-8">
+            <div class="card border-0 shadow-sm mb-4" style="border-radius: 15px; overflow: hidden; background: #fff;">
+                <div class="card-body p-4 p-lg-5">
+                    <h3 class="text-uppercase tracking-wider text-muted mb-2" style="color: #71A20A !important; font-weight: 600; font-size: 0.85rem; letter-spacing: 2px;">
+                        SUBMISSION DETAIL
+                    </h3>
+                    <h1 class="h2 fw-bold mb-4" style="color: #002769; font-family: 'Montserrat', sans-serif;">{{ assignment.title }}</h1>
+
+                    <!-- Response Text -->
+                    <div class="mb-5">
+                        <h4 class="fw-bold mb-3" style="color: #002769; font-size: 1.1rem;">Your Submitted Answer</h4>
+                        <div class="p-4 rounded bg-light border" style="white-space: pre-wrap; line-height: 1.6; color: #374151;">
+                            {{ submission.answer_text|default:"[No answer text submitted]" }}
+                        </div>
+                    </div>
+
+                    <!-- Uploaded File -->
+                    {% if submission.submitted_file %}
+                    <div class="mb-5">
+                        <h4 class="fw-bold mb-3" style="color: #002769; font-size: 1.1rem;">Uploaded Document</h4>
+                        <div class="p-3 rounded border d-flex align-items-center justify-content-between" style="background-color: #fafafa; border-color: #e5e7eb;">
+                            <div class="d-flex align-items-center">
+                                <i class="far fa-file-alt text-primary me-3" style="font-size: 2rem;"></i>
+                                <div>
+                                    <span class="fw-bold text-dark d-block">Submitted Attachment</span>
+                                    <span class="small text-muted">{{ submission.submitted_file.name }}</span>
+                                </div>
+                            </div>
+                            <a href="{{ submission.submitted_file.url }}" target="_blank" class="btn btn-outline-primary" style="border-radius: 8px;">
+                                <i class="fas fa-external-link-alt me-1"></i> Open File
+                            </a>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Grading/Feedback Sidebar -->
+        <div class="col-lg-4">
+            <!-- Grade Card -->
+            <div class="card border-0 shadow-sm mb-4" style="border-radius: 15px; overflow: hidden; background: #fff;">
+                <div class="card-header bg-white py-3 border-0">
+                    <h5 class="fw-bold mb-0" style="color: #002769;">Grading Status</h5>
+                </div>
+                <div class="card-body p-4 pt-0 text-center">
+                    <div class="mb-3">
+                        {% if submission.status == 'marked' or submission.status == 'returned' %}
+                        <div class="d-inline-flex align-items-center justify-content-center rounded-circle my-3" style="width: 120px; height: 120px; border: 8px solid #d1fae5; background-color: #fafafa;">
+                            <div>
+                                <span class="display-6 fw-bold d-block" style="color: #10b981;">{{ submission.score }}</span>
+                                <span class="small text-muted text-uppercase" style="font-size: 0.65rem; font-weight: 600;">Out of {{ assignment.total_marks }}</span>
+                            </div>
+                        </div>
+                        <span class="badge text-uppercase d-block py-2 mb-3" style="background-color: #71A20A; border-radius: 5px;">GRADED & RETURNED</span>
+                        {% else %}
+                        <div class="d-inline-flex align-items-center justify-content-center rounded-circle my-3" style="width: 120px; height: 120px; border: 8px solid #fef3c7; background-color: #fafafa;">
+                            <div>
+                                <i class="fas fa-spinner fa-spin text-warning" style="font-size: 2.5rem;"></i>
+                            </div>
+                        </div>
+                        <span class="badge bg-warning text-white text-uppercase d-block py-2 mb-3" style="border-radius: 5px;">PENDING REVIEW</span>
+                        {% endif %}
+                    </div>
+                    
+                    <ul class="list-group list-group-flush text-start">
+                        <li class="list-group-item d-flex justify-content-between align-items-center px-0 py-2 bg-transparent">
+                            <span class="text-muted small">Submitted on:</span>
+                            <span class="small fw-bold" style="color: #002769;">{{ submission.submitted_at|date:"M d, Y H:i" }}</span>
+                        </li>
+                    </ul>
+                    
+                    {% if request.user.profile.role == 'tutor' or request.user.profile.role == 'admin' or request.user.is_superuser %}
+                    <div class="mt-3 d-grid">
+                        <a href="{% url 'mark_assignment_submission' submission.id %}" class="btn btn-warning text-dark fw-bold" style="border-radius: 50px;">
+                            <i class="fas fa-edit me-2"></i> Grade Submission
+                        </a>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Feedback Card -->
+            <div class="card border-0 shadow-sm" style="border-radius: 15px; overflow: hidden; background: #fff;">
+                <div class="card-header bg-white py-3 border-0">
+                    <h5 class="fw-bold mb-0" style="color: #002769;">Tutor Feedback</h5>
+                </div>
+                <div class="card-body p-4 pt-0">
+                    {% if submission.feedback %}
+                    <p class="mb-0 text-muted" style="line-height: 1.6; white-space: pre-wrap;">{{ submission.feedback }}</p>
+                    {% else %}
+                    <p class="mb-0 text-muted small text-center py-3">No feedback from tutor has been provided yet.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock main %}

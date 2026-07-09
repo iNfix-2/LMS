@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block main %}
+<div class="container py-5" style="margin-top: 20px;">
+    <!-- Timetable Header -->
+    <div class="row mb-5 align-items-center">
+        <div class="col-md-8">
+            <h3 class="text-uppercase tracking-wider text-muted mb-2" style="color: #71A20A !important; font-weight: 600; font-size: 0.9rem; letter-spacing: 2px;">TIMETABLES</h3>
+            <h1 class="display-5 fw-bold" style="color: #002769; font-family: 'Montserrat', sans-serif;">{{ class_level.name }} Timetable</h1>
+            <p class="lead text-muted">Weekly timetable schedules for class: {{ class_level.name }}</p>
+        </div>
+        <div class="col-md-4 text-md-end">
+            <a href="{% url 'academics:my_timetable' %}" class="btn btn-outline-primary rounded-pill px-4" style="border-color: #002769; color: #002769;">
+                <i class="fas fa-arrow-left me-2"></i> All Timetables
+            </a>
+        </div>
+    </div>
+
+    <!-- Timetable Slot Grid -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card border-0 shadow-sm" style="border-radius: 15px;">
+                <div class="card-body p-4">
+                    {% if timetable %}
+                        {% include "academics/includes/timetable_grid.html" with timetable=timetable %}
+                    {% else %}
+                        <div class="alert alert-warning mb-0">No active timetable slots configured for this class level.</div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

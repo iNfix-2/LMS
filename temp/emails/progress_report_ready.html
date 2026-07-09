@@ -1,0 +1,16 @@
+{% extends "emails/base_email.html" %}
+
+{% block content %}
+<h2>Student Progress Report Available</h2>
+<p>Hello {{ recipient.username }},</p>
+<p>A new academic progress report has been generated for <strong>{{ report.student.username }}</strong> for the course: <strong>{{ report.course.title }}</strong>.</p>
+<p>The report contains comprehensive marks, grades, attendance tracking, and tutor remarks.</p>
+
+<p>Your PDF progress report is attached to this email. You can also view the full breakdown on the dashboard.</p>
+
+<div class="button-container">
+    <a href="{{ site_url }}/learn/reports/" class="button">View Reports Dashboard</a>
+</div>
+
+<p>Best regards,<br>The Edukom Team</p>
+{% endblock %}
