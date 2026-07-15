@@ -13,11 +13,11 @@ class AchievementsTests(TestCase):
         self.client = Client()
         self.student = User.objects.create_user(username='student1', password='password123')
         from courses.models import Subject, ClassLevel
-        self.subject = Subject.objects.create(name='Aviation', slug='aviation')
-        self.class_level = ClassLevel.objects.create(name='PPL')
+        self.subject = Subject.objects.create(name='Science', slug='science')
+        self.class_level = ClassLevel.objects.create(name='Grade 10')
         self.course = Course.objects.create(
-            title='Intro to Flying', 
-            slug='intro-to-flying', 
+            title='Introduction to Physics', 
+            slug='intro-to-physics', 
             subject=self.subject,
             class_level=self.class_level,
             created_by=self.student,
@@ -27,10 +27,10 @@ class AchievementsTests(TestCase):
         self.module = Module.objects.create(course=self.course, title='Module 1', order=1)
         self.lesson = Lesson.objects.create(
             module=self.module, 
-            title='Takeoff', 
-            slug='takeoff', 
+            title='Newtonian Mechanics', 
+            slug='newtonian-mechanics', 
             order=1, 
-            content='Takeoff lesson'
+            content='Newtonian mechanics lesson'
         )
         self.enrollment = Enrollment.objects.create(
             student=self.student,
@@ -45,8 +45,8 @@ class AchievementsTests(TestCase):
         )
         
         self.badge = Badge.objects.create(
-            title='First Flight',
-            description='Completed Intro to Flying',
+            title='Physics Pioneer',
+            description='Completed Introduction to Physics',
             badge_type='course_completed'
         )
 

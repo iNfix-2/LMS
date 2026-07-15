@@ -2,26 +2,23 @@
 {% load static %}
 {% load crispy_forms_tags %}
 {% block main %}
-<div class="body p-3 ">
-    <div class="container-xxl">
-
-
-        <form class="my-4" style="max-width: 500px;margin: auto;" method="post" id="myForm">
-            <div class="d-flex">
-                <img src="{% static 'IMG/logo.png' %}" style="width: 50px;" alt="">
-                <h1>Sign in</h1>
-            </div>
+<div class="d-flex align-items-center justify-content-center py-5 px-3" style="background: radial-gradient(circle at top right, var(--card-bg-fallback), #f3f4f6); min-height: 80vh;">
+    <div class="premium-card p-4 p-md-5" style="max-width: 480px; width: 100%; border: 1px solid var(--border-color) !important;">
+        <div class="text-center mb-4">
+            <img src="{% if request.tenant and request.tenant.logo %}{{ request.tenant.logo.url }}{% else %}{% static 'IMG/logo.png' %}{% endif %}" style="max-height: 60px; width: auto;" class="mb-3" alt="Logo">
+            <h2 class="fw-bold mb-2" style="color: var(--primary); font-family: 'Plus Jakarta Sans', sans-serif;">Sign In</h2>
+            <p class="text-muted small">Access the Edukom Learning Management System</p>
+        </div>
+        <form method="post" id="myForm" class="mt-2">
             {% csrf_token %}
-            <div class="form-control">
+            <div class="mb-4">
                 {{ form | crispy }}
-            <div class="col-12 text-center mt-4">
-                <button type="submit" class="btn  lift text-uppercase" style="background-color: #002769;color: #fff;" atl="signin">SIGN IN</button>
             </div>
-            </div>
-            <div class="col-12 text-center mt-4">
-                <span class="text-muted">Don't have an account yet?  <a href="{% url 'contact' %}" class="text-secondary"> Please contact us</a></span>
-            </div>
+            <button type="submit" class="btn-premium w-100 py-3 text-uppercase font-weight-bold" style="letter-spacing: 1px;">Sign In</button>
         </form>
+        <div class="text-center mt-4 border-top pt-3" style="border-color: var(--border-color) !important;">
+            <span class="text-muted small">Don't have an account yet? <a href="{% url 'contact' %}" style="color: var(--accent); font-weight: 600; text-decoration: none;">Please contact us</a></span>
+        </div>
     </div>
 </div>
 {% endblock main %}

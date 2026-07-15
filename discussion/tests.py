@@ -13,11 +13,11 @@ class DiscussionTests(TestCase):
         self.student = User.objects.create_user(username='student1', password='password123')
         self.student2 = User.objects.create_user(username='student2', password='password123')
         from courses.models import Subject, ClassLevel
-        self.subject = Subject.objects.create(name='Aviation', slug='aviation')
-        self.class_level = ClassLevel.objects.create(name='PPL')
+        self.subject = Subject.objects.create(name='Science', slug='science')
+        self.class_level = ClassLevel.objects.create(name='Grade 10')
         self.course = Course.objects.create(
-            title='Intro to Flying', 
-            slug='intro-to-flying', 
+            title='Introduction to Physics', 
+            slug='intro-to-physics', 
             subject=self.subject,
             class_level=self.class_level,
             created_by=self.student,
@@ -45,16 +45,16 @@ class DiscussionTests(TestCase):
         self.client.login(username='student1', password='password123')
         response = self.client.post(
             reverse('discussion:course_forum', args=[self.course.slug]),
-            {'title': 'How to takeoff?', 'content': 'Please give tips.'}
+            {'title': 'How to calculate force?', 'content': 'Please give tips.'}
         )
         self.assertEqual(response.status_code, 302) # Success redirect
-        self.assertTrue(Topic.objects.filter(title='How to takeoff?').exists())
+        self.assertTrue(Topic.objects.filter(title='How to calculate force?').exists())
 
     def test_post_reply(self):
         self.client.login(username='student1', password='password123')
         topic = Topic.objects.create(
             forum=self.forum,
-            title='Takeoff Tips',
+            title='Force Tips',
             content='Discuss here',
             creator=self.student
         )

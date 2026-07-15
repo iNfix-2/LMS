@@ -2,12 +2,12 @@
 {% load static %}
 
 {% block main %}
-<div class="container py-5" style="margin-top: 20px;">
+<div class="container py-5">
     <!-- Dashboard Header -->
     <div class="row mb-5 align-items-center">
         <div class="col-md-8">
-            <h3 class="text-uppercase tracking-wider text-muted mb-2" style="color: #71A20A !important; font-weight: 600; font-size: 0.9rem; letter-spacing: 2px;">GUARDIAN PORTAL</h3>
-            <h1 class="display-5 fw-bold" style="color: #002769; font-family: 'Montserrat', sans-serif;">Guardian Dashboard</h1>
+            <h3 class="text-uppercase tracking-wider mb-2" style="color: var(--accent) !important; font-weight: 700; font-size: 0.85rem; letter-spacing: 2px;">GUARDIAN PORTAL</h3>
+            <h1 class="display-5 fw-bold" style="color: var(--primary); font-family: 'Plus Jakarta Sans', sans-serif;">Guardian Dashboard</h1>
             <p class="lead text-muted">Monitor and track the academic progress, quiz attempts, and reports of your wards.</p>
         </div>
     </div>
@@ -16,33 +16,31 @@
     {% if unread_notifications_count > 0 or recent_notifications %}
     <div class="row mb-5">
         <div class="col-12">
-            <div class="card border-0 shadow-sm" style="border-radius: 15px; border-left: 5px solid #002769; background: #fff;">
-                <div class="card-body p-4">
-                    <div class="d-flex justify-content-between align-items-center mb-3">
-                        <h4 class="fw-bold mb-0" style="color: #002769; font-family: 'Montserrat', sans-serif;">
-                            <i class="fas fa-bell me-2" style="color: #71A20A;"></i> Recent Notifications 
-                            {% if unread_notifications_count > 0 %}
-                            <span class="badge rounded-pill bg-danger" style="font-size: 0.8rem; vertical-align: middle;">{{ unread_notifications_count }} New</span>
-                            {% endif %}
-                        </h4>
-                        <a href="{% url 'notifications:notification_list' %}" class="btn btn-sm btn-outline-primary px-3" style="border-radius: 20px; font-size: 0.85rem; border-color: #002769; color: #002769;">View All</a>
-                    </div>
-                    <div class="list-group list-group-flush">
-                        {% for n in recent_notifications %}
-                        <div class="list-group-item px-0 py-3 bg-transparent border-bottom">
-                            <div class="d-flex justify-content-between align-items-center">
-                                <h6 class="fw-bold mb-1 {% if n.status == 'pending' %}text-primary{% else %}text-dark{% endif %}" style="font-size: 0.95rem;">
-                                    {{ n.title }}
-                                </h6>
-                                <small class="text-muted">{{ n.created_at|timesince }} ago</small>
-                            </div>
-                            <p class="text-muted mb-0 small">{{ n.message }}</p>
-                            {% if n.status == 'pending' %}
-                            <span class="badge bg-warning text-dark rounded-pill mt-1" style="font-size: 0.65rem; font-weight: 500;">New</span>
-                            {% endif %}
+            <div class="premium-card p-4" style="border-left: 5px solid var(--primary) !important;">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h4 class="fw-bold mb-0" style="color: var(--primary); font-family: 'Plus Jakarta Sans', sans-serif;">
+                        <i class="fas fa-bell me-2" style="color: var(--accent);"></i> Recent Notifications 
+                        {% if unread_notifications_count > 0 %}
+                        <span class="badge rounded-pill badge-premium-danger ms-2" style="font-size: 0.8rem; vertical-align: middle;">{{ unread_notifications_count }} New</span>
+                        {% endif %}
+                    </h4>
+                    <a href="{% url 'notifications:notification_list' %}" class="btn-premium-outline btn-sm">View All</a>
+                </div>
+                <div class="list-group list-group-flush">
+                    {% for n in recent_notifications %}
+                    <div class="list-group-item px-0 py-3 bg-transparent border-bottom">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h6 class="fw-bold mb-1 {% if n.status == 'pending' %}text-primary{% else %}text-dark{% endif %}" style="font-size: 0.95rem;">
+                                {{ n.title }}
+                            </h6>
+                            <small class="text-muted">{{ n.created_at|timesince }} ago</small>
                         </div>
-                        {% endfor %}
+                        <p class="text-muted mb-0 small">{{ n.message }}</p>
+                        {% if n.status == 'pending' %}
+                        <span class="badge badge-premium-warning mt-1">New</span>
+                        {% endif %}
                     </div>
+                    {% endfor %}
                 </div>
             </div>
         </div>
@@ -51,162 +49,160 @@
 
     <!-- Wards List -->
     {% for data in ward_data %}
-        <div class="card border-0 shadow-sm mb-5" style="border-radius: 20px;">
+        <div class="premium-card mb-5 p-4">
             <!-- Ward Profile Header -->
-            <div class="card-header bg-white border-0 p-4 pb-0 d-flex flex-wrap justify-content-between align-items-center">
+            <div class="d-flex flex-wrap justify-content-between align-items-center pb-4 mb-4 border-bottom" style="border-color: var(--border-color) !important;">
                 <div class="d-flex align-items-center mb-3">
-                    <div class="rounded-circle d-flex align-items-center justify-content-center text-white me-3" style="width: 60px; height: 60px; background-color: #002769; font-size: 1.5rem; font-weight: 700;">
+                    <div class="rounded-circle d-flex align-items-center justify-content-center text-white me-3" style="width: 60px; height: 60px; background-color: var(--primary); font-size: 1.5rem; font-weight: 700; font-family: 'Plus Jakarta Sans', sans-serif;">
                         {{ data.student.username|slice:":1"|upper }}
                     </div>
                     <div>
-                        <h2 class="fw-bold mb-0" style="color: #002769;">{{ data.student.get_full_name|default:data.student.username }}</h2>
+                        <h2 class="fw-bold mb-0" style="color: var(--primary); font-family: 'Plus Jakarta Sans', sans-serif;">{{ data.student.get_full_name|default:data.student.username }}</h2>
                         <span class="text-muted small">
                             Class Level: <strong>{{ data.profile.class_level|default:"Not specified" }}</strong>
                         </span>
                     </div>
                 </div>
                 <div class="d-flex gap-2 mb-3">
-                    <a href="{% url 'academics:academic_calendar' %}" class="btn btn-sm btn-outline-primary rounded-pill px-3" style="border-color: #002769; color: #002769;">
+                    <a href="{% url 'academics:academic_calendar' %}" class="btn-premium-outline btn-sm">
                         <i class="far fa-calendar-alt me-1"></i> Calendar
                     </a>
-                    <a href="{% url 'academics:my_timetable' %}" class="btn btn-sm btn-outline-primary rounded-pill px-3" style="border-color: #002769; color: #002769;">
+                    <a href="{% url 'academics:my_timetable' %}" class="btn-premium-outline btn-sm">
                         <i class="fas fa-clock me-1"></i> Timetable
                     </a>
-                    <a href="{% url 'academics:ward_attendance' data.student.id %}" class="btn btn-sm btn-outline-success rounded-pill px-3">
+                    <a href="{% url 'academics:ward_attendance' data.student.id %}" class="btn-premium btn-sm">
                         <i class="fas fa-check-double me-1"></i> Attendance
                     </a>
                 </div>
             </div>
 
-            <div class="card-body p-4">
-                <!-- Courses Progress Section -->
-                <h4 class="fw-bold mb-3" style="color: #002769; border-bottom: 2px solid #f0f0f0; padding-bottom: 8px;">Enrolled Courses & Progress</h4>
-                <div class="row g-4 mb-4">
-                    {% for c_data in data.courses %}
-                        <div class="col-md-6 col-lg-4">
-                            <div class="card h-100 border border-1 p-3" style="border-radius: 15px; background-color: #fcfcfc;">
-                                <span class="badge px-3 py-1 mb-2 align-self-start" style="background-color: rgba(113, 162, 10, 0.1); color: #71A20A; border-radius: 50px;">
-                                    {{ c_data.course.subject.name }}
-                                </span>
-                                <h5 class="fw-bold mb-2" style="color: #002769;">{{ c_data.course.title }}</h5>
+            <!-- Courses Progress Section -->
+            <h4 class="fw-bold mb-3" style="color: var(--primary); border-bottom: 2px solid var(--border-color); padding-bottom: 8px; font-family: 'Plus Jakarta Sans', sans-serif;">Enrolled Courses & Progress</h4>
+            <div class="row g-4 mb-4">
+                {% for c_data in data.courses %}
+                    <div class="col-md-6 col-lg-4">
+                        <div class="premium-card p-3 h-100" style="background-color: var(--card-bg-fallback); border: 1px solid var(--border-color) !important;">
+                            <span class="badge px-3 py-1 mb-2 align-self-start" style="background-color: var(--accent-alpha); color: var(--accent); border-radius: 50px;">
+                                {{ c_data.course.subject.name }}
+                            </span>
+                            <h5 class="fw-bold mb-2" style="color: var(--primary);">{{ c_data.course.title }}</h5>
 
-                                <div class="mb-3">
-                                    <div class="d-flex justify-content-between mb-1 small text-muted">
-                                        <span>Progress</span>
-                                        <span class="fw-bold">{{ c_data.progress }}%</span>
-                                    </div>
-                                    <div class="progress" style="height: 8px; border-radius: 10px;">
-                                        <div class="progress-bar" role="progressbar" style="width: {{ c_data.progress }}%; background-color: #71A20A;" aria-valuenow="{{ c_data.progress }}" aria-valuemin="0" aria-valuemax="100"></div>
-                                    </div>
+                            <div class="mb-3">
+                                <div class="d-flex justify-content-between mb-1 small text-muted">
+                                    <span>Progress</span>
+                                    <span class="fw-bold text-dark">{{ c_data.progress }}%</span>
                                 </div>
+                                <div class="progress premium-progress">
+                                    <div class="progress-bar premium-progress-bar" role="progressbar" style="width: {{ c_data.progress }}%;" aria-valuenow="{{ c_data.progress }}" aria-valuemin="0" aria-valuemax="100"></div>
+                                </div>
+                            </div>
 
-                                <div class="row text-center g-2 mt-auto">
-                                    <div class="col-6">
-                                        <div class="bg-white border p-2 rounded">
-                                            <div class="small text-muted" style="font-size: 0.75rem;">Quiz Avg</div>
-                                            <div class="fw-bold" style="color: #002769;">
-                                                {% if c_data.assessment_average > 0 %}{{ c_data.assessment_average }}%{% else %}-{% endif %}
-                                            </div>
+                            <div class="row text-center g-2 mt-auto">
+                                <div class="col-6">
+                                    <div class="border p-2 rounded" style="background: white; border-color: var(--border-color) !important;">
+                                        <div class="small text-muted" style="font-size: 0.75rem;">Quiz Avg</div>
+                                        <div class="fw-bold" style="color: var(--primary);">
+                                            {% if c_data.assessment_average > 0 %}{{ c_data.assessment_average }}%{% else %}-{% endif %}
                                         </div>
                                     </div>
-                                    <div class="col-6">
-                                        <div class="bg-white border p-2 rounded">
-                                            <div class="small text-muted" style="font-size: 0.75rem;">Homework</div>
-                                            <div class="fw-bold" style="color: #002769;">
-                                                {% if c_data.assignment_average > 0 %}{{ c_data.assignment_average }}%{% else %}-{% endif %}
-                                            </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="border p-2 rounded" style="background: white; border-color: var(--border-color) !important;">
+                                        <div class="small text-muted" style="font-size: 0.75rem;">Homework</div>
+                                        <div class="fw-bold" style="color: var(--primary);">
+                                            {% if c_data.assignment_average > 0 %}{{ c_data.assignment_average }}%{% else %}-{% endif %}
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    {% empty %}
-                        <div class="col-12">
-                            <p class="text-muted italic">This student is not enrolled in any courses yet.</p>
-                        </div>
-                    {% endfor %}
+                    </div>
+                {% empty %}
+                    <div class="col-12">
+                        <p class="text-muted italic">This student is not enrolled in any courses yet.</p>
+                    </div>
+                {% endfor %}
+            </div>
+
+            <div class="row g-4 mt-2">
+                <!-- Recent Reports -->
+                <div class="col-lg-6">
+                    <div class="premium-card p-4 h-100" style="background-color: var(--card-bg-fallback); border: 1px solid var(--border-color) !important;">
+                        <h5 class="fw-bold mb-3" style="color: var(--primary);">Recent Progress Reports</h5>
+                        {% if data.reports %}
+                            <div class="list-group list-group-flush">
+                                {% for report in data.reports %}
+                                    <a href="{% url 'student_progress_report_detail' report.id %}" class="list-group-item list-group-item-action px-0 bg-transparent d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <div class="fw-bold" style="color: var(--primary);">{{ report.title }}</div>
+                                            <small class="text-muted">Generated on {{ report.created_at|date:"M d, Y" }}</small>
+                                        </div>
+                                        <span class="badge badge-premium-success">
+                                            {{ report.overall_percentage|floatformat:1 }}%
+                                        </span>
+                                    </a>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            <p class="text-muted small">No progress reports generated yet.</p>
+                        {% endif %}
+                    </div>
                 </div>
 
-                <div class="row g-4 mt-2">
-                    <!-- Recent Reports -->
-                    <div class="col-lg-6">
-                        <div class="border p-3 h-100" style="border-radius: 15px; background-color: #ffffff;">
-                            <h5 class="fw-bold mb-3" style="color: #002769;">Recent Progress Reports</h5>
-                            {% if data.reports %}
-                                <div class="list-group list-group-flush">
-                                    {% for report in data.reports %}
-                                        <a href="{% url 'student_progress_report_detail' report.id %}" class="list-group-item list-group-item-action px-0 d-flex justify-content-between align-items-center">
-                                            <div>
-                                                <div class="fw-bold" style="color: #002769;">{{ report.title }}</div>
-                                                <small class="text-muted">Generated on {{ report.created_at|date:"M d, Y" }}</small>
-                                            </div>
-                                            <span class="badge" style="background-color: #71A20A; color: white;">
-                                                {{ report.overall_percentage|floatformat:1 }}%
-                                            </span>
-                                        </a>
-                                    {% endfor %}
-                                </div>
-                            {% else %}
-                                <p class="text-muted small">No progress reports generated yet.</p>
-                            {% endif %}
-                        </div>
-                    </div>
-
-                    <!-- Homework Submissions -->
-                    <div class="col-lg-6">
-                        <div class="border p-3 h-100" style="border-radius: 15px; background-color: #ffffff;">
-                            <h5 class="fw-bold mb-3" style="color: #002769;">Recent Assignment Status</h5>
-                            {% if data.courses %}
-                                <div class="table-responsive">
-                                    <table class="table table-sm table-hover align-middle">
-                                        <thead>
-                                            <tr>
-                                                <th>Assignment</th>
-                                                <th>Status</th>
-                                                <th>Grade</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {% for c_data in data.courses %}
-                                                {% for sub in c_data.recent_submissions %}
-                                                    <tr>
-                                                        <td>
-                                                            <div class="fw-bold" style="color: #002769; font-size: 0.85rem;">{{ sub.assignment.title }}</div>
-                                                            <small class="text-muted" style="font-size: 0.75rem;">{{ c_data.course.title }}</small>
-                                                        </td>
-                                                        <td>
-                                                            {% if sub.status == 'marked' or sub.status == 'returned' %}
-                                                                <span class="badge bg-success">Graded</span>
-                                                            {% else %}
-                                                                <span class="badge bg-warning text-dark">Pending Grade</span>
-                                                            {% endif %}
-                                                        </td>
-                                                        <td class="fw-bold">
-                                                            {% if sub.score is not None %}
-                                                                {{ sub.score }}/{{ sub.assignment.total_marks }}
-                                                            {% else %}
-                                                                -
-                                                            {% endif %}
-                                                        </td>
-                                                    </tr>
-                                                {% endfor %}
+                <!-- Homework Submissions -->
+                <div class="col-lg-6">
+                    <div class="premium-card p-4 h-100" style="background-color: var(--card-bg-fallback); border: 1px solid var(--border-color) !important;">
+                        <h5 class="fw-bold mb-3" style="color: var(--primary);">Recent Assignment Status</h5>
+                        {% if data.courses %}
+                            <div class="table-responsive">
+                                <table class="table table-sm table-hover align-middle bg-transparent mb-0">
+                                    <thead>
+                                        <tr class="text-muted small">
+                                            <th class="border-0">Assignment</th>
+                                            <th class="border-0">Status</th>
+                                            <th class="border-0">Grade</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for c_data in data.courses %}
+                                            {% for sub in c_data.recent_submissions %}
+                                                <tr>
+                                                    <td>
+                                                        <div class="fw-bold" style="color: var(--primary); font-size: 0.85rem;">{{ sub.assignment.title }}</div>
+                                                        <small class="text-muted" style="font-size: 0.75rem;">{{ c_data.course.title }}</small>
+                                                    </td>
+                                                    <td>
+                                                        {% if sub.status == 'marked' or sub.status == 'returned' %}
+                                                            <span class="badge badge-premium-success">Graded</span>
+                                                        {% else %}
+                                                            <span class="badge badge-premium-warning">Pending Grade</span>
+                                                        {% endif %}
+                                                    </td>
+                                                    <td class="fw-bold" style="color: var(--accent);">
+                                                        {% if sub.score is not None %}
+                                                            {{ sub.score }}/{{ sub.assignment.total_marks }}
+                                                        {% else %}
+                                                            -
+                                                        {% endif %}
+                                                    </td>
+                                                </tr>
                                             {% endfor %}
-                                        </tbody>
-                                    </table>
-                                </div>
-                            {% else %}
-                                <p class="text-muted small">No homework assignments found.</p>
-                            {% endif %}
-                        </div>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        {% else %}
+                            <p class="text-muted small">No homework assignments found.</p>
+                        {% endif %}
                     </div>
                 </div>
             </div>
         </div>
     {% empty %}
         <div class="col-12 text-center py-5">
-            <div class="card border-0 shadow-sm p-5" style="border-radius: 20px;">
+            <div class="premium-empty-state">
                 <i class="fas fa-users-cog fa-3x mb-3 text-muted"></i>
-                <h3 class="fw-bold" style="color: #002769;">No Linked Wards</h3>
+                <h3 class="fw-bold" style="color: var(--primary);">No Linked Wards</h3>
                 <p class="text-muted">You do not have any wards (students) linked to your guardian account yet.</p>
                 <p class="small text-muted">Please contact the Edukom Admin to link your student profile to your account.</p>
             </div>

@@ -6,9 +6,12 @@
     <!-- Page Header -->
     <div class="row mb-5">
         <div class="col-md-8">
-            <h3 class="text-uppercase tracking-wider text-muted mb-2" style="color: #71A20A !important; font-weight: 600; font-size: 0.9rem; letter-spacing: 2px;">EDUKOM ACADEMY</h3>
-            <h1 class="display-5 fw-bold" style="color: #002769; font-family: 'Montserrat', sans-serif;">Available Courses</h1>
-            <p class="lead text-muted">Expand your knowledge with our professionally curated curriculum. Filter by subject or grade level to get started.</p>
+            <h3 class="text-uppercase tracking-wider text-muted mb-2"
+                style="color: #71A20A !important; font-weight: 600; font-size: 0.9rem; letter-spacing: 2px;">EDUKOM</h3>
+            <h1 class="display-5 fw-bold" style="color: #002769; font-family: 'Montserrat', sans-serif;">Available
+                Courses</h1>
+            <p class="lead text-muted">Expand your knowledge with our professionally curated curriculum. Filter by
+                subject or grade level to get started.</p>
         </div>
     </div>
 
@@ -17,30 +20,39 @@
         <div class="card-body p-4">
             <form method="GET" action="{% url 'course_list' %}" class="row g-3 align-items-end">
                 <div class="col-md-5">
-                    <label for="subjectSelect" class="form-label fw-bold text-muted" style="font-size: 0.85rem;">SUBJECT</label>
-                    <select id="subjectSelect" name="subject" class="form-select form-select-lg border-0 bg-light" style="border-radius: 10px; font-size: 0.95rem;">
+                    <label for="subjectSelect" class="form-label fw-bold text-muted"
+                        style="font-size: 0.85rem;">SUBJECT</label>
+                    <select id="subjectSelect" name="subject" class="form-select form-select-lg border-0 bg-light"
+                        style="border-radius: 10px; font-size: 0.95rem;">
                         <option value="">All Subjects</option>
                         {% for subj in subjects %}
-                        <option value="{{ subj.id }}" {% if selected_subject == subj.id|stringformat:"s" %}selected{% endif %}>{{ subj.name }}</option>
+                        <option value="{{ subj.id }}" {% if selected_subject==subj.id|stringformat:"s" %}selected{%
+                            endif %}>{{ subj.name }}</option>
                         {% endfor %}
                     </select>
                 </div>
                 <div class="col-md-5">
-                    <label for="classLevelSelect" class="form-label fw-bold text-muted" style="font-size: 0.85rem;">CLASS LEVEL</label>
-                    <select id="classLevelSelect" name="class_level" class="form-select form-select-lg border-0 bg-light" style="border-radius: 10px; font-size: 0.95rem;">
+                    <label for="classLevelSelect" class="form-label fw-bold text-muted"
+                        style="font-size: 0.85rem;">CLASS LEVEL</label>
+                    <select id="classLevelSelect" name="class_level"
+                        class="form-select form-select-lg border-0 bg-light"
+                        style="border-radius: 10px; font-size: 0.95rem;">
                         <option value="">All Levels</option>
                         {% for level in class_levels %}
-                        <option value="{{ level.id }}" {% if selected_class_level == level.id|stringformat:"s" %}selected{% endif %}>{{ level.name }}</option>
+                        <option value="{{ level.id }}" {% if selected_class_level==level.id|stringformat:"s"
+                            %}selected{% endif %}>{{ level.name }}</option>
                         {% endfor %}
                     </select>
                 </div>
                 <div class="col-md-2">
                     <div class="d-grid gap-2 d-md-flex">
-                        <button type="submit" class="btn btn-primary btn-lg w-100" style="background-color: #002769; border: none; border-radius: 10px; font-size: 0.95rem; font-weight: 600; padding: 10px 20px;">
+                        <button type="submit" class="btn btn-primary btn-lg w-100"
+                            style="background-color: #002769; border: none; border-radius: 10px; font-size: 0.95rem; font-weight: 600; padding: 10px 20px;">
                             Filter
                         </button>
                         {% if selected_subject or selected_class_level %}
-                        <a href="{% url 'course_list' %}" class="btn btn-outline-secondary btn-lg" style="border-radius: 10px; font-size: 0.95rem; padding: 10px 15px;">
+                        <a href="{% url 'course_list' %}" class="btn btn-outline-secondary btn-lg"
+                            style="border-radius: 10px; font-size: 0.95rem; padding: 10px 15px;">
                             <i class="fas fa-times"></i>
                         </a>
                         {% endif %}
@@ -54,26 +66,35 @@
     <div class="row g-4">
         {% for course in courses %}
         <div class="col-md-4 col-sm-6">
-            <div class="card h-100 border-0 shadow-sm hover-up transition-all" style="border-radius: 15px; overflow: hidden; background: #fff;">
+            <div class="card h-100 border-0 shadow-sm hover-up transition-all"
+                style="border-radius: 15px; overflow: hidden; background: #fff;">
                 <!-- Thumbnail -->
                 <div class="position-relative" style="height: 200px; background: #eaeaea; overflow: hidden;">
                     {% if course.thumbnail %}
                     <img src="{{ course.thumbnail.url }}" class="w-100 h-100 object-fit-cover" alt="{{ course.title }}">
                     {% else %}
-                    <div class="d-flex align-items-center justify-content-center h-100" style="background: linear-gradient(135deg, #002769 0%, #0040a6 100%);">
-                        <span class="text-white fw-bold fs-2" style="font-family: 'Montserrat', sans-serif;">{{ course.title|slice:":2"|upper }}</span>
+                    <div class="d-flex align-items-center justify-content-center h-100"
+                        style="background: linear-gradient(135deg, #002769 0%, #0040a6 100%);">
+                        <span class="text-white fw-bold fs-2" style="font-family: 'Montserrat', sans-serif;">{{
+                            course.title|slice:":2"|upper }}</span>
                     </div>
                     {% endif %}
                     <!-- Badges -->
                     <div class="position-absolute top-0 start-0 m-3 d-flex flex-column gap-1">
-                        <span class="badge text-white" style="background-color: #71A20A; font-weight: 500; font-size: 0.75rem; border-radius: 5px;">{{ course.subject.name }}</span>
-                        <span class="badge bg-dark text-white" style="font-weight: 500; font-size: 0.75rem; border-radius: 5px;">{{ course.class_level.name }}</span>
+                        <span class="badge text-white"
+                            style="background-color: #71A20A; font-weight: 500; font-size: 0.75rem; border-radius: 5px;">{{
+                            course.subject.name }}</span>
+                        <span class="badge bg-dark text-white"
+                            style="font-weight: 500; font-size: 0.75rem; border-radius: 5px;">{{ course.class_level.name
+                            }}</span>
                     </div>
                     <div class="position-absolute bottom-0 end-0 m-3 d-flex flex-column align-items-end gap-1">
                         {% if course.is_free %}
-                        <span class="badge bg-success text-white" style="font-weight: 600; font-size: 0.8rem; padding: 6px 12px; border-radius: 20px;">FREE</span>
+                        <span class="badge bg-success text-white"
+                            style="font-weight: 600; font-size: 0.8rem; padding: 6px 12px; border-radius: 20px;">FREE</span>
                         {% else %}
-                        <span class="badge bg-primary text-white" style="font-weight: 600; font-size: 0.8rem; padding: 6px 12px; border-radius: 20px;">
+                        <span class="badge bg-primary text-white"
+                            style="font-weight: 600; font-size: 0.8rem; padding: 6px 12px; border-radius: 20px;">
                             {% if course.pricing %}
                             ₦{{ course.pricing.price }}
                             {% else %}
@@ -81,7 +102,8 @@
                             {% endif %}
                         </span>
                         {% if course.pricing_plans.exists %}
-                        <span class="badge bg-info text-white" style="font-weight: 600; font-size: 0.7rem; padding: 4px 8px; border-radius: 10px; text-transform: uppercase;">Subscription</span>
+                        <span class="badge bg-info text-white"
+                            style="font-weight: 600; font-size: 0.7rem; padding: 4px 8px; border-radius: 10px; text-transform: uppercase;">Subscription</span>
                         {% endif %}
                         {% endif %}
                     </div>
@@ -90,12 +112,14 @@
 
                 <!-- Card Body -->
                 <div class="card-body p-4 d-flex flex-column">
-                    <h3 class="card-title h5 fw-bold mb-3" style="color: #002769; line-height: 1.4;">{{ course.title }}</h3>
+                    <h3 class="card-title h5 fw-bold mb-3" style="color: #002769; line-height: 1.4;">{{ course.title }}
+                    </h3>
                     <p class="card-text text-muted mb-4 flex-grow-1" style="font-size: 0.9rem; line-height: 1.6;">
                         {{ course.description|truncatewords:20 }}
                     </p>
                     <div class="d-grid mt-auto">
-                        <a href="{% url 'course_detail' course.slug %}" class="btn btn-outline-primary btn-lg" style="color: #002769; border-color: #002769; border-radius: 10px; font-size: 0.9rem; font-weight: 600; padding: 10px;">
+                        <a href="{% url 'course_detail' course.slug %}" class="btn btn-outline-primary btn-lg"
+                            style="color: #002769; border-color: #002769; border-radius: 10px; font-size: 0.9rem; font-weight: 600; padding: 10px;">
                             Open Course
                         </a>
                     </div>
@@ -109,8 +133,10 @@
                 <i class="fas fa-book-open text-muted" style="font-size: 4rem; opacity: 0.3;"></i>
             </div>
             <h2 class="fw-bold mb-2" style="color: #002769;">No Courses Available</h2>
-            <p class="text-muted">There are no courses matching your selected filters at the moment. Try adjusting your search criteria.</p>
-            <a href="{% url 'course_list' %}" class="btn btn-primary mt-3" style="background-color: #002769; border: none; border-radius: 10px; padding: 10px 20px;">
+            <p class="text-muted">There are no courses matching your selected filters at the moment. Try adjusting your
+                search criteria.</p>
+            <a href="{% url 'course_list' %}" class="btn btn-primary mt-3"
+                style="background-color: #002769; border: none; border-radius: 10px; padding: 10px 20px;">
                 Reset Filters
             </a>
         </div>
@@ -121,11 +147,13 @@
 <style>
     .hover-up:hover {
         transform: translateY(-5px);
-        box-shadow: 0 10px 25px rgba(0,0,0,0.08) !important;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08) !important;
     }
+
     .transition-all {
         transition: all 0.3s ease;
     }
+
     .object-fit-cover {
         object-fit: cover;
     }

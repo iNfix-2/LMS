@@ -3,11 +3,11 @@ from django.contrib.auth.models import User
 from courses.models import Course
 
 tenant, created = Tenant.objects.get_or_create(
-    subdomain='aviation',
+    subdomain='edukom',
     defaults={
-        'name': 'Aviation Academy',
-        'theme_color': '#0f766e',
-        'theme_accent': '#0d9488',
+        'name': 'Edukom',
+        'theme_color': '#002769',
+        'theme_accent': '#71A20A',
     }
 )
 

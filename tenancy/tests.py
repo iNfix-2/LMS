@@ -9,15 +9,15 @@ class TenancyTestCase(TestCase):
     def setUp(self):
         # Create a test tenant
         self.tenant = Tenant.objects.create(
-            name="Aviation Academy",
-            subdomain="aviation",
+            name="Edukom",
+            subdomain="edukom",
             theme_color="#002769",
             theme_accent="#71A20A"
         )
         # Create an admin user
         self.admin_user = User.objects.create_superuser(
             username="admin_user",
-            email="admin@aviation.com",
+            email="admin@edukom.com",
             password="password123"
         )
         # Create profile
@@ -34,7 +34,7 @@ class TenancyTestCase(TestCase):
 
     def test_tenant_middleware_subdomain(self):
         # Test request with tenant subdomain
-        request = self.factory.get('/', HTTP_HOST='aviation.localhost:8000')
+        request = self.factory.get('/', HTTP_HOST='edukom.localhost:8000')
         request.user = self.admin_user
         
         middleware = TenantMiddleware(lambda req: req)
@@ -56,10 +56,10 @@ class TenancyTestCase(TestCase):
     def test_tenant_admin_dashboard_view(self):
         self.client.login(username="admin_user", password="password123")
         url = reverse('tenant_admin_dashboard')
-        response = self.client.get(url, HTTP_HOST='aviation.localhost:8000')
+        response = self.client.get(url, HTTP_HOST='edukom.localhost:8000')
         
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "Aviation Academy")
+        self.assertContains(response, "Edukom")
 
     def test_tenant_branding_update_view(self):
         self.client.login(username="admin_user", password="password123")
@@ -73,7 +73,7 @@ class TenancyTestCase(TestCase):
             'payout_account_number': '1234567890',
             'payout_bank_code': '044'
         }
-        response = self.client.post(url, post_data, HTTP_HOST='aviation.localhost:8000')
+        response = self.client.post(url, post_data, HTTP_HOST='edukom.localhost:8000')
         
         # Verify redirect to dashboard
         self.assertRedirects(response, reverse('tenant_admin_dashboard'))

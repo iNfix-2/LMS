@@ -2,16 +2,16 @@
 {% load static %}
 
 {% block main %}
-<div class="container py-5" style="margin-top: 20px;">
+<div class="container py-5">
     <!-- Dashboard Header -->
     <div class="row mb-5 align-items-center">
         <div class="col-md-8">
-            <h3 class="text-uppercase tracking-wider text-muted mb-2" style="color: #71A20A !important; font-weight: 600; font-size: 0.9rem; letter-spacing: 2px;">STUDENT AREA</h3>
-            <h1 class="display-5 fw-bold" style="color: #002769; font-family: 'Montserrat', sans-serif;">My Learning Dashboard</h1>
+            <h3 class="text-uppercase tracking-wider mb-2" style="color: var(--accent) !important; font-weight: 700; font-size: 0.85rem; letter-spacing: 2px;">STUDENT AREA</h3>
+            <h1 class="display-5 fw-bold" style="color: var(--primary); font-family: 'Plus Jakarta Sans', sans-serif;">My Learning Dashboard</h1>
             <p class="lead text-muted">Welcome back, {{ user.get_full_name|default:user.username }}! Track your progress and continue learning your enrolled courses.</p>
         </div>
         <div class="col-md-4 text-md-end">
-            <a href="{% url 'student_report_dashboard' %}" class="btn btn-outline-primary px-4 py-2" style="border-color: #002769; color: #002769; border-radius: 50px; font-weight: 600;">
+            <a href="{% url 'student_report_dashboard' %}" class="btn-premium-outline">
                 <i class="fas fa-chart-line me-2"></i> View Progress Reports
             </a>
         </div>
@@ -21,33 +21,31 @@
     {% if unread_notifications_count > 0 or recent_notifications %}
     <div class="row mb-5">
         <div class="col-12">
-            <div class="card border-0 shadow-sm" style="border-radius: 15px; border-left: 5px solid #002769; background: #fff;">
-                <div class="card-body p-4">
-                    <div class="d-flex justify-content-between align-items-center mb-3">
-                        <h4 class="fw-bold mb-0" style="color: #002769; font-family: 'Montserrat', sans-serif;">
-                            <i class="fas fa-bell me-2" style="color: #71A20A;"></i> Recent Notifications 
-                            {% if unread_notifications_count > 0 %}
-                            <span class="badge rounded-pill bg-danger" style="font-size: 0.8rem; vertical-align: middle;">{{ unread_notifications_count }} New</span>
-                            {% endif %}
-                        </h4>
-                        <a href="{% url 'notifications:notification_list' %}" class="btn btn-sm btn-outline-primary px-3" style="border-radius: 20px; font-size: 0.85rem; border-color: #002769; color: #002769;">View All</a>
-                    </div>
-                    <div class="list-group list-group-flush">
-                        {% for n in recent_notifications %}
-                        <div class="list-group-item px-0 py-3 bg-transparent border-bottom">
-                            <div class="d-flex justify-content-between align-items-center">
-                                <h6 class="fw-bold mb-1 {% if n.status == 'pending' %}text-primary{% else %}text-dark{% endif %}" style="font-size: 0.95rem;">
-                                    {{ n.title }}
-                                </h6>
-                                <small class="text-muted">{{ n.created_at|timesince }} ago</small>
-                            </div>
-                            <p class="text-muted mb-0 small">{{ n.message }}</p>
-                            {% if n.status == 'pending' %}
-                            <span class="badge bg-warning text-dark rounded-pill mt-1" style="font-size: 0.65rem; font-weight: 500;">New</span>
-                            {% endif %}
+            <div class="premium-card p-4" style="border-left: 5px solid var(--primary) !important;">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h4 class="fw-bold mb-0" style="color: var(--primary); font-family: 'Plus Jakarta Sans', sans-serif;">
+                        <i class="fas fa-bell me-2" style="color: var(--accent);"></i> Recent Notifications 
+                        {% if unread_notifications_count > 0 %}
+                        <span class="badge rounded-pill badge-premium-danger ms-2" style="font-size: 0.8rem; vertical-align: middle;">{{ unread_notifications_count }} New</span>
+                        {% endif %}
+                    </h4>
+                    <a href="{% url 'notifications:notification_list' %}" class="btn-premium-outline btn-sm">View All</a>
+                </div>
+                <div class="list-group list-group-flush">
+                    {% for n in recent_notifications %}
+                    <div class="list-group-item px-0 py-3 bg-transparent border-bottom">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h6 class="fw-bold mb-1 {% if n.status == 'pending' %}text-primary{% else %}text-dark{% endif %}" style="font-size: 0.95rem;">
+                                {{ n.title }}
+                            </h6>
+                            <small class="text-muted">{{ n.created_at|timesince }} ago</small>
                         </div>
-                        {% endfor %}
+                        <p class="text-muted mb-0 small">{{ n.message }}</p>
+                        {% if n.status == 'pending' %}
+                        <span class="badge badge-premium-warning mt-1">New</span>
+                        {% endif %}
                     </div>
+                    {% endfor %}
                 </div>
             </div>
         </div>
@@ -58,89 +56,83 @@
     <div class="row mb-5 g-4">
         <!-- Today's Timetable slots -->
         <div class="col-lg-4">
-            <div class="card border-0 shadow-sm h-100" style="border-radius: 15px; border-top: 4px solid #002769;">
-                <div class="card-body p-4">
-                    <div class="d-flex justify-content-between align-items-center mb-3">
-                        <h5 class="fw-bold mb-0" style="color: #002769;"><i class="fas fa-clock me-2 text-primary"></i> Today's Schedule</h5>
-                        <a href="{% url 'academics:my_timetable' %}" class="small text-decoration-none">Full Timetable</a>
-                    </div>
-                    <div class="list-group list-group-flush">
-                        {% for slot in today_slots %}
-                            <div class="list-group-item px-0 py-2 border-0">
-                                <div class="d-flex justify-content-between align-items-start">
-                                    <div>
-                                        <span class="fw-bold text-dark" style="font-size: 0.85rem;">{{ slot.start_time|time:"H:i" }} - {{ slot.end_time|time:"H:i" }}</span>
-                                        <div class="text-primary fw-semibold" style="font-size: 0.8rem;">
-                                            {% if slot.title %}
-                                                {{ slot.title }}
-                                            {% elif slot.subject %}
-                                                {{ slot.subject.name }}
-                                            {% else %}
-                                                {{ slot.get_slot_type_display }}
-                                            {% endif %}
-                                        </div>
+            <div class="premium-card h-100 p-4">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h5 class="fw-bold mb-0" style="color: var(--primary);"><i class="fas fa-clock me-2 text-primary"></i> Today's Schedule</h5>
+                    <a href="{% url 'academics:my_timetable' %}" class="small text-decoration-none fw-semibold">Full Timetable</a>
+                </div>
+                <div class="list-group list-group-flush">
+                    {% for slot in today_slots %}
+                        <div class="list-group-item px-0 py-2 border-0 bg-transparent">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <div>
+                                    <span class="fw-bold text-dark" style="font-size: 0.85rem;">{{ slot.start_time|time:"H:i" }} - {{ slot.end_time|time:"H:i" }}</span>
+                                    <div class="text-primary fw-semibold" style="font-size: 0.8rem;">
+                                        {% if slot.title %}
+                                            {{ slot.title }}
+                                        {% elif slot.subject %}
+                                            {{ slot.subject.name }}
+                                        {% else %}
+                                            {{ slot.get_slot_type_display }}
+                                        {% endif %}
                                     </div>
-                                    {% if slot.room %}
-                                        <span class="badge bg-light text-muted" style="font-size: 0.7rem;">{{ slot.room }}</span>
-                                    {% endif %}
                                 </div>
+                                {% if slot.room %}
+                                    <span class="badge bg-light text-muted" style="font-size: 0.7rem;">{{ slot.room }}</span>
+                                {% endif %}
                             </div>
-                        {% empty %}
-                            <div class="text-muted small py-3 text-center">No slots scheduled for today.</div>
-                        {% endfor %}
-                    </div>
+                        </div>
+                    {% empty %}
+                        <div class="text-muted small py-3 text-center">No slots scheduled for today.</div>
+                    {% endfor %}
                 </div>
             </div>
         </div>
 
         <!-- Upcoming Live Classes -->
         <div class="col-lg-4">
-            <div class="card border-0 shadow-sm h-100" style="border-radius: 15px; border-top: 4px solid #71A20A;">
-                <div class="card-body p-4">
-                    <div class="d-flex justify-content-between align-items-center mb-3">
-                        <h5 class="fw-bold mb-0" style="color: #002769;"><i class="fas fa-broadcast-tower me-2 text-success"></i> Live Classes</h5>
-                        <a href="{% url 'academics:live_class_list' %}" class="small text-decoration-none">All Classes</a>
-                    </div>
-                    <div class="list-group list-group-flush">
-                        {% for live in upcoming_live %}
-                            <div class="list-group-item px-0 py-2 border-0">
-                                <div class="d-flex justify-content-between align-items-start">
-                                    <div>
-                                        <a href="{% url 'academics:live_class_detail' live.id %}" class="fw-bold text-dark text-decoration-none hover-primary" style="font-size: 0.85rem;">{{ live.title }}</a>
-                                        <div class="text-muted small">{{ live.scheduled_start|date:"M d @ H:i" }}</div>
-                                    </div>
-                                    {% if live.status == 'live' %}
-                                        <span class="badge bg-danger text-white rounded-pill px-2 py-0.5" style="font-size: 0.65rem;">Live</span>
-                                    {% endif %}
+            <div class="premium-card h-100 p-4">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h5 class="fw-bold mb-0" style="color: var(--primary);"><i class="fas fa-broadcast-tower me-2 text-success"></i> Live Classes</h5>
+                    <a href="{% url 'academics:live_class_list' %}" class="small text-decoration-none fw-semibold">All Classes</a>
+                </div>
+                <div class="list-group list-group-flush">
+                    {% for live in upcoming_live %}
+                        <div class="list-group-item px-0 py-2 border-0 bg-transparent">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <div>
+                                    <a href="{% url 'academics:live_class_detail' live.id %}" class="fw-bold text-dark text-decoration-none hover-primary" style="font-size: 0.85rem;">{{ live.title }}</a>
+                                    <div class="text-muted small">{{ live.scheduled_start|date:"M d @ H:i" }}</div>
                                 </div>
+                                {% if live.status == 'live' %}
+                                    <span class="badge bg-danger text-white rounded-pill px-2 py-0.5" style="font-size: 0.65rem;">Live</span>
+                                {% endif %}
                             </div>
-                        {% empty %}
-                            <div class="text-muted small py-3 text-center">No upcoming live classes scheduled.</div>
-                        {% endfor %}
-                    </div>
+                        </div>
+                    {% empty %}
+                        <div class="text-muted small py-3 text-center">No upcoming live classes scheduled.</div>
+                    {% endfor %}
                 </div>
             </div>
         </div>
 
         <!-- Attendance Stats & Calendar link -->
         <div class="col-lg-4">
-            <div class="card border-0 shadow-sm h-100" style="border-radius: 15px; border-top: 4px solid #ffc107;">
-                <div class="card-body p-4 d-flex flex-column justify-content-between">
-                    <div>
-                        <h5 class="fw-bold mb-3" style="color: #002769;"><i class="fas fa-chart-bar me-2 text-warning"></i> Attendance & Calendar</h5>
-                        <div class="d-flex align-items-center mb-3">
-                            <div class="me-3">
-                                <h3 class="fw-bold mb-0 text-success">{{ attendance_percentage }}%</h3>
-                                <small class="text-muted">Presence rate</small>
-                            </div>
-                            <a href="{% url 'academics:my_attendance' %}" class="btn btn-sm btn-outline-secondary rounded-pill px-3">History</a>
+            <div class="premium-card h-100 p-4 d-flex flex-column justify-content-between">
+                <div>
+                    <h5 class="fw-bold mb-3" style="color: var(--primary);"><i class="fas fa-chart-bar me-2 text-warning"></i> Attendance & Calendar</h5>
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="me-3">
+                            <h3 class="fw-bold mb-0 text-success">{{ attendance_percentage }}%</h3>
+                            <small class="text-muted">Presence rate</small>
                         </div>
+                        <a href="{% url 'academics:my_attendance' %}" class="btn-premium-outline btn-sm">History</a>
                     </div>
-                    <div class="d-grid mt-3">
-                        <a href="{% url 'academics:academic_calendar' %}" class="btn btn-primary btn-sm py-2 rounded-pill fw-bold" style="background-color: #002769; border-color: #002769;">
-                            <i class="far fa-calendar-alt me-2"></i> View Academic Calendar
-                        </a>
-                    </div>
+                </div>
+                <div class="d-grid mt-3">
+                    <a href="{% url 'academics:academic_calendar' %}" class="btn-premium btn-sm text-center">
+                        <i class="far fa-calendar-alt me-2"></i> View Academic Calendar
+                    </a>
                 </div>
             </div>
         </div>
@@ -150,27 +142,27 @@
     <div class="row g-4">
         {% for enrollment in enrollments %}
         <div class="col-md-6 col-lg-4">
-            <div class="card h-100 border-0 shadow-sm hover-up transition-all" style="border-radius: 15px; overflow: hidden; background: #fff;">
+            <div class="premium-card h-100">
                 <!-- Thumbnail / Header Graphic -->
                 <div style="height: 140px; background: #eaeaea; position: relative;">
                     {% if enrollment.course.thumbnail %}
                     <img src="{{ enrollment.course.thumbnail.url }}" class="w-100 h-100 object-fit-cover" alt="{{ enrollment.course.title }}">
                     {% else %}
-                    <div class="d-flex align-items-center justify-content-center h-100" style="background: linear-gradient(135deg, #002769 0%, #0040a6 100%);">
-                        <span class="text-white fw-bold fs-3" style="font-family: 'Montserrat', sans-serif;">{{ enrollment.course.title|slice:":2"|upper }}</span>
+                    <div class="d-flex align-items-center justify-content-center h-100" style="background: linear-gradient(135deg, var(--primary) 0%, var(--primary-hover) 100%);">
+                        <span class="text-white fw-bold fs-3" style="font-family: 'Plus Jakarta Sans', sans-serif;">{{ enrollment.course.title|slice:":2"|upper }}</span>
                     </div>
                     {% endif %}
                     
                     <div class="position-absolute top-0 start-0 m-3 d-flex gap-1 flex-column">
-                        <span class="badge text-white" style="background-color: #71A20A; font-weight: 500; font-size: 0.7rem; border-radius: 4px;">{{ enrollment.course.subject.name }}</span>
-                        <span class="badge bg-dark text-white" style="font-weight: 500; font-size: 0.7rem; border-radius: 4px;">{{ enrollment.course.class_level.name }}</span>
+                        <span class="badge text-white" style="background-color: var(--accent); font-weight: 600; font-size: 0.7rem; border-radius: 4px;">{{ enrollment.course.subject.name }}</span>
+                        <span class="badge bg-dark text-white" style="font-weight: 600; font-size: 0.7rem; border-radius: 4px;">{{ enrollment.course.class_level.name }}</span>
                     </div>
                 </div>
 
                 <!-- Card Body -->
                 <div class="card-body p-4 d-flex flex-column justify-content-between">
                     <div>
-                        <h4 class="card-title h5 fw-bold mb-2" style="color: #002769; line-height: 1.4;">{{ enrollment.course.title }}</h4>
+                        <h4 class="card-title h5 fw-bold mb-2" style="color: var(--primary); line-height: 1.4;">{{ enrollment.course.title }}</h4>
                         <p class="text-muted small mb-4"><i class="far fa-calendar-alt me-1"></i>Enrolled: {{ enrollment.enrolled_at|date:"M d, Y" }}</p>
                     </div>
 
@@ -179,18 +171,18 @@
                         <div class="mb-4">
                             <div class="d-flex justify-content-between align-items-center mb-1">
                                 <span class="fw-bold text-muted small">PROGRESS</span>
-                                <span class="fw-bold text-primary small" style="color: #002769 !important;">{{ enrollment.progress_percentage }}%</span>
+                                <span class="fw-bold text-primary small" style="color: var(--primary) !important;">{{ enrollment.progress_percentage }}%</span>
                             </div>
-                            <div class="progress" style="height: 8px; border-radius: 4px;">
-                                <div class="progress-bar" role="progressbar" style="width: {{ enrollment.progress_percentage }}%; background-color: #71A20A;" aria-valuenow="{{ enrollment.progress_percentage }}" aria-valuemin="0" aria-valuemax="100"></div>
+                            <div class="progress premium-progress">
+                                <div class="progress-bar premium-progress-bar" role="progressbar" style="width: {{ enrollment.progress_percentage }}%;" aria-valuenow="{{ enrollment.progress_percentage }}" aria-valuemin="0" aria-valuemax="100"></div>
                             </div>
                         </div>
 
                         <div class="d-grid gap-2">
-                            <a href="{% url 'course_detail' enrollment.course.slug %}" class="btn btn-primary mb-1" style="background-color: #002769; border: none; border-radius: 8px; font-weight: 600; padding: 10px;">
+                            <a href="{% url 'course_detail' enrollment.course.slug %}" class="btn-premium text-center">
                                 <i class="fas fa-play me-2"></i>Continue Learning
                             </a>
-                            <div class="row g-2">
+                            <div class="row g-2 mt-2">
                                 <div class="col-6">
                                     <a href="{% url 'course_assessments' enrollment.course.slug %}" class="btn btn-assessment-link btn-sm w-100 py-2">
                                         <i class="fas fa-file-signature me-1"></i>Assessments
@@ -210,14 +202,16 @@
         {% empty %}
         <!-- Empty State -->
         <div class="col-12 text-center py-5">
-            <div class="mb-4">
-                <i class="fas fa-graduation-cap text-muted" style="font-size: 5rem; opacity: 0.2;"></i>
+            <div class="premium-empty-state">
+                <div class="mb-4">
+                    <i class="fas fa-graduation-cap text-muted" style="font-size: 5rem; opacity: 0.2;"></i>
+                </div>
+                <h2 class="fw-bold mb-2" style="color: var(--primary);">Start Your Learning Journey</h2>
+                <p class="text-muted">You are not enrolled in any courses yet. Check out our catalogue to get started!</p>
+                <a href="{% url 'course_list' %}" class="btn-premium mt-3 d-inline-block">
+                    Browse Courses
+                </a>
             </div>
-            <h2 class="fw-bold mb-2" style="color: #002769;">Start Your Learning Journey</h2>
-            <p class="text-muted">You are not enrolled in any courses yet. Check out our catalogue to get started!</p>
-            <a href="{% url 'course_list' %}" class="btn btn-primary mt-3" style="background-color: #002769; border: none; border-radius: 10px; padding: 12px 25px; font-weight: 600;">
-                Browse Courses
-            </a>
         </div>
         {% endfor %}
     </div>
@@ -226,103 +220,99 @@
     <div class="row mt-5 g-4">
         <!-- Recent Quiz/Assessment Attempts -->
         <div class="col-lg-6">
-            <div class="card border-0 shadow-sm h-100" style="border-radius: 15px; overflow: hidden; background: #fff;">
-                <div class="card-header bg-white py-3 border-0 d-flex justify-content-between align-items-center">
-                    <h5 class="fw-bold mb-0" style="color: #002769;"><i class="fas fa-file-signature me-2" style="color: #71A20A;"></i>Recent Quiz Attempts</h5>
+            <div class="premium-card p-4">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h5 class="fw-bold mb-0" style="color: var(--primary);"><i class="fas fa-file-signature me-2" style="color: var(--accent);"></i>Recent Quiz Attempts</h5>
                 </div>
-                <div class="card-body p-4 pt-0">
-                    <div class="table-responsive">
-                        <table class="table table-hover align-middle mb-0">
-                            <thead>
-                                <tr class="text-muted small">
-                                    <th scope="col" class="border-0 px-0">Assessment</th>
-                                    <th scope="col" class="border-0">Course</th>
-                                    <th scope="col" class="border-0">Score</th>
-                                    <th scope="col" class="border-0 text-end px-0">Status</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for attempt in recent_attempts %}
-                                <tr>
-                                    <td class="px-0">
-                                        <a href="{% url 'assessment_result' attempt.id %}" class="fw-semibold text-decoration-none text-dark hover-primary">{{ attempt.assessment.title }}</a>
-                                    </td>
-                                    <td><span class="small text-muted">{{ attempt.assessment.course.title|truncatechars:20 }}</span></td>
-                                    <td>
-                                        <strong style="color: #002769;">{{ attempt.percentage }}%</strong>
-                                        <div class="small text-muted" style="font-size: 0.75rem;">{{ attempt.score|floatformat:0 }}/{{ attempt.total_marks|floatformat:0 }}</div>
-                                    </td>
-                                    <td class="text-end px-0">
-                                        {% if attempt.status == 'submitted' %}
-                                            {% if attempt.percentage >= attempt.assessment.pass_mark %}
-                                            <span class="badge text-success" style="background-color: #d1fae5; font-weight: 500; padding: 4px 8px; border-radius: 4px;">Passed</span>
-                                            {% else %}
-                                            <span class="badge text-danger" style="background-color: #fee2e2; font-weight: 500; padding: 4px 8px; border-radius: 4px;">Failed</span>
-                                            {% endif %}
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead>
+                            <tr class="text-muted small">
+                                <th scope="col" class="border-0 px-0">Assessment</th>
+                                <th scope="col" class="border-0">Course</th>
+                                <th scope="col" class="border-0">Score</th>
+                                <th scope="col" class="border-0 text-end px-0">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for attempt in recent_attempts %}
+                            <tr>
+                                <td class="px-0">
+                                    <a href="{% url 'assessment_result' attempt.id %}" class="fw-semibold text-decoration-none text-dark hover-primary">{{ attempt.assessment.title }}</a>
+                                </td>
+                                <td><span class="small text-muted">{{ attempt.assessment.course.title|truncatechars:20 }}</span></td>
+                                <td>
+                                    <strong style="color: var(--primary);">{{ attempt.percentage }}%</strong>
+                                    <div class="small text-muted" style="font-size: 0.75rem;">{{ attempt.score|floatformat:0 }}/{{ attempt.total_marks|floatformat:0 }}</div>
+                                </td>
+                                <td class="text-end px-0">
+                                    {% if attempt.status == 'submitted' %}
+                                        {% if attempt.percentage >= attempt.assessment.pass_mark %}
+                                        <span class="badge badge-premium-success">Passed</span>
                                         {% else %}
-                                        <span class="badge text-warning" style="background-color: #fef3c7; font-weight: 500; padding: 4px 8px; border-radius: 4px;">In Progress</span>
+                                        <span class="badge badge-premium-danger">Failed</span>
                                         {% endif %}
-                                    </td>
-                                </tr>
-                                {% empty %}
-                                <tr>
-                                    <td colspan="4" class="text-center text-muted py-4 small">No quiz attempts yet.</td>
-                                </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
+                                    {% else %}
+                                    <span class="badge badge-premium-warning">In Progress</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="4" class="text-center text-muted py-4 small">No quiz attempts yet.</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
 
         <!-- Recent Assignment Submissions -->
         <div class="col-lg-6">
-            <div class="card border-0 shadow-sm h-100" style="border-radius: 15px; overflow: hidden; background: #fff;">
-                <div class="card-header bg-white py-3 border-0 d-flex justify-content-between align-items-center">
-                    <h5 class="fw-bold mb-0" style="color: #002769;"><i class="fas fa-tasks me-2" style="color: #002769;"></i>Recent Assignments</h5>
+            <div class="premium-card p-4">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h5 class="fw-bold mb-0" style="color: var(--primary);"><i class="fas fa-tasks me-2" style="color: var(--primary);"></i>Recent Assignments</h5>
                 </div>
-                <div class="card-body p-4 pt-0">
-                    <div class="table-responsive">
-                        <table class="table table-hover align-middle mb-0">
-                            <thead>
-                                <tr class="text-muted small">
-                                    <th scope="col" class="border-0 px-0">Assignment</th>
-                                    <th scope="col" class="border-0">Course</th>
-                                    <th scope="col" class="border-0">Score</th>
-                                    <th scope="col" class="border-0 text-end px-0">Status</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for submission in recent_submissions %}
-                                <tr>
-                                    <td class="px-0">
-                                        <a href="{% url 'assignment_submission_detail' submission.id %}" class="fw-semibold text-decoration-none text-dark hover-primary">{{ submission.assignment.title }}</a>
-                                    </td>
-                                    <td><span class="small text-muted">{{ submission.assignment.course.title|truncatechars:20 }}</span></td>
-                                    <td>
-                                        {% if submission.score is not None %}
-                                        <strong style="color: #71A20A;">{{ submission.score }} / {{ submission.assignment.total_marks }}</strong>
-                                        {% else %}
-                                        <span class="text-muted small">Pending</span>
-                                        {% endif %}
-                                    </td>
-                                    <td class="text-end px-0">
-                                        {% if submission.status == 'marked' or submission.status == 'returned' %}
-                                        <span class="badge text-success" style="background-color: #d1fae5; font-weight: 500; padding: 4px 8px; border-radius: 4px;">Graded</span>
-                                        {% else %}
-                                        <span class="badge text-warning" style="background-color: #fef3c7; font-weight: 500; padding: 4px 8px; border-radius: 4px;">Submitted</span>
-                                        {% endif %}
-                                    </td>
-                                </tr>
-                                {% empty %}
-                                <tr>
-                                    <td colspan="4" class="text-center text-muted py-4 small">No assignment submissions yet.</td>
-                                </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead>
+                            <tr class="text-muted small">
+                                <th scope="col" class="border-0 px-0">Assignment</th>
+                                <th scope="col" class="border-0">Course</th>
+                                <th scope="col" class="border-0">Score</th>
+                                <th scope="col" class="border-0 text-end px-0">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for submission in recent_submissions %}
+                            <tr>
+                                <td class="px-0">
+                                    <a href="{% url 'assignment_submission_detail' submission.id %}" class="fw-semibold text-decoration-none text-dark hover-primary">{{ submission.assignment.title }}</a>
+                                </td>
+                                <td><span class="small text-muted">{{ submission.assignment.course.title|truncatechars:20 }}</span></td>
+                                <td>
+                                    {% if submission.score is not None %}
+                                    <strong style="color: var(--accent);">{{ submission.score }} / {{ submission.assignment.total_marks }}</strong>
+                                    {% else %}
+                                    <span class="text-muted small">Pending</span>
+                                    {% endif %}
+                                </td>
+                                <td class="text-end px-0">
+                                    {% if submission.status == 'marked' or submission.status == 'returned' %}
+                                    <span class="badge badge-premium-success">Graded</span>
+                                    {% else %}
+                                    <span class="badge badge-premium-warning">Submitted</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="4" class="text-center text-muted py-4 small">No assignment submissions yet.</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
@@ -330,42 +320,38 @@
 </div>
 
 <style>
-    .hover-up:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 10px 25px rgba(0,0,0,0.08) !important;
-    }
-    .transition-all {
-        transition: all 0.3s ease;
+    .hover-primary:hover {
+        color: var(--primary) !important;
     }
     .object-fit-cover {
         object-fit: cover;
     }
     .btn-assessment-link {
-        border: 1px solid #71A20A;
-        color: #71A20A;
-        border-radius: 8px;
+        border: 1px solid var(--accent) !important;
+        color: var(--accent) !important;
+        border-radius: 50px !important;
         font-weight: 600;
         font-size: 0.85rem;
         background: transparent;
-        transition: all 0.2s;
+        transition: var(--transition);
     }
     .btn-assessment-link:hover {
-        background-color: #71A20A;
-        color: white;
+        background-color: var(--accent) !important;
+        color: white !important;
         text-decoration: none;
     }
     .btn-assignment-link {
-        border: 1px solid #002769;
-        color: #002769;
-        border-radius: 8px;
+        border: 1px solid var(--primary) !important;
+        color: var(--primary) !important;
+        border-radius: 50px !important;
         font-weight: 600;
         font-size: 0.85rem;
         background: transparent;
-        transition: all 0.2s;
+        transition: var(--transition);
     }
     .btn-assignment-link:hover {
-        background-color: #002769;
-        color: white;
+        background-color: var(--primary) !important;
+        color: white !important;
         text-decoration: none;
     }
 </style>

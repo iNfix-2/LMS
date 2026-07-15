@@ -12,11 +12,11 @@ class LibraryTests(TestCase):
         self.client = Client()
         self.user = User.objects.create_user(username='student1', password='password123')
         from courses.models import Subject, ClassLevel
-        self.subject = Subject.objects.create(name='Aviation', slug='aviation')
-        self.class_level = ClassLevel.objects.create(name='PPL')
+        self.subject = Subject.objects.create(name='Science', slug='science')
+        self.class_level = ClassLevel.objects.create(name='Grade 10')
         self.course = Course.objects.create(
-            title='Intro to Flying', 
-            slug='intro-to-flying', 
+            title='Introduction to Physics', 
+            slug='intro-to-physics', 
             subject=self.subject,
             class_level=self.class_level,
             created_by=self.user,
@@ -26,14 +26,14 @@ class LibraryTests(TestCase):
         
         # Create a mock file
         self.test_file = SimpleUploadedFile(
-            "flight_manual.pdf", 
+            "physics_manual.pdf", 
             b"file_content", 
             content_type="application/pdf"
         )
         
         self.resource = Resource.objects.create(
-            title='Cessna 172 Manual',
-            description='Operating handbook',
+            title='Physics Lab Manual',
+            description='Lab instructions',
             resource_type='pdf',
             course=self.course,
             file=self.test_file,
@@ -46,19 +46,19 @@ class LibraryTests(TestCase):
         self.client.login(username='student1', password='password123')
         response = self.client.get(reverse('library:library_list'))
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, 'Cessna 172 Manual')
+        self.assertContains(response, 'Physics Lab Manual')
 
     def test_library_filter_resource_type(self):
         self.client.login(username='student1', password='password123')
         response = self.client.get(reverse('library:library_list') + '?type=pdf')
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, 'Cessna 172 Manual')
+        self.assertContains(response, 'Physics Lab Manual')
 
     def test_library_search(self):
         self.client.login(username='student1', password='password123')
-        response = self.client.get(reverse('library:library_list') + '?q=Cessna')
+        response = self.client.get(reverse('library:library_list') + '?q=Physics')
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, 'Cessna 172 Manual')
+        self.assertContains(response, 'Physics Lab Manual')
 
     def test_resource_download_increments_count(self):
         self.client.login(username='student1', password='password123')
