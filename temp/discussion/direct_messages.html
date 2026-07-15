@@ -1,0 +1,134 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block main %}
+<div class="container py-5" style="min-height: 80vh;">
+    <div class="row g-4">
+        <!-- Conversations List (Left Pane) -->
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm h-100" style="border-radius: 16px; background: #ffffff; min-height: 60vh;">
+                <div class="card-header bg-transparent border-0 p-4">
+                    <h4 class="fw-bold text-dark mb-3" style="font-family: 'Montserrat', sans-serif;">Direct Messages</h4>
+                    <!-- New Message Button / Trigger -->
+                    <button class="btn btn-outline-primary w-100 py-2 fw-semibold" style="border-radius: 8px; border-color: #002769; color: #002769;" data-bs-toggle="modal" data-bs-target="#newChatModal">
+                        <i class="fas fa-paper-plane me-2"></i> Start New Chat
+                    </button>
+                </div>
+                <div class="card-body p-0 overflow-auto" style="max-height: 50vh;">
+                    {% if conversations %}
+                        <div class="list-group list-group-flush">
+                            {% for partner, dms in conversations.items %}
+                            <a href="?user_id={{ partner.id }}" class="list-group-item list-group-item-action border-0 px-4 py-3 d-flex align-items-center {% if active_partner == partner %}active bg-light text-dark{% endif %}">
+                                <div class="avatar bg-secondary text-white rounded-circle d-flex align-items-center justify-content-center fw-bold me-3" style="width: 40px; height: 40px; font-size: 0.9rem;">
+                                    {{ partner.username|slice:":2"|upper }}
+                                </div>
+                                <div class="flex-grow-1 min-w-0">
+                                    <h6 class="fw-bold mb-1 text-dark text-truncate">{{ partner.get_full_name|default:partner.username }}</h6>
+                                    <p class="text-muted small mb-0 text-truncate">{{ dms.last.content }}</p>
+                                </div>
+                            </a>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <p class="text-muted text-center py-5 mb-0">No active chats. Start one below!</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Chat Thread (Right Pane) -->
+        <div class="col-md-8">
+            {% if active_partner %}
+                <div class="card border-0 shadow-sm d-flex flex-column h-100" style="border-radius: 16px; background: #ffffff; min-height: 60vh;">
+                    <!-- Chat Header -->
+                    <div class="card-header bg-transparent border-bottom border-light p-4 d-flex align-items-center">
+                        <div class="avatar bg-primary text-white rounded-circle d-flex align-items-center justify-content-center fw-bold me-3" style="width: 45px; height: 45px;">
+                            {{ active_partner.username|slice:":2"|upper }}
+                        </div>
+                        <div>
+                            <h5 class="fw-bold mb-0 text-dark" style="font-family: 'Montserrat', sans-serif;">
+                                {{ active_partner.get_full_name|default:active_partner.username }}
+                            </h5>
+                            <span class="text-success small"><i class="fas fa-circle me-1" style="font-size: 0.6rem;"></i> Active conversation</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Messages Container -->
+                    <div class="card-body p-4 overflow-auto flex-grow-1" style="max-height: 40vh; min-height: 30vh; background: #f8fafc;">
+                        {% if active_chat %}
+                            {% for dm in active_chat %}
+                                <div class="d-flex mb-3 {% if dm.sender == user %}justify-content-end{% endif %}">
+                                    <div class="p-3 rounded-3 shadow-sm small" style="max-width: 75%; {% if dm.sender == user %}background-color: #002769; color: #ffffff; border-radius: 15px 15px 0 15px;{% else %}background-color: #ffffff; color: #333333; border-radius: 15px 15px 15px 0;{% endif %}">
+                                        <div class="fw-bold mb-1" style="font-size: 0.75rem;">
+                                            {% if dm.sender == user %}You{% else %}{{ dm.sender.get_full_name|default:dm.sender.username }}{% endif %}
+                                        </div>
+                                        <div style="white-space: pre-line;">{{ dm.content }}</div>
+                                        <div class="text-end x-small mt-1 opacity-75" style="font-size: 0.65rem;">
+                                            {{ dm.created_at|date:"H:i" }}
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        {% else %}
+                            <p class="text-muted text-center py-5">No messages in this chat yet. Say hello!</p>
+                        {% endif %}
+                    </div>
+
+                    <!-- Message Input Form -->
+                    <div class="card-footer bg-transparent border-top border-light p-4">
+                        <form method="POST" class="d-flex gap-2">
+                            {% csrf_token %}
+                            <input type="hidden" name="recipient" value="{{ active_partner.id }}">
+                            <textarea name="content" required class="form-control bg-light border-0" rows="1" placeholder="Type a message..." style="border-radius: 8px; resize: none;"></textarea>
+                            <button type="submit" class="btn btn-primary px-4" style="background-color: #002769; border: none; border-radius: 8px;">
+                                <i class="fas fa-paper-plane"></i>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            {% else %}
+                <div class="card border-0 shadow-sm text-center p-5 d-flex align-items-center justify-content-center h-100" style="border-radius: 16px; background: #ffffff; min-height: 60vh;">
+                    <div class="my-auto">
+                        <i class="far fa-comments fa-5x text-muted opacity-25 mb-4"></i>
+                        <h4 class="fw-bold text-dark">No Active Conversation</h4>
+                        <p class="text-muted">Select a conversation from the sidebar or start a new chat with a peer or tutor.</p>
+                        <button class="btn btn-primary px-4 py-2 fw-bold" style="background-color: #002769; border: none; border-radius: 50px;" data-bs-toggle="modal" data-bs-target="#newChatModal">
+                            Start a Conversation
+                        </button>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<!-- Start Chat Modal -->
+<div class="modal fade" id="newChatModal" tabindex="-1" aria-labelledby="newChatModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content" style="border-radius: 16px; border: none;">
+            <div class="modal-header border-0 p-4">
+                <h5 class="modal-title fw-bold" id="newChatModalLabel" style="font-family: 'Montserrat', sans-serif; color: #002769;">Start a New Chat</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form method="GET" action="">
+                <div class="modal-body p-4 pt-0">
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold text-muted small">Select Contact</label>
+                        <select name="user_id" required class="form-select bg-light border-0 py-2" style="border-radius: 8px;">
+                            <option value="">Choose a user...</option>
+                            {% for u in users %}
+                            <option value="{{ u.id }}">{{ u.get_full_name|default:u.username }} ({{ u.profile.role|default:"User" }})</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer border-0 p-4 pt-0">
+                    <button type="submit" class="btn btn-primary w-100 py-2" style="background-color: #002769; border: none; border-radius: 8px;">
+                        Start Chat
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock main %}

@@ -1,0 +1,83 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block main %}
+<div class="container py-5" style="min-height: 80vh; max-width: 900px;">
+    <!-- Breadcrumb -->
+    <div class="mb-4">
+        <a href="{% url 'discussion:course_forum' course.slug %}" class="text-decoration-none text-muted fw-semibold">
+            <i class="fas fa-arrow-left me-2"></i> Back to Forum
+        </a>
+    </div>
+
+    <!-- Original Topic Post -->
+    <div class="card border-0 shadow-sm mb-4" style="border-radius: 16px; background: #ffffff;">
+        <div class="card-body p-4">
+            <div class="d-flex align-items-center mb-3">
+                <div class="avatar bg-primary text-white rounded-circle d-flex align-items-center justify-content-center fw-bold me-3" style="width: 50px; height: 50px;">
+                    {{ topic.creator.username|slice:":2"|upper }}
+                </div>
+                <div>
+                    <h5 class="fw-bold mb-0 text-dark" style="font-family: 'Montserrat', sans-serif;">{{ topic.creator.get_full_name|default:topic.creator.username }}</h5>
+                    <span class="text-muted small">Posted on {{ topic.created_at|date:"F d, Y @ H:i" }}</span>
+                </div>
+                {% if topic.is_pinned %}
+                <span class="badge bg-warning text-dark ms-auto"><i class="fas fa-thumbtack me-1"></i> Pinned</span>
+                {% endif %}
+            </div>
+            <h2 class="fw-bold text-dark mb-3" style="font-family: 'Montserrat', sans-serif;">{{ topic.title }}</h2>
+            <div class="text-dark" style="line-height: 1.6; white-space: pre-line;">{{ topic.content }}</div>
+        </div>
+    </div>
+
+    <!-- Replies Section -->
+    <h4 class="fw-bold text-dark mb-4" style="font-family: 'Montserrat', sans-serif;">
+        <i class="far fa-comments text-primary me-2"></i>Replies ({{ topic.posts.count }})
+    </h4>
+
+    {% if posts %}
+        {% for post in posts %}
+        <div class="card border-0 shadow-sm mb-3" style="border-radius: 12px; background: #ffffff;">
+            <div class="card-body p-4">
+                <div class="d-flex align-items-center mb-3">
+                    <div class="avatar bg-secondary text-white rounded-circle d-flex align-items-center justify-content-center fw-bold me-3" style="width: 40px; height: 40px; font-size: 0.9rem;">
+                        {{ post.creator.username|slice:":2"|upper }}
+                    </div>
+                    <div>
+                        <h6 class="fw-bold mb-0 text-dark">{{ post.creator.get_full_name|default:post.creator.username }}</h6>
+                        <span class="text-muted small">{{ post.created_at|date:"M d, Y @ H:i" }}</span>
+                    </div>
+                </div>
+                <div class="text-dark" style="line-height: 1.5; white-space: pre-line;">{{ post.content }}</div>
+            </div>
+        </div>
+        {% endfor %}
+    {% else %}
+        <div class="card border-0 shadow-sm text-center py-4 mb-4" style="border-radius: 12px; background: #ffffff;">
+            <p class="text-muted mb-0">No replies yet. Be the first to reply!</p>
+        </div>
+    {% endif %}
+
+    <!-- Reply Form -->
+    {% if not topic.is_locked %}
+    <div class="card border-0 shadow-sm" style="border-radius: 16px; background: #ffffff;">
+        <div class="card-body p-4">
+            <h5 class="fw-bold text-dark mb-3" style="font-family: 'Montserrat', sans-serif;">Post a Reply</h5>
+            <form method="POST">
+                {% csrf_token %}
+                <div class="mb-3">
+                    {{ form.content }}
+                </div>
+                <button type="submit" class="btn btn-primary px-4 fw-bold" style="background-color: #002769; border: none; border-radius: 8px;">
+                    Post Reply
+                </button>
+            </form>
+        </div>
+    </div>
+    {% else %}
+    <div class="alert alert-warning text-center fw-semibold" style="border-radius: 12px;">
+        <i class="fas fa-lock me-2"></i> This topic has been locked and replies are closed.
+    </div>
+    {% endif %}
+</div>
+{% endblock main %}

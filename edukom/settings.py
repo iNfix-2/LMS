@@ -54,6 +54,10 @@ INSTALLED_APPS = [
     'notifications.apps.NotificationsConfig',
     'ai_tools.apps.AiToolsConfig',
     'academics.apps.AcademicsConfig',
+    'discussion.apps.DiscussionConfig',
+    'achievements.apps.AchievementsConfig',
+    'library.apps.LibraryConfig',
+    'interactive.apps.InteractiveConfig',
 ]
 
 MIDDLEWARE = [

@@ -1,0 +1,173 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block main %}
+<div class="container py-5" style="min-height: 80vh;">
+    <!-- Page Header -->
+    <div class="row align-items-center mb-5">
+        <div class="col-md-8">
+            <h1 class="fw-bold mb-2" style="color: #002769; font-family: 'Montserrat', sans-serif;">Learning Resource Library</h1>
+            <p class="text-muted mb-0">Access supplementary files, documents, and reference materials curated by your tutors.</p>
+        </div>
+        <div class="col-md-4 text-md-end mt-3 mt-md-0">
+            {% if is_tutor or is_admin %}
+            <a href="{% url 'library:upload_resource' %}" class="btn btn-success px-4 py-2 fw-bold shadow-sm" style="background-color: #71A20A; border: none; border-radius: 50px; font-family: 'Montserrat', sans-serif;">
+                <i class="fas fa-plus me-2"></i> Upload Resource
+            </a>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Filters & Search -->
+    <div class="card border-0 shadow-sm mb-4" style="border-radius: 16px; background: #ffffff;">
+        <div class="card-body p-4">
+            <form method="GET" action="{% url 'library:library_list' %}" class="row g-3 align-items-end">
+                <div class="col-md-5">
+                    <label class="form-label fw-semibold text-muted small">Search Resources</label>
+                    <div class="input-group">
+                        <span class="input-group-text bg-light border-0"><i class="fas fa-search text-muted"></i></span>
+                        <input type="text" name="q" value="{{ query }}" class="form-control bg-light border-0" placeholder="Search by title or description..." style="border-radius: 0 8px 8px 0;">
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label fw-semibold text-muted small">Resource Type</label>
+                    <select name="type" class="form-select bg-light border-0" style="border-radius: 8px;">
+                        <option value="">All Types</option>
+                        {% for value, label in resource_types %}
+                        <option value="{{ value }}" {% if selected_type == value %}selected{% endif %}>{{ label }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label fw-semibold text-muted small">Course</label>
+                    <select name="course" class="form-select bg-light border-0" style="border-radius: 8px;">
+                        <option value="">All Courses</option>
+                        {% for course in courses %}
+                        <option value="{{ course.id }}" {% if selected_course == course.id|stringformat:"s" %}selected{% endif %}>{{ course.title }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-1">
+                    <button type="submit" class="btn btn-primary w-100 py-2" style="background-color: #002769; border: none; border-radius: 8px;">
+                        Filter
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Resource Grid -->
+    <div class="row g-4">
+        {% if resources %}
+            {% for resource in resources %}
+            <div class="col-md-4">
+                <div class="card h-100 border-0 shadow-sm hover-shadow-lg transition-all" style="border-radius: 16px; overflow: hidden; background: #ffffff;">
+                    <div class="p-4 d-flex flex-column h-100">
+                        <!-- Icon & Badges -->
+                        <div class="d-flex justify-content-between align-items-start mb-3">
+                            <span class="fs-2 text-primary">
+                                {% if resource.resource_type == 'pdf' %}
+                                    <i class="fas fa-file-pdf text-danger"></i>
+                                {% elif resource.resource_type == 'document' %}
+                                    <i class="fas fa-file-word text-primary"></i>
+                                {% elif resource.resource_type == 'video' %}
+                                    <i class="fas fa-video text-success"></i>
+                                {% elif resource.resource_type == 'audio' %}
+                                    <i class="fas fa-volume-up text-info"></i>
+                                {% elif resource.resource_type == 'slide' %}
+                                    <i class="fas fa-file-powerpoint text-warning"></i>
+                                {% else %}
+                                    <i class="fas fa-file text-secondary"></i>
+                                {% endif %}
+                            </span>
+                            <div class="d-flex flex-column align-items-end">
+                                <span class="badge mb-1 text-white bg-dark" style="font-size: 0.75rem; border-radius: 4px;">
+                                    {{ resource.get_resource_type_display }}
+                                </span>
+                                {% if resource.is_free %}
+                                <span class="badge text-white" style="background-color: #71A20A; font-size: 0.7rem; border-radius: 4px;">
+                                    FREE
+                                </span>
+                                {% else %}
+                                <span class="badge bg-secondary text-white" style="font-size: 0.7rem; border-radius: 4px;">
+                                    Course Only
+                                </span>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <!-- Title & Description -->
+                        <h5 class="fw-bold mb-2 text-dark" style="font-family: 'Montserrat', sans-serif; line-height: 1.4;">{{ resource.title }}</h5>
+                        <p class="text-muted small flex-grow-1">{{ resource.description|default:"No description provided."|truncatechars:100 }}</p>
+
+                        <!-- Meta Info -->
+                        <hr class="my-3 text-muted opacity-25">
+                        <div class="mb-3">
+                            {% if resource.course %}
+                            <div class="d-flex align-items-center mb-1">
+                                <i class="fas fa-book text-muted me-2 small"></i>
+                                <span class="small text-muted fw-semibold">{{ resource.course.title }}</span>
+                            </div>
+                            {% else %}
+                            <div class="d-flex align-items-center mb-1">
+                                <i class="fas fa-globe text-muted me-2 small"></i>
+                                <span class="small text-muted fw-semibold">General Resource</span>
+                            </div>
+                            {% endif %}
+                            <div class="d-flex justify-content-between align-items-center mt-2">
+                                <span class="small text-muted">
+                                    <i class="fas fa-cloud-download-alt me-1"></i> {{ resource.download_count }} Download{{ resource.download_count|pluralize }}
+                                </span>
+                                <span class="small text-muted">
+                                    By: {{ resource.uploaded_by.first_name|default:resource.uploaded_by.username }}
+                                </span>
+                            </div>
+                        </div>
+
+                        <!-- Actions -->
+                        <div class="mt-auto d-flex gap-2">
+                            {% if resource.has_access %}
+                            <a href="{% url 'library:download_resource' resource.id %}" class="btn btn-primary w-100 py-2 fw-semibold" style="background-color: #002769; border: none; border-radius: 8px;">
+                                <i class="fas fa-download me-2"></i> Download
+                            </a>
+                            {% else %}
+                            <a href="{% url 'course_detail' resource.course.slug %}" class="btn btn-outline-secondary w-100 py-2 fw-semibold disabled-hover" style="border-radius: 8px;">
+                                <i class="fas fa-lock me-2"></i> Enrolled Only
+                            </a>
+                            {% endif %}
+
+                            {% if resource.can_manage %}
+                            <form action="{% url 'library:delete_resource' resource.id %}" method="POST" onsubmit="return confirm('Are you sure you want to delete this resource?');" class="m-0">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-outline-danger py-2 px-3" style="border-radius: 8px;" title="Delete Resource">
+                                    <i class="fas fa-trash-alt"></i>
+                                </button>
+                            </form>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+        <div class="col-12 text-center py-5">
+            <div class="mb-4">
+                <i class="fas fa-folder-open fa-4x text-muted opacity-50"></i>
+            </div>
+            <h3 class="fw-bold text-dark">No Resources Found</h3>
+            <p class="text-muted">No library resources match your filter criteria. Try updating your filters or search query.</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<style>
+    .transition-all {
+        transition: all 0.3s ease;
+    }
+    .hover-shadow-lg:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 .5rem 1.5rem rgba(0,0,0,.1)!important;
+    }
+</style>
+{% endblock main %}

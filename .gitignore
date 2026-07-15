@@ -33,3 +33,6 @@ user/migrations
 accounts/migrations
 courses/migrations
 enrollments/migrations
+
+# Media uploads
+media/

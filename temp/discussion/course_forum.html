@@ -1,0 +1,115 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block main %}
+<div class="container py-5" style="min-height: 80vh;">
+    <!-- Breadcrumb -->
+    <div class="mb-4">
+        <a href="{% url 'course_detail' course.slug %}" class="text-decoration-none text-muted fw-semibold">
+            <i class="fas fa-arrow-left me-2"></i> Back to {{ course.title }}
+        </a>
+    </div>
+
+    <!-- Header -->
+    <div class="row align-items-center mb-5">
+        <div class="col-md-8">
+            <h1 class="fw-bold mb-2" style="color: #002769; font-family: 'Montserrat', sans-serif;">{{ course.title }} Forum</h1>
+            <p class="text-muted mb-0">Ask questions, share ideas, and discuss course topics with fellow students and tutors.</p>
+        </div>
+        <div class="col-md-4 text-md-end mt-3 mt-md-0">
+            <button class="btn btn-primary px-4 py-2 fw-bold shadow-sm" style="background-color: #002769; border: none; border-radius: 50px; font-family: 'Montserrat', sans-serif;" data-bs-toggle="collapse" data-bs-target="#newTopicForm">
+                <i class="fas fa-edit me-2"></i> New Topic
+            </button>
+        </div>
+    </div>
+
+    <!-- New Topic Form Collapse -->
+    <div class="collapse mb-5" id="newTopicForm">
+        <div class="card border-0 shadow-sm" style="border-radius: 16px; background: #ffffff;">
+            <div class="card-body p-4">
+                <h4 class="fw-bold text-dark mb-4" style="font-family: 'Montserrat', sans-serif;">Create a New Discussion Topic</h4>
+                <form method="POST">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold text-dark">Topic Title</label>
+                        {{ form.title }}
+                    </div>
+                    <div class="mb-4">
+                        <label class="form-label fw-semibold text-dark">Content</label>
+                        {{ form.content }}
+                    </div>
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-success px-4" style="background-color: #71A20A; border: none; border-radius: 8px;">
+                            Create Topic
+                        </button>
+                        <button type="button" class="btn btn-outline-secondary px-4" style="border-radius: 8px;" data-bs-toggle="collapse" data-bs-target="#newTopicForm">
+                            Cancel
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Topics List -->
+    <div class="card border-0 shadow-sm" style="border-radius: 16px; overflow: hidden; background: #ffffff;">
+        <div class="card-body p-0">
+            {% if topics %}
+                <div class="list-group list-group-flush">
+                    {% for topic in topics %}
+                    <div class="list-group-item p-4 border-0 border-bottom hover-bg-light transition-all">
+                        <div class="row align-items-center">
+                            <div class="col-md-8">
+                                <div class="d-flex align-items-center mb-2">
+                                    {% if topic.is_pinned %}
+                                    <span class="badge bg-warning text-dark me-2"><i class="fas fa-thumbtack me-1"></i> Pinned</span>
+                                    {% endif %}
+                                    {% if topic.is_locked %}
+                                    <span class="badge bg-danger text-white me-2"><i class="fas fa-lock me-1"></i> Locked</span>
+                                    {% endif %}
+                                </div>
+                                <a href="{% url 'discussion:topic_detail' topic.slug %}" class="h5 fw-bold text-dark text-decoration-none hover-primary mb-1 d-block" style="font-family: 'Montserrat', sans-serif;">
+                                    {{ topic.title }}
+                                </a>
+                                <p class="text-muted small mb-0">
+                                    Created by <span class="fw-semibold">{{ topic.creator.get_full_name|default:topic.creator.username }}</span> 
+                                    on {{ topic.created_at|date:"F d, Y" }}
+                                </p>
+                            </div>
+                            <div class="col-md-4 text-md-end mt-3 mt-md-0">
+                                <div class="text-muted small">
+                                    <i class="far fa-comments me-1"></i> {{ topic.posts.count }} repl{{ topic.posts.count|pluralize:"y,ies" }}
+                                </div>
+                                <div class="text-muted small mt-1">
+                                    Last active: {{ topic.updated_at|timesince }} ago
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="text-center py-5">
+                    <div class="mb-4">
+                        <i class="far fa-comments fa-4x text-muted opacity-50"></i>
+                    </div>
+                    <h4 class="fw-bold text-dark">No Discussion Topics Yet</h4>
+                    <p class="text-muted">Be the first to start a conversation in this forum!</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<style>
+    .transition-all {
+        transition: all 0.3s ease;
+    }
+    .hover-bg-light:hover {
+        background-color: #f8fafc;
+    }
+    .hover-primary:hover {
+        color: #002769 !important;
+    }
+</style>
+{% endblock main %}

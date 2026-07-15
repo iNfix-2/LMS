@@ -11,7 +11,13 @@ def enroll_in_course(request, course_slug):
         course = get_object_or_404(Course, slug=course_slug)
     else:
         course = get_object_or_404(Course, slug=course_slug, is_published=True)
-        
+    # Check course prerequisites
+    from interactive.services import check_course_prerequisites_met
+    prereqs_met, unmet_courses = check_course_prerequisites_met(request.user, course)
+    if not prereqs_met:
+        messages.error(request, f"Cannot enroll. You must complete the following prerequisite courses first: {', '.join([c.title for c in unmet_courses])}")
+        return redirect('course_detail', slug=course.slug)
+
     from payments.services import user_has_course_access, grant_course_access
     
     if course.is_free:
@@ -84,6 +90,24 @@ def mark_lesson_complete(request, course_slug, lesson_slug):
     progress.completed_at = timezone.now()
     progress.save()
     
+    # Check for course completion
+    try:
+        from achievements.services import check_and_award_course_completion
+        check_and_award_course_completion(request.user, enrollment.course)
+    except Exception as e:
+        import logging
+        logging.getLogger(__name__).error(f"Course completion check failed: {str(e)}")
+    
+    is_ajax = request.headers.get('x-requested-with') == 'XMLHttpRequest' or request.META.get('HTTP_X_REQUESTED_WITH') == 'XMLHttpRequest'
+    if is_ajax:
+        from django.http import JsonResponse
+        return JsonResponse({
+            'status': 'success',
+            'message': f"Lesson '{lesson.title}' marked as completed!",
+            'lesson_slug': lesson_slug,
+            'is_completed': True
+        })
+
     messages.success(request, f"Lesson '{lesson.title}' marked as completed!")
     return redirect('lesson_detail', course_slug=course_slug, lesson_slug=lesson_slug)
 

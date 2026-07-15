@@ -73,6 +73,23 @@ def course_detail(request, slug):
     except Exception:
         pass
 
+    # Check course prerequisites
+    from interactive.services import check_course_prerequisites_met
+    prereqs_met, unmet_prereq_courses = check_course_prerequisites_met(request.user, course)
+
+    # Fetch path settings for completion rules UI
+    from interactive.models import CoursePathSettings, CoursePrerequisite
+    path_settings = CoursePathSettings.objects.filter(course=course).first()
+    enforce_sequential = path_settings.enforce_sequential if path_settings else False
+    course_prerequisites = CoursePrerequisite.objects.filter(course=course).select_related('prerequisite_course')
+
+    completion_rule = None
+    try:
+        from achievements.models import CourseCompletionRule
+        completion_rule = CourseCompletionRule.objects.filter(course=course).first()
+    except Exception:
+        pass
+
     return render(request, 'courses/course_detail.html', {
         'course': course,
         'modules': modules,
@@ -83,6 +100,11 @@ def course_detail(request, slug):
         'has_access': has_access,
         'timetable_slots': timetable_slots,
         'live_classes': live_classes,
+        'prereqs_met': prereqs_met,
+        'unmet_prereq_courses': unmet_prereq_courses,
+        'enforce_sequential': enforce_sequential,
+        'course_prerequisites': course_prerequisites,
+        'completion_rule': completion_rule,
     })
 
 
@@ -135,6 +157,31 @@ def lesson_detail(request, course_slug, lesson_slug):
         pass
         
     is_completed = progress.is_completed if progress else False
+
+    # Check if lesson is locked by prerequisites
+    from interactive.services import check_lesson_prerequisites_met
+    is_locked = False
+    lock_reason = None
+    unmet_prerequisites = []
+    
+    if is_enrolled and not is_staff:
+        met, reason, unmet = check_lesson_prerequisites_met(request.user, lesson)
+        if not met:
+            from django.contrib import messages
+            if reason == 'sequential':
+                messages.warning(request, f"Prerequisite unmet: You must complete the previous lessons in sequence. Please complete '{unmet[0].title}' first.")
+            elif reason == 'course_prereq':
+                messages.warning(request, f"Prerequisite unmet: You must complete the prerequisite course '{unmet[0].title}' first.")
+            elif reason == 'lesson_prereq':
+                messages.warning(request, f"Prerequisite unmet: You must complete the prerequisite lesson '{unmet[0].title}' first.")
+            else:
+                messages.warning(request, "This lesson is locked because prerequisites have not been met.")
+            return redirect('course_detail', slug=course.slug)
+
+    # Fetch interactive content
+    interactive_content = getattr(lesson, 'interactive_content', None)
+    if interactive_content and not interactive_content.is_active:
+        interactive_content = None
     
     return render(request, 'courses/lesson_detail.html', {
         'course': course,
@@ -145,4 +192,8 @@ def lesson_detail(request, course_slug, lesson_slug):
         'is_completed': is_completed,
         'prev_lesson': prev_lesson,
         'next_lesson': next_lesson,
+        'is_locked': is_locked,
+        'lock_reason': lock_reason,
+        'unmet_prerequisites': unmet_prerequisites,
+        'interactive_content': interactive_content,
     })

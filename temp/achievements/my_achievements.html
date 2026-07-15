@@ -1,0 +1,117 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block main %}
+<div class="container py-5" style="min-height: 80vh;">
+    <!-- Header -->
+    <div class="row align-items-center mb-5">
+        <div class="col-md-8">
+            <h1 class="fw-bold mb-2" style="color: #002769; font-family: 'Montserrat', sans-serif;">My Achievements & Badges</h1>
+            <p class="text-muted mb-0">Celebrate your learning milestones, download certificates, and view badges you've earned.</p>
+        </div>
+        <div class="col-md-4 text-md-end mt-3 mt-md-0">
+            <a href="{% url 'achievements:verify_certificate' %}" class="btn btn-outline-primary px-4 py-2 fw-semibold" style="border-radius: 50px; font-family: 'Montserrat', sans-serif; border-color: #002769; color: #002769;">
+                <i class="fas fa-certificate me-2"></i> Verify a Certificate
+            </a>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Left: Certificates Card List -->
+        <div class="col-lg-8 mb-4">
+            <h3 class="fw-bold mb-4" style="color: #002769; font-family: 'Montserrat', sans-serif;">
+                <i class="fas fa-file-contract text-success me-2"></i>Certificates of Completion
+            </h3>
+
+            {% if certificates %}
+                <div class="row g-4">
+                    {% for cert in certificates %}
+                    <div class="col-md-6">
+                        <div class="card border-0 shadow-sm hover-shadow-lg transition-all h-100" style="border-radius: 16px; background: #ffffff;">
+                            <div class="card-body p-4 d-flex flex-column">
+                                <div class="d-flex justify-content-between align-items-start mb-3">
+                                    <span class="fs-1 text-warning"><i class="fas fa-award"></i></span>
+                                    <span class="badge bg-success bg-opacity-10 text-success rounded-pill px-3 py-1 text-uppercase small" style="font-weight: 600;">
+                                        Verified
+                                    </span>
+                                </div>
+                                <h5 class="fw-bold mb-1 text-dark" style="font-family: 'Montserrat', sans-serif;">{{ cert.course.title }}</h5>
+                                <p class="text-muted small mb-3">Issued on {{ cert.issued_at|date:"F d, Y" }}</p>
+                                
+                                <div class="mt-auto pt-3 border-top border-light">
+                                    <div class="mb-2">
+                                        <small class="text-muted d-block">Certificate ID</small>
+                                        <code class="text-dark fw-bold small">{{ cert.certificate_number }}</code>
+                                    </div>
+                                    <a href="{% url 'achievements:download_certificate' cert.id %}" class="btn btn-primary w-100 py-2 fw-bold" style="background-color: #002769; border: none; border-radius: 8px;">
+                                        <i class="fas fa-download me-2"></i> Download PDF
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="card border-0 shadow-sm text-center py-5" style="border-radius: 16px; background: #ffffff;">
+                    <div class="card-body">
+                        <div class="mb-3 text-muted">
+                            <i class="fas fa-certificate fa-4x opacity-25"></i>
+                        </div>
+                        <h5 class="fw-bold text-dark">No Certificates Earned Yet</h5>
+                        <p class="text-muted px-4">Complete all requirements of a course to earn a shareable certificate of completion.</p>
+                        <a href="{% url 'course_list' %}" class="btn btn-primary btn-sm px-4 py-2" style="background-color: #002769; border: none; border-radius: 50px;">
+                            Browse Courses
+                        </a>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+
+        <!-- Right: Badges Board -->
+        <div class="col-lg-4">
+            <h3 class="fw-bold mb-4" style="color: #002769; font-family: 'Montserrat', sans-serif;">
+                <i class="fas fa-medal text-warning me-2"></i>Badge Showcase
+            </h3>
+
+            <div class="card border-0 shadow-sm" style="border-radius: 16px; background: #ffffff;">
+                <div class="card-body p-4">
+                    {% if all_badges %}
+                        <div class="row g-3">
+                            {% for badge in all_badges %}
+                            <div class="col-6 text-center mb-3">
+                                <div class="position-relative d-inline-block">
+                                    <div class="badge-icon-wrap rounded-circle d-flex align-items-center justify-content-center mx-auto mb-2 {% if badge.is_earned %}bg-warning bg-opacity-20{% else %}bg-light opacity-50{% endif %}" style="width: 70px; height: 70px; border: 2px dashed {% if badge.is_earned %}#ffc107{% else %}#dee2e6{% endif %};">
+                                        <i class="fas fa-award fs-2 {% if badge.is_earned %}text-warning{% else %}text-muted{% endif %}"></i>
+                                    </div>
+                                    {% if badge.is_earned %}
+                                    <span class="position-absolute bottom-0 end-0 badge bg-success rounded-circle p-1" style="transform: translate(25%, 0%);"><i class="fas fa-check text-white" style="font-size: 0.6rem;"></i></span>
+                                    {% endif %}
+                                </div>
+                                <h6 class="fw-bold text-dark mb-0 small" style="font-family: 'Montserrat', sans-serif;">{{ badge.title }}</h6>
+                                <span class="text-muted x-small d-block" style="font-size: 0.75rem;">{{ badge.get_badge_type_display }}</span>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <p class="text-muted text-center mb-0 py-3">No badges configured in the system yet.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .transition-all {
+        transition: all 0.3s ease;
+    }
+    .hover-shadow-lg:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 .5rem 1.5rem rgba(0,0,0,.1)!important;
+    }
+    .x-small {
+        font-size: 0.7rem;
+    }
+</style>
+{% endblock main %}

@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block main %}
+<div class="container py-5" style="min-height: 80vh; max-width: 700px;">
+    <!-- Header -->
+    <div class="text-center mb-5">
+        <h1 class="fw-bold mb-2" style="color: #002769; font-family: 'Montserrat', sans-serif;">Certificate Verification</h1>
+        <p class="text-muted">Validate the authenticity of an Edukom Learning certificate of completion.</p>
+    </div>
+
+    <!-- Search Form -->
+    <div class="card border-0 shadow-sm mb-4" style="border-radius: 16px; background: #ffffff;">
+        <div class="card-body p-4">
+            <form method="GET" action="{% url 'achievements:verify_certificate' %}">
+                <label class="form-label fw-bold text-dark mb-2">Certificate Number or Verification Code</label>
+                <div class="input-group">
+                    <input type="text" name="q" value="{{ query }}" required class="form-control form-control-lg bg-light border-0" placeholder="e.g. EDU-CERT-A1B2C3D4" style="border-radius: 12px 0 0 12px;">
+                    <button type="submit" class="btn btn-primary px-4" style="background-color: #002769; border: none; border-radius: 0 12px 12px 0;">
+                        <i class="fas fa-search me-2"></i> Verify
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Verification Results -->
+    {% if searched %}
+        {% if certificate %}
+            <div class="card border-0 shadow-sm text-center p-5 position-relative overflow-hidden" style="border-radius: 16px; background: #ffffff; border: 2px solid #198754!important;">
+                <div class="position-absolute top-0 end-0 bg-success text-white py-1 px-4 fw-bold small text-uppercase" style="transform: rotate(45deg) translate(25px, -5px); width: 150px;">
+                    Valid
+                </div>
+                
+                <div class="mb-4">
+                    <i class="fas fa-check-circle fa-4x text-success"></i>
+                </div>
+                
+                <h3 class="fw-bold text-success mb-2" style="font-family: 'Montserrat', sans-serif;">Verification Successful</h3>
+                <p class="text-muted mb-4">This certificate of completion is authentic and was officially issued by Edukom Learning.</p>
+                
+                <div class="bg-light p-4 rounded-3 text-start mb-4">
+                    <div class="row g-3">
+                        <div class="col-sm-6">
+                            <span class="text-muted d-block small">Recipient Name</span>
+                            <strong class="text-dark">{{ certificate.student.get_full_name|default:certificate.student.username }}</strong>
+                        </div>
+                        <div class="col-sm-6">
+                            <span class="text-muted d-block small">Course Completed</span>
+                            <strong class="text-dark">{{ certificate.course.title }}</strong>
+                        </div>
+                        <div class="col-sm-6">
+                            <span class="text-muted d-block small">Date of Issue</span>
+                            <strong class="text-dark">{{ certificate.issued_at|date:"F d, Y" }}</strong>
+                        </div>
+                        <div class="col-sm-6">
+                            <span class="text-muted d-block small">Certificate Number</span>
+                            <code class="text-dark fw-bold">{{ certificate.certificate_number }}</code>
+                        </div>
+                    </div>
+                </div>
+
+                <a href="{% url 'achievements:download_certificate' certificate.id %}" class="btn btn-outline-success px-4 py-2 fw-semibold" style="border-radius: 50px;">
+                    <i class="fas fa-download me-2"></i> Download Verified Copy
+                </a>
+            </div>
+        {% else %}
+            <div class="card border-0 shadow-sm text-center p-5" style="border-radius: 16px; background: #ffffff; border: 2px solid #dc3545!important;">
+                <div class="mb-4">
+                    <i class="fas fa-times-circle fa-4x text-danger"></i>
+                </div>
+                
+                <h3 class="fw-bold text-danger mb-2" style="font-family: 'Montserrat', sans-serif;">Verification Failed</h3>
+                <p class="text-muted mb-0">No matching certificate record was found for the code: <strong class="text-dark">"{{ query }}"</strong>.</p>
+                <p class="text-muted small mt-2">Please double check the spelling and try again. If you believe this is an error, please contact support.</p>
+            </div>
+        {% endif %}
+    {% endif %}
+</div>
+{% endblock main %}

@@ -35,6 +35,10 @@ urlpatterns = [
     path('learn/', include('notifications.urls')),
     path('learn/', include('ai_tools.urls')),
     path('learn/', include('academics.urls')),
+    path('learn/', include('interactive.urls')),
+    path('learn/library/', include('library.urls')),
+    path('learn/achievements/', include('achievements.urls')),
+    path('learn/discussion/', include('discussion.urls')),
 ]
 
 
@@ -43,5 +47,7 @@ admin.site.site_title = "EDUKOM Admin"
 admin.site.site_header = "Edukom learning Admin Dashboard"
 admin.site.index_title = "Admin Page"
 
+urlpatterns += static(settings.STATIC_URL, document_root = settings.STATIC_ROOT)
+urlpatterns += static(settings.MEDIA_URL, document_root = settings.MEDIA_ROOT)
 urlpatterns += static(settings.STATIC_URL, document_root = settings.STATIC_ROOT)
 urlpatterns += static(settings.MEDIA_URL, document_root = settings.MEDIA_ROOT)

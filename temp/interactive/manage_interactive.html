@@ -1,0 +1,119 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block main %}
+<div class="container-fluid py-4" style="margin-top: 20px; background-color: #F8FAFC; min-height: 100vh;">
+    <div class="container">
+        <!-- Breadcrumbs -->
+        <nav aria-label="breadcrumb" class="mb-4">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{% url 'course_list' %}" style="color: #002769; font-weight: 500;">Courses</a></li>
+                <li class="breadcrumb-item"><a href="{% url 'course_detail' course.slug %}" style="color: #002769; font-weight: 500;">{{ course.title }}</a></li>
+                <li class="breadcrumb-item"><a href="{% url 'interactive:path_manager' course.slug %}" style="color: #002769; font-weight: 500;">Path Manager</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Configure Lesson Interactive Content</li>
+            </ol>
+        </nav>
+
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="card border-0 shadow-sm" style="border-radius: 15px; background: #fff;">
+                    <div class="card-header py-3 bg-white border-bottom">
+                        <h5 class="fw-bold mb-0" style="color: #002769; font-family: 'Montserrat', sans-serif;">
+                            <i class="fas fa-cog me-2 text-primary" style="color: #002769 !important;"></i>Configure Interactive Content
+                        </h5>
+                    </div>
+                    <div class="card-body p-4 p-lg-5">
+                        <h4 class="fw-bold mb-1 text-dark">{{ lesson.title }}</h4>
+                        <p class="text-muted small mb-4">Module {{ lesson.module.order }} • Order {{ lesson.order }}</p>
+
+                        <form method="POST" enctype="multipart/form-data">
+                            {% csrf_token %}
+                            
+                            {% if form.errors %}
+                            <div class="alert alert-danger" style="border-radius: 10px;">
+                                <h6 class="fw-bold mb-1"><i class="fas fa-exclamation-triangle me-2"></i>Please correct the errors below:</h6>
+                                <ul class="mb-0 small">
+                                    {% for field in form %}
+                                        {% for error in field.errors %}
+                                            <li><strong>{{ field.label }}:</strong> {{ error }}</li>
+                                        {% endfor %}
+                                    {% endfor %}
+                                    {% for error in form.non_field_errors %}
+                                        <li>{{ error }}</li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                            {% endif %}
+
+                            <!-- Content Type -->
+                            <div class="mb-4">
+                                <label for="id_content_type" class="form-label fw-bold text-dark">Interactive Content Type</label>
+                                {{ form.content_type }}
+                                <small class="text-muted d-block mt-2">
+                                    Select the type of package or embed to deliver. SCORM and H5P packages require a valid ZIP package containing files, while H5P Embed allows iframe URLs from external tools.
+                                </small>
+                            </div>
+
+                            <!-- Package File (SCORM/H5P Zip) -->
+                            <div class="mb-4" id="packageFileGroup">
+                                <label for="id_package_file" class="form-label fw-bold text-dark">Upload Package File (ZIP)</label>
+                                {{ form.package_file }}
+                                <small class="text-muted d-block mt-2">
+                                    Upload a ZIP file containing the SCORM manifest/resources or the H5P player assets.
+                                </small>
+                                {% if interactive_content.package_file %}
+                                <div class="mt-2 p-2 border rounded bg-light d-flex align-items-center justify-content-between">
+                                    <span class="small text-muted"><i class="fas fa-file-archive me-1"></i>Currently: {{ interactive_content.package_file.name }}</span>
+                                </div>
+                                {% endif %}
+                            </div>
+
+                            <!-- Embed URL -->
+                            <div class="mb-4" id="embedUrlGroup">
+                                <label for="id_embed_url" class="form-label fw-bold text-dark">H5P Embed URL</label>
+                                {{ form.embed_url }}
+                                <small class="text-muted d-block mt-2">
+                                    Enter the URL for the H5P player frame (e.g., https://h5p.org/h5p/embed/12345).
+                                </small>
+                            </div>
+
+                            <!-- Buttons -->
+                            <div class="d-flex align-items-center justify-content-end gap-3 border-top pt-4 mt-4">
+                                <a href="{% url 'interactive:path_manager' course.slug %}" class="btn btn-light" style="border-radius: 8px; font-weight: 600;">Cancel</a>
+                                <button type="submit" class="btn text-white" style="background-color: #002769; border-radius: 8px; font-weight: 600; padding: 10px 24px;">
+                                    Save Settings
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const typeSelect = document.getElementById("id_content_type");
+        const fileGroup = document.getElementById("packageFileGroup");
+        const urlGroup = document.getElementById("embedUrlGroup");
+
+        function updateFields() {
+            const selectedType = typeSelect.value;
+            if (selectedType === 'scorm' || selectedType === 'h5p') {
+                fileGroup.style.display = 'block';
+                urlGroup.style.display = 'none';
+            } else if (selectedType === 'h5p_embed') {
+                fileGroup.style.display = 'none';
+                urlGroup.style.display = 'block';
+            } else {
+                fileGroup.style.display = 'none';
+                urlGroup.style.display = 'none';
+            }
+        }
+
+        typeSelect.addEventListener("change", updateFields);
+        updateFields();
+    });
+</script>
+{% endblock main %}

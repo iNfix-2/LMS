@@ -1,0 +1,184 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block main %}
+<div class="container-fluid py-4" style="margin-top: 20px; background-color: #F8FAFC; min-height: 100vh;">
+    <div class="container">
+        <!-- Header -->
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h1 class="fw-bold mb-1" style="color: #002769; font-family: 'Montserrat', sans-serif;">Interactive H5P Player</h1>
+                <p class="text-muted mb-0">Lesson: <strong>{{ lesson.title }}</strong></p>
+            </div>
+            <div>
+                <a href="{% url 'lesson_detail' lesson.module.course.slug lesson.slug %}" class="btn btn-outline-primary" style="border-radius: 8px; font-weight: 600; color: #002769; border-color: #002769;">
+                    <i class="fas fa-arrow-left me-2"></i>Back to Lesson
+                </a>
+            </div>
+        </div>
+
+        <div class="card border-0 shadow-sm overflow-hidden" style="border-radius: 15px; background: #fff;">
+            {% if interactive_content.content_type == 'h5p_embed' %}
+                <!-- Embed URL Player -->
+                <div class="ratio ratio-16x9" style="min-height: 500px;">
+                    <iframe src="{{ interactive_content.embed_url }}" allowfullscreen style="border: none;"></iframe>
+                </div>
+                <div class="card-footer bg-light py-3 d-flex align-items-center justify-content-between">
+                    <span class="text-muted small"><i class="fas fa-info-circle me-1"></i>H5P content is loaded from an external source.</span>
+                    <button id="completeBtn" class="btn btn-success fw-bold" style="border-radius: 8px; background-color: #71A20A; border: none;">
+                        <i class="fas fa-check-circle me-1"></i>Mark Content as Finished
+                    </button>
+                </div>
+            {% else %}
+                <!-- Local Simulated H5P Package Player -->
+                <div class="p-4 p-lg-5 text-center" style="background-color: #002769; color: #fff;">
+                    <h3 class="fw-bold mb-3" style="font-family: 'Montserrat', sans-serif;"><i class="fas fa-puzzle-piece text-warning me-2"></i>Interactive Matching Challenge</h3>
+                    <p class="mb-0 text-white-50">Match the correct aviation definitions to complete this learning block.</p>
+                </div>
+                <div class="p-4 p-lg-5">
+                    <div id="matchingWidget" class="mx-auto" style="max-width: 600px;">
+                        <div class="alert alert-info small mb-4" style="border-radius: 10px;">
+                            Drag or click the matching pairs on the left and right sides.
+                        </div>
+                        
+                        <div class="row g-3">
+                            <div class="col-6">
+                                <div class="d-grid gap-2">
+                                    <button class="btn btn-outline-primary text-start p-3 item-btn option-btn" data-pair="1" style="border-radius: 10px; font-weight: 500;">
+                                        <i class="fas fa-plane-departure me-2"></i>Pitch
+                                    </button>
+                                    <button class="btn btn-outline-primary text-start p-3 item-btn option-btn" data-pair="2" style="border-radius: 10px; font-weight: 500;">
+                                        <i class="fas fa-wind me-2"></i>Lift
+                                    </button>
+                                    <button class="btn btn-outline-primary text-start p-3 item-btn option-btn" data-pair="3" style="border-radius: 10px; font-weight: 500;">
+                                        <i class="fas fa-tachometer-alt me-2"></i>Yoke
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="d-grid gap-2">
+                                    <button class="btn btn-outline-success text-start p-3 item-btn target-btn" data-pair="2" style="border-radius: 10px; font-weight: 500;">
+                                        Upward aerodynamic force
+                                    </button>
+                                    <button class="btn btn-outline-success text-start p-3 item-btn target-btn" data-pair="3" style="border-radius: 10px; font-weight: 500;">
+                                        Control wheel of the aircraft
+                                    </button>
+                                    <button class="btn btn-outline-success text-start p-3 item-btn target-btn" data-pair="1" style="border-radius: 10px; font-weight: 500;">
+                                        Rotation around the lateral axis
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="matchingFeedback" class="mt-4 alert alert-success d-none" style="border-radius: 10px;">
+                            <h5 class="fw-bold mb-1"><i class="fas fa-check-circle me-2"></i>Excellent Job!</h5>
+                            <p class="small mb-0">All terms matched correctly. Submitting progress to your course record...</p>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const courseSlug = "{{ lesson.module.course.slug }}";
+        const lessonSlug = "{{ lesson.slug }}";
+        const markUrl = `{% url 'mark_lesson_complete' lesson.module.course.slug lesson.slug %}`;
+        
+        function submitCompletion() {
+            fetch(markUrl, {
+                method: "POST",
+                headers: {
+                    "X-CSRFToken": "{{ csrf_token }}",
+                    "X-Requested-With": "XMLHttpRequest"
+                }
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    // Redirect back to lesson page
+                    setTimeout(() => {
+                        window.location.href = `{% url 'lesson_detail' lesson.module.course.slug lesson.slug %}`;
+                    }, 1500);
+                } else {
+                    alert("Error updating progress: " + data.message);
+                }
+            })
+            .catch(err => console.error("Error:", err));
+        }
+
+        // 1. Embed URL Complete button
+        const completeBtn = document.getElementById("completeBtn");
+        if (completeBtn) {
+            completeBtn.addEventListener("click", function() {
+                completeBtn.disabled = true;
+                completeBtn.innerHTML = `<i class="fas fa-spinner fa-spin me-1"></i> Saving...`;
+                submitCompletion();
+            });
+        }
+
+        // 2. Local Match Mockup Game
+        const options = document.querySelectorAll(".option-btn");
+        const targets = document.querySelectorAll(".target-btn");
+        let selectedOption = null;
+
+        options.forEach(btn => {
+            btn.addEventListener("click", function() {
+                if (btn.classList.contains("disabled")) return;
+                options.forEach(b => b.classList.remove("active"));
+                btn.classList.add("active");
+                selectedOption = btn;
+            });
+        });
+
+        targets.forEach(btn => {
+            btn.addEventListener("click", function() {
+                if (btn.classList.contains("disabled")) return;
+                if (!selectedOption) {
+                    alert("Please select a term on the left side first!");
+                    return;
+                }
+
+                const optVal = selectedOption.getAttribute("data-pair");
+                const targetVal = btn.getAttribute("data-pair");
+
+                if (optVal === targetVal) {
+                    // Match found
+                    selectedOption.classList.remove("active", "btn-outline-primary");
+                    selectedOption.classList.add("btn-success", "text-white", "disabled");
+                    btn.classList.remove("btn-outline-success");
+                    btn.classList.add("btn-success", "text-white", "disabled");
+                    selectedOption = null;
+
+                    // Check if game is completed
+                    const remaining = document.querySelectorAll(".option-btn:not(.disabled)");
+                    if (remaining.length === 0) {
+                        document.getElementById("matchingFeedback").classList.remove("d-none");
+                        submitCompletion();
+                    }
+                } else {
+                    // Incorrect match
+                    btn.classList.add("shake-animation");
+                    setTimeout(() => btn.classList.remove("shake-animation"), 500);
+                    selectedOption.classList.remove("active");
+                    selectedOption = null;
+                    alert("Incorrect match! Try again.");
+                }
+            });
+        });
+    });
+</script>
+
+<style>
+    .shake-animation {
+        animation: shake 0.3s ease-in-out;
+    }
+    @keyframes shake {
+        0%, 100% { transform: translateX(0); }
+        25% { transform: translateX(-6px); }
+        75% { transform: translateX(6px); }
+    }
+</style>
+{% endblock main %}
