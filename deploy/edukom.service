@@ -1,0 +1,16 @@
+[Unit]
+Description=Edukom Learning LMS Gunicorn Service
+After=network.target
+
+[Service]
+User=ini
+WorkingDirectory=/home/ini/Desktop/edukomLMS-A/learning
+ExecStart=/home/ini/Desktop/edukomLMS-A/learning/venv_linux/bin/gunicorn --config deploy/gunicorn_config.py edukom.wsgi:application
+Restart=always
+RestartSec=5
+StandardOutput=syslog
+StandardError=syslog
+SyslogIdentifier=edukom-lms
+
+[Install]
+WantedBy=multi-user.target
