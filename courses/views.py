@@ -9,6 +9,9 @@ def course_list(request):
         courses = Course.objects.all()
     else:
         courses = Course.objects.filter(is_published=True)
+
+    if hasattr(request, 'tenant') and request.tenant:
+        courses = courses.filter(tenant_mapping__tenant=request.tenant)
         
     subject_param = request.GET.get('subject')
     if subject_param:

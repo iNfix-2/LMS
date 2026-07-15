@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+{% load static %}
+{% block main %}
+<div class="container py-5" style="max-width: 700px; margin: auto;">
+    <div class="card border-0 shadow p-5 bg-white rounded-lg">
+        <div class="d-flex align-items-center mb-4 border-bottom pb-3">
+            <i class="fas fa-sliders fa-2x text-primary me-2"></i>
+            <h1 class="h4 mb-0 font-weight-bold">Configure Tenant Branding & Payments</h1>
+        </div>
+
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            
+            <h3 class="h6 font-weight-bold text-uppercase text-primary mb-3">Branding Settings</h3>
+            
+            <div class="mb-3">
+                <label for="tenantName" class="form-label font-weight-bold text-muted small">School/Center Name</label>
+                <input type="text" class="form-control" id="tenantName" name="name" value="{{ tenant.name }}" required>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label for="themeColor" class="form-label font-weight-bold text-muted small">Primary Brand Color</label>
+                    <div class="input-group">
+                        <input type="color" class="form-control form-control-color w-25" id="themeColor" name="theme_color" value="{{ tenant.theme_color|default:'#002769' }}" title="Choose primary color">
+                        <input type="text" class="form-control w-75" value="{{ tenant.theme_color|default:'#002769' }}" readonly>
+                    </div>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label for="themeAccent" class="form-label font-weight-bold text-muted small">Brand Accent Color</label>
+                    <div class="input-group">
+                        <input type="color" class="form-control form-control-color w-25" id="themeAccent" name="theme_accent" value="{{ tenant.theme_accent|default:'#0ea5e9' }}" title="Choose accent color">
+                        <input type="text" class="form-control w-75" value="{{ tenant.theme_accent|default:'#0ea5e9' }}" readonly>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mb-4">
+                <label for="tenantLogo" class="form-label font-weight-bold text-muted small">Upload Logo</label>
+                {% if tenant.logo %}
+                <div class="mb-2">
+                    <img src="{{ tenant.logo.url }}" alt="Current Logo" class="img-thumbnail" style="max-height: 80px;">
+                </div>
+                {% endif %}
+                <input class="form-control" type="file" id="tenantLogo" name="logo">
+            </div>
+
+            <hr class="my-4">
+
+            <h3 class="h6 font-weight-bold text-uppercase text-primary mb-3">Payout Bank Account Details</h3>
+            <p class="text-muted small leading-relaxed mb-3">
+                Specify the bank account where your course payout distributions will be remitted when requested.
+            </p>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label for="payoutAccountNumber" class="form-label font-weight-bold text-muted small">Account Number (NUBAN)</label>
+                    <input type="text" class="form-control" id="payoutAccountNumber" name="payout_account_number" value="{{ tenant.payout_account_number|default:'' }}" placeholder="e.g. 0123456789">
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label for="payoutBankCode" class="form-label font-weight-bold text-muted small">Bank Code / Name</label>
+                    <input type="text" class="form-control" id="payoutBankCode" name="payout_bank_code" value="{{ tenant.payout_bank_code|default:'' }}" placeholder="e.g. 058 (GTBank)">
+                </div>
+            </div>
+
+            <div class="d-flex gap-2 mt-4">
+                <a href="{% url 'tenant_admin_dashboard' %}" class="btn btn-secondary w-50 py-2">Back to Dashboard</a>
+                <button type="submit" class="btn btn-primary w-50 py-2 font-weight-bold text-white">Save Configuration</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock main %}

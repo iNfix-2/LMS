@@ -1,0 +1,264 @@
+{% extends "base.html" %}
+{% load static %}
+{% block main %}
+<div class="container py-5">
+    <!-- Header banner -->
+    <div class="card border-0 shadow-sm p-4 mb-4 text-white rounded-lg" style="background: linear-gradient(135deg, {{ tenant.theme_color|default:'#002769' }} 0%, {{ tenant.theme_accent|default:'#0ea5e9' }} 100%);">
+        <div class="d-flex align-items-center justify-content-between flex-wrap">
+            <div class="d-flex align-items-center">
+                {% if tenant.logo %}
+                <img src="{{ tenant.logo.url }}" alt="Logo" class="img-fluid rounded bg-white p-2 me-3" style="max-height: 70px; max-width: 70px;">
+                {% endif %}
+                <div>
+                    <h1 class="h3 font-weight-bold mb-1">{{ tenant.name }}</h1>
+                    <p class="mb-0 text-white-50"><i class="fas fa-link me-1"></i> subdomain: <strong>{{ tenant.subdomain }}.localhost:8000</strong></p>
+                </div>
+            </div>
+            <div class="mt-3 mt-md-0">
+                <a href="{% url 'tenant_update_settings' %}" class="btn btn-light font-weight-bold" style="color: {{ tenant.theme_color|default:'#002769' }};">
+                    <i class="fas fa-paint-brush me-1"></i> Branding & Payments
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Stats Cards -->
+    <div class="row mb-4">
+        <div class="col-md-3 mb-3">
+            <div class="card border-0 shadow-sm p-3 bg-white text-center">
+                <i class="fas fa-book-open fa-2x mb-2" style="color: {{ tenant.theme_accent|default:'#0ea5e9' }};"></i>
+                <h4 class="h6 text-muted font-weight-bold uppercase mb-1">Courses</h4>
+                <div class="h3 font-weight-bold text-dark">{{ courses.count }}</div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card border-0 shadow-sm p-3 bg-white text-center">
+                <i class="fas fa-user-tie fa-2x mb-2" style="color: {{ tenant.theme_accent|default:'#0ea5e9' }};"></i>
+                <h4 class="h6 text-muted font-weight-bold uppercase mb-1">Tutors</h4>
+                <div class="h3 font-weight-bold text-dark">{{ tutors|length }}</div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card border-0 shadow-sm p-3 bg-white text-center">
+                <i class="fas fa-users fa-2x mb-2" style="color: {{ tenant.theme_accent|default:'#0ea5e9' }};"></i>
+                <h4 class="h6 text-muted font-weight-bold uppercase mb-1">Students</h4>
+                <div class="h3 font-weight-bold text-dark">{{ students|length }}</div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card border-0 shadow-sm p-3 bg-white text-center">
+                <i class="fas fa-wallet fa-2x mb-2" style="color: {{ tenant.theme_accent|default:'#0ea5e9' }};"></i>
+                <h4 class="h6 text-muted font-weight-bold uppercase mb-1">Gross Earnings</h4>
+                <div class="h3 font-weight-bold text-dark">₦{{ total_earnings|floatformat:2 }}</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Main Tabs Panel -->
+        <div class="col-lg-8 mb-4">
+            <div class="card border-0 shadow p-4 bg-white rounded-lg">
+                <!-- Nav tabs -->
+                <ul class="nav nav-pills mb-4 border-bottom pb-2" id="tenantTab" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active font-weight-bold" id="courses-tab" data-bs-toggle="tab" data-bs-target="#courses-content" type="button" role="tab" aria-controls="courses-content" aria-selected="true">
+                            Courses
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link font-weight-bold" id="tutors-tab" data-bs-toggle="tab" data-bs-target="#tutors-content" type="button" role="tab" aria-controls="tutors-content" aria-selected="false">
+                            Tutors
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link font-weight-bold" id="students-tab" data-bs-toggle="tab" data-bs-target="#students-content" type="button" role="tab" aria-controls="students-content" aria-selected="false">
+                            Students
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link font-weight-bold" id="invoices-tab" data-bs-toggle="tab" data-bs-target="#invoices-content" type="button" role="tab" aria-controls="invoices-content" aria-selected="false">
+                            Payments
+                        </button>
+                    </li>
+                </ul>
+
+                <!-- Tab panes -->
+                <div class="tab-content" id="tenantTabContent">
+                    <!-- Courses -->
+                    <div class="tab-pane fade show active" id="courses-content" role="tabpanel" aria-labelledby="courses-tab">
+                        {% if courses %}
+                        <div class="table-responsive">
+                            <table class="table align-middle">
+                                <thead>
+                                    <tr>
+                                        <th>Course Title</th>
+                                        <th>Tutor</th>
+                                        <th>Price</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for c in courses %}
+                                    <tr>
+                                        <td><strong>{{ c.title }}</strong></td>
+                                        <td>{{ c.tutor.user.get_full_name|default:c.tutor.user.username }}</td>
+                                        <td>₦{{ c.price }}</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        {% else %}
+                        <p class="text-muted text-center py-4">No courses associated with this school.</p>
+                        {% endif %}
+                    </div>
+
+                    <!-- Tutors -->
+                    <div class="tab-pane fade" id="tutors-content" role="tabpanel" aria-labelledby="tutors-tab">
+                        {% if tutors %}
+                        <div class="table-responsive">
+                            <table class="table align-middle">
+                                <thead>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Email</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for t in tutors %}
+                                    <tr>
+                                        <td><strong>{{ t.get_full_name|default:t.username }}</strong></td>
+                                        <td>{{ t.email }}</td>
+                                        <td><span class="badge bg-success text-white">Active</span></td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        {% else %}
+                        <p class="text-muted text-center py-4">No tutors mapped to this tenant.</p>
+                        {% endif %}
+                    </div>
+
+                    <!-- Students -->
+                    <div class="tab-pane fade" id="students-content" role="tabpanel" aria-labelledby="students-tab">
+                        {% if students %}
+                        <div class="table-responsive">
+                            <table class="table align-middle">
+                                <thead>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Email</th>
+                                        <th>Joined</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for s in students %}
+                                    <tr>
+                                        <td><strong>{{ s.get_full_name|default:s.username }}</strong></td>
+                                        <td>{{ s.email }}</td>
+                                        <td>{{ s.date_joined|date:"M d, Y" }}</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        {% else %}
+                        <p class="text-muted text-center py-4">No students registered under this school subdomain.</p>
+                        {% endif %}
+                    </div>
+
+                    <!-- Invoices -->
+                    <div class="tab-pane fade" id="invoices-content" role="tabpanel" aria-labelledby="invoices-tab">
+                        {% if invoices %}
+                        <div class="table-responsive">
+                            <table class="table align-middle">
+                                <thead>
+                                    <tr>
+                                        <th>Student</th>
+                                        <th>Course</th>
+                                        <th>Amount</th>
+                                        <th>Status</th>
+                                        <th>Date</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for inv in invoices %}
+                                    <tr>
+                                        <td>{{ inv.student.username }}</td>
+                                        <td>{{ inv.course.title }}</td>
+                                        <td>₦{{ inv.amount }}</td>
+                                        <td>
+                                            {% if inv.status == 'paid' %}
+                                            <span class="badge bg-success text-white">Paid</span>
+                                            {% else %}
+                                            <span class="badge bg-warning text-dark">Unpaid</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>{{ inv.created_at|date:"M d, Y" }}</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        {% else %}
+                        <p class="text-muted text-center py-4">No course purchase invoices logged.</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Payout Management Panel -->
+        <div class="col-lg-4">
+            <div class="card border-0 shadow p-4 bg-white rounded-lg mb-4">
+                <h3 class="h5 font-weight-bold mb-3 text-dark"><i class="fas fa-coins me-1 text-warning"></i> Payout Portal</h3>
+                
+                <div class="alert alert-light border mb-4 py-2 px-3 small">
+                    <strong>Bank Destination:</strong><br>
+                    Bank Code: {{ tenant.payout_bank_code|default:"Not Configured" }}<br>
+                    Account No: {{ tenant.payout_account_number|default:"Not Configured" }}
+                </div>
+
+                <form method="post" action="{% url 'tenant_admin_dashboard' %}" class="mb-4">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="payoutAmount" class="form-label font-weight-bold text-muted small">Amount to Request</label>
+                        <div class="input-group">
+                            <span class="input-group-text">₦</span>
+                            <input type="number" step="0.01" class="form-control" name="amount" id="payoutAmount" placeholder="0.00" required>
+                        </div>
+                    </div>
+                    <button type="submit" name="request_payout" class="btn btn-warning w-100 font-weight-bold text-white">
+                        Request Payout
+                    </button>
+                </form>
+
+                <h4 class="h6 font-weight-bold text-dark mb-3">Recent Payout Logs</h4>
+                {% if payouts %}
+                <ul class="list-group list-group-flush">
+                    {% for p in payouts %}
+                    <li class="list-group-item px-0 py-2 d-flex justify-content-between align-items-center">
+                        <div>
+                            <span class="small font-weight-bold text-dark d-block">{{ p.reference }}</span>
+                            <span class="text-muted small">{{ p.created_at|date:"M d, Y" }}</span>
+                        </div>
+                        <div class="text-end">
+                            <span class="font-weight-bold text-dark d-block">₦{{ p.amount }}</span>
+                            {% if p.status == 'completed' %}
+                            <span class="badge bg-success text-white py-0 px-2 small">Completed</span>
+                            {% else %}
+                            <span class="badge bg-warning text-dark py-0 px-2 small">Pending</span>
+                            {% endif %}
+                        </div>
+                    </li>
+                    {% endfor %}
+                </ul>
+                {% else %}
+                <p class="text-muted small text-center mb-0">No payouts requested yet.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock main %}

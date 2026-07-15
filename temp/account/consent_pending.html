@@ -1,0 +1,28 @@
+{% extends "Forms/base.html" %}
+{% load static %}
+{% block main %}
+<div class="body p-3">
+    <div class="container-xxl text-center py-5" style="max-width: 600px; margin: auto;">
+        <div class="card shadow p-5 border-0">
+            <div class="mb-4">
+                <i class="fas fa-envelope-open-text fa-4x text-warning"></i>
+            </div>
+            <h1 class="h3 mb-3 text-dark">Parental Consent Required</h1>
+            <p class="text-muted leading-relaxed">
+                Thank you for registering, <strong>{{ student_name }}</strong>!
+            </p>
+            <p class="text-muted leading-relaxed">
+                Because you are under 13 years of age, we need verification and consent from your parent or guardian before we can activate your account.
+            </p>
+            <div class="alert alert-warning my-4">
+                We have sent an email with an activation link to <strong>{{ guardian_email }}</strong>.
+            </div>
+            <p class="small text-muted">
+                Please ask your parent or guardian to check their inbox and click the activation link to approve your account.
+            </p>
+            <hr class="my-4">
+            <a href="{% url 'login' %}" class="btn text-white w-100 py-2" style="background-color: {{ request.tenant.theme_color|default:'#002769' }};">Back to Sign In</a>
+        </div>
+    </div>
+</div>
+{% endblock main %}

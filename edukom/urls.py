@@ -39,6 +39,8 @@ urlpatterns = [
     path('learn/library/', include('library.urls')),
     path('learn/achievements/', include('achievements.urls')),
     path('learn/discussion/', include('discussion.urls')),
+    path('learn/tenancy/', include('tenancy.urls')),
+    path('learn/compliance/', include('compliance.urls')),
 ]
 
 

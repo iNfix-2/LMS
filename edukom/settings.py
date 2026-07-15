@@ -28,6 +28,8 @@ SECRET_KEY = config('DJANGO_SECRET_KEY')
 DEBUG = config('DJANGO_DEBUG', default=False, cast=bool)
 
 ALLOWED_HOSTS = config('DJANGO_ALLOWED_HOSTS', default='127.0.0.1,localhost', cast=Csv())
+if '.localhost' not in ALLOWED_HOSTS:
+    ALLOWED_HOSTS = list(ALLOWED_HOSTS) + ['.localhost', 'localhost', '127.0.0.1']
 
 
 # Application definition
@@ -58,6 +60,8 @@ INSTALLED_APPS = [
     'achievements.apps.AchievementsConfig',
     'library.apps.LibraryConfig',
     'interactive.apps.InteractiveConfig',
+    'tenancy.apps.TenancyConfig',
+    'compliance.apps.ComplianceConfig',
 ]
 
 MIDDLEWARE = [
@@ -66,6 +70,7 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'tenancy.middleware.TenantMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'homepage.middleware.SiteTrafficMiddleware',

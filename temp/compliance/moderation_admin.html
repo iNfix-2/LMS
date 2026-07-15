@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+{% load static %}
+{% block main %}
+<div class="container py-5">
+    <div class="card border-0 shadow p-4 bg-white rounded-lg">
+        <div class="d-flex align-items-center justify-content-between mb-4 border-bottom pb-3">
+            <div class="d-flex align-items-center">
+                <i class="fas fa-shield-halved fa-2x text-danger me-2"></i>
+                <h1 class="h4 mb-0 font-weight-bold">Content Moderation Center</h1>
+            </div>
+            <span class="badge bg-danger text-white">{{ moderation_logs.count }} total logs</span>
+        </div>
+
+        {% if moderation_logs %}
+        <div class="table-responsive">
+            <table class="table table-hover align-middle">
+                <thead class="table-light">
+                    <tr>
+                        <th>Context / Source</th>
+                        <th>User</th>
+                        <th>Original Text</th>
+                        <th>Censored Version</th>
+                        <th>Flagged Reasons</th>
+                        <th>Created At</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for log in moderation_logs %}
+                    <tr class="{% if not log.resolved %}table-warning{% endif %}">
+                        <td>
+                            <span class="badge bg-secondary text-white text-capitalize">{{ log.content_type }}</span>
+                            <small class="d-block text-muted">ID: {{ log.object_id }}</small>
+                        </td>
+                        <td>
+                            <strong>{{ log.user.username }}</strong>
+                            <small class="d-block text-muted">{{ log.user.email }}</small>
+                        </td>
+                        <td>
+                            <del class="text-danger small">{{ log.original_text }}</del>
+                        </td>
+                        <td>
+                            <span class="text-success small font-weight-bold">{{ log.censored_text }}</span>
+                        </td>
+                        <td>
+                            {% if log.flagged_reasons %}
+                                {% for reason in log.flagged_reasons %}
+                                <span class="badge bg-danger text-white py-1 px-2 m-1" style="font-size: 0.75rem;">{{ reason }}</span>
+                                {% endfor %}
+                            {% else %}
+                                <span class="text-muted">N/A</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <small class="text-muted">{{ log.created_at|date:"M d, g:i a" }}</small>
+                        </td>
+                        <td>
+                            {% if log.resolved %}
+                            <span class="badge bg-success text-white py-1 px-2"><i class="fas fa-check me-1"></i>Resolved</span>
+                            {% else %}
+                            <span class="badge bg-warning text-dark py-1 px-2"><i class="fas fa-exclamation-triangle me-1"></i>Active</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if not log.resolved %}
+                            <form method="post" action="{% url 'moderation_admin_view' %}">
+                                {% csrf_token %}
+                                <input type="hidden" name="log_id" value="{{ log.id }}">
+                                <button type="submit" class="btn btn-sm btn-success text-white py-1 px-3">
+                                    Resolve
+                                </button>
+                            </form>
+                            {% else %}
+                            <span class="text-muted small">Checked</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="text-center py-5 text-muted">
+            <i class="fas fa-shield fa-4x text-light mb-3"></i>
+            <p class="mb-0">Excellent! The system has not flagged any content for moderation.</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock main %}

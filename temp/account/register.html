@@ -1,0 +1,91 @@
+{% extends "Forms/base.html" %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% block main %}
+<div class="body p-3">
+    <div class="container-xxl">
+        <form class="my-4 shadow p-4 rounded bg-white" style="max-width: 600px; margin: auto;" method="post" id="registerForm">
+            <div class="d-flex align-items-center mb-4">
+                <img src="{% if request.tenant and request.tenant.logo %}{{ request.tenant.logo.url }}{% else %}{% static 'IMG/logo.png' %}{% endif %}" style="width: 50px; margin-right: 15px;" alt="logo">
+                <h1 class="h3 mb-0" style="color: {{ request.tenant.theme_color|default:'#002769' }};">Student Registration</h1>
+            </div>
+            {% csrf_token %}
+            
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    {{ form.username|as_crispy_field }}
+                </div>
+                <div class="col-md-6 mb-3">
+                    {{ form.email|as_crispy_field }}
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    {{ form.first_name|as_crispy_field }}
+                </div>
+                <div class="col-md-6 mb-3">
+                    {{ form.last_name|as_crispy_field }}
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    {{ form.password|as_crispy_field }}
+                </div>
+                <div class="col-md-6 mb-3">
+                    {{ form.confirm_password|as_crispy_field }}
+                </div>
+            </div>
+
+            <div class="mb-3">
+                {{ form.date_of_birth|as_crispy_field }}
+            </div>
+
+            <div class="mb-3" id="guardian-email-container" style="display: none;">
+                {{ form.guardian_email|as_crispy_field }}
+                <div class="alert alert-info py-2 px-3 mt-1" style="font-size: 0.85rem;">
+                    <i class="fas fa-info-circle me-1"></i> Since you are under 13, COPPA regulations require verifiable parental or guardian consent. An activation link will be sent to this email address.
+                </div>
+            </div>
+
+            <div class="col-12 text-center mt-4">
+                <button type="submit" class="btn w-100 py-2 text-uppercase font-weight-bold" style="background-color: {{ request.tenant.theme_color|default:'#002769' }}; color: #fff; border-radius: 4px;">Register</button>
+            </div>
+
+            <div class="col-12 text-center mt-4">
+                <span class="text-muted">Already have an account? <a href="{% url 'login' %}" style="color: {{ request.tenant.theme_accent|default:'#0ea5e9' }};">Sign In</a></span>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        var dobInput = document.getElementById('id_date_of_birth');
+        var guardianContainer = document.getElementById('guardian-email-container');
+        var guardianInput = document.getElementById('id_guardian_email');
+
+        function checkAge() {
+            if (!dobInput.value) return;
+            var dob = new Date(dobInput.value);
+            var today = new Date();
+            var age = today.getFullYear() - dob.getFullYear();
+            var m = today.getMonth() - dob.getMonth();
+            if (m < 0 || (m === 0 && today.getDate() < dob.getDate())) {
+                age--;
+            }
+            if (age < 13) {
+                guardianContainer.style.display = 'block';
+                guardianInput.setAttribute('required', 'required');
+            } else {
+                guardianContainer.style.display = 'none';
+                guardianInput.removeAttribute('required');
+            }
+        }
+
+        dobInput.addEventListener('change', checkAge);
+        checkAge(); // run initial check
+    });
+</script>
+{% endblock main %}

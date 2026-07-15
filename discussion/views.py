@@ -36,6 +36,26 @@ def course_forum(request, course_slug):
             topic.forum = forum
             topic.creator = request.user
             topic.save()
+
+            # Content Moderation check
+            from compliance.utils import censor_content
+            from compliance.models import ModerationLog
+            c_title, f_t, r_t = censor_content(topic.title)
+            c_content, f_c, r_c = censor_content(topic.content)
+            if f_t or f_c:
+                reasons = list(set(r_t + r_c))
+                ModerationLog.objects.create(
+                    user=request.user,
+                    content_type='forum_topic',
+                    object_id=topic.id,
+                    original_text=f"Title: {topic.title} | Content: {topic.content}",
+                    censored_text=f"Title: {c_title} | Content: {c_content}",
+                    flagged_reasons=reasons
+                )
+                topic.title = c_title
+                topic.content = c_content
+                topic.save()
+
             messages.success(request, "Topic created successfully!")
             return redirect('discussion:course_forum', course_slug=course.slug)
     else:
@@ -70,6 +90,23 @@ def topic_detail(request, topic_slug):
                 post.parent_post_id = parent_id
 
             post.save()
+
+            # Content Moderation check
+            from compliance.utils import censor_content
+            from compliance.models import ModerationLog
+            c_content, f_c, r_c = censor_content(post.content)
+            if f_c:
+                ModerationLog.objects.create(
+                    user=request.user,
+                    content_type='forum_post',
+                    object_id=post.id,
+                    original_text=post.content,
+                    censored_text=c_content,
+                    flagged_reasons=r_c
+                )
+                post.content = c_content
+                post.save()
+
             messages.success(request, "Reply posted successfully!")
             return redirect('discussion:topic_detail', topic_slug=topic.slug)
     else:
@@ -116,6 +153,23 @@ def direct_messages(request):
             dm = form.save(commit=False)
             dm.sender = user
             dm.save()
+
+            # Content Moderation check
+            from compliance.utils import censor_content
+            from compliance.models import ModerationLog
+            c_content, f_c, r_c = censor_content(dm.content)
+            if f_c:
+                ModerationLog.objects.create(
+                    user=request.user,
+                    content_type='direct_message',
+                    object_id=dm.id,
+                    original_text=dm.content,
+                    censored_text=c_content,
+                    flagged_reasons=r_c
+                )
+                dm.content = c_content
+                dm.save()
+
             messages.success(request, "Message sent successfully!")
             return redirect(f"{request.path}?user_id={dm.recipient.id}")
     else:

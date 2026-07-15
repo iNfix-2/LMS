@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% load static %}
+{% block main %}
+<div class="container py-5 text-center" style="max-width: 600px; margin: auto;">
+    <div class="card shadow p-5 border-0 rounded bg-white">
+        <div class="mb-4">
+            <i class="fas fa-check-circle fa-4x text-success"></i>
+        </div>
+        <h1 class="h3 mb-3 text-dark">Consent Successfully Granted</h1>
+        <p class="text-muted leading-relaxed">
+            Thank you! You have successfully verified and approved the registration for <strong>{{ student.get_full_name|default:student.username }}</strong>.
+        </p>
+        <p class="text-muted leading-relaxed">
+            Their account has now been activated. They can log in to their dashboard and access classes, lessons, and discussion forums.
+        </p>
+        <div class="alert alert-success my-4 py-2 px-3">
+            <i class="fas fa-shield-alt me-1"></i> COPPA/GDPR Compliance Protected.
+        </div>
+        <a href="{% url 'login' %}" class="btn text-white w-100 py-2" style="background-color: {{ request.tenant.theme_color|default:'#002769' }};">Sign In Page</a>
+    </div>
+</div>
+{% endblock main %}

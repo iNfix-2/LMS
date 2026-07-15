@@ -85,6 +85,26 @@
     }
   </style>
 
+  {% if request.tenant %}
+  <style>
+    /* Dynamic branding customizations */
+    .top-banner, .btn-accent-nav, .btn-primary, .btn-success, .nav-btn {
+      background-color: {{ request.tenant.theme_color|default:'#002769' }} !important;
+      border-color: {{ request.tenant.theme_color|default:'#002769' }} !important;
+    }
+    a, .text-primary, .btn-outline-primary {
+      color: {{ request.tenant.theme_color|default:'#002769' }} !important;
+    }
+    .btn-outline-primary {
+      border-color: {{ request.tenant.theme_color|default:'#002769' }} !important;
+    }
+    .btn-outline-primary:hover {
+      background-color: {{ request.tenant.theme_color|default:'#002769' }} !important;
+      color: #fff !important;
+    }
+  </style>
+  {% endif %}
+
 
   <style>
     a {
@@ -163,8 +183,8 @@
                 font-weight: 900;
                 margin: 0;
               ">
-                <img src="{% static 'IMG/logo.png' %}" style="width: 35px" alt="" />
-                Edukom
+                <img src="{% if request.tenant and request.tenant.logo %}{{ request.tenant.logo.url }}{% else %}{% static 'IMG/logo.png' %}{% endif %}" style="width: 35px; max-height: 35px; object-fit: contain;" alt="logo" />
+                {% if request.tenant %}{{ request.tenant.name }}{% else %}Edukom{% endif %}
               </h1>
             </a>
 
@@ -260,7 +280,7 @@
                               stroke-linejoin="round" />
                             <path d="M13.5 5L21.0833 12L13.5 19" stroke="#002769" stroke-width="3"
                               stroke-linecap="round" stroke-linejoin="round" />
-                          </svg></a></li>
+                      </svg></a></li>
                       <li>
                         <a class="dropdown-item" href="{% url 'listGuardian' %}">Guardians</a>
                       </li>
@@ -269,11 +289,23 @@
                         <a class="dropdown-item" href="{% url 'create_blog' %}">Create Blog Post</a>
                       </li>
                       {% endif %}
+                      <li>
+                        <a class="dropdown-item" href="{% url 'privacy_dashboard' %}">Privacy & GDPR Settings</a>
+                      </li>
+                      {% if user.is_staff or user.profile.role == 'admin' %}
+                      <li>
+                        <a class="dropdown-item" href="{% url 'tenant_admin_dashboard' %}">School Portal Dashboard</a>
+                      </li>
+                      <li>
+                        <a class="dropdown-item" href="{% url 'moderation_admin_view' %}">Content Moderation</a>
+                      </li>
+                      {% endif %}
                     </ul>
                   </div>
                 </li>
 
                 {% else %}
+                <a href="{% url 'register' %}" class="nav-btn btn-accent-nav me-2" style="background-color: transparent !important; color: #002769 !important; border: 1px solid #002769 !important;">Register</a>
                 <a href="{% url 'login' %}" class="nav-btn btn-accent-nav">Login <svg xmlns="http://www.w3.org/2000/svg"
                     width="31" height="20" viewBox="0 0 27 24" fill="none">
                     <path d="M5.91797 12H21.0846" stroke="#002769" stroke-width="3" stroke-linecap="round"
