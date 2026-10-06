@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Edukom LMS - Academic Schedule</title>
+<!-- Google Fonts: Plus Jakarta Sans -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols Outlined -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface-tint": "#415c9f",
+                    "on-error": "#ffffff",
+                    "surface-container-low": "#f4f3f9",
+                    "glass-fill": "rgba(255, 255, 255, 0.7)",
+                    "tertiary-fixed": "#d8e2ff",
+                    "on-tertiary-fixed": "#051a3d",
+                    "on-primary-fixed-variant": "#274486",
+                    "on-surface-variant": "#444650",
+                    "secondary-container": "#baf15d",
+                    "inverse-surface": "#2f3035",
+                    "surface-container-highest": "#e3e2e8",
+                    "inverse-primary": "#b2c5ff",
+                    "outline-variant": "#c4c6d2",
+                    "error-container": "#ffdad6",
+                    "on-secondary": "#ffffff",
+                    "tertiary-fixed-dim": "#b4c6f2",
+                    "on-tertiary-fixed-variant": "#35466b",
+                    "primary-fixed": "#dae2ff",
+                    "surface": "#faf8ff",
+                    "secondary": "#476800",
+                    "on-secondary-fixed": "#121f00",
+                    "on-secondary-fixed-variant": "#344e00",
+                    "error-alert": "#ef4444",
+                    "inverse-on-surface": "#f1f0f6",
+                    "on-background": "#1a1b20",
+                    "outline": "#747781",
+                    "primary-fixed-dim": "#b2c5ff",
+                    "glass-border": "rgba(255, 255, 255, 0.4)",
+                    "on-primary": "#ffffff",
+                    "background": "#faf8ff",
+                    "success-vibrant": "#71A20A",
+                    "secondary-fixed": "#bdf45f",
+                    "tertiary-container": "#182b4e",
+                    "surface-container-lowest": "#ffffff",
+                    "surface-container": "#eeedf3",
+                    "surface-dim": "#dad9df",
+                    "surface-slate": "#f8fafc",
+                    "on-primary-container": "#7791d8",
+                    "surface-container-high": "#e9e7ee",
+                    "primary-container": "#002769",
+                    "secondary-fixed-dim": "#a2d745",
+                    "on-surface": "#1a1b20",
+                    "error": "#ba1a1a",
+                    "primary": "#00143f",
+                    "on-tertiary-container": "#8193bc",
+                    "on-tertiary": "#ffffff",
+                    "tertiary": "#011639",
+                    "surface-variant": "#e3e2e8",
+                    "on-error-container": "#93000a",
+                    "surface-bright": "#faf8ff",
+                    "on-primary-fixed": "#001848",
+                    "on-secondary-container": "#4a6d00"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "base-unit": "8px",
+                    "max-width": "1280px",
+                    "margin-mobile": "16px",
+                    "margin-desktop": "48px",
+                    "gutter": "24px"
+            },
+            "fontFamily": {
+                    "body-lg": ["Plus Jakarta Sans"],
+                    "headline-lg-mobile": ["Plus Jakarta Sans"],
+                    "body-sm": ["Plus Jakarta Sans"],
+                    "headline-sm": ["Plus Jakarta Sans"],
+                    "display-lg": ["Plus Jakarta Sans"],
+                    "headline-md": ["Plus Jakarta Sans"],
+                    "body-md": ["Plus Jakarta Sans"],
+                    "label-md": ["Plus Jakarta Sans"],
+                    "label-sm": ["Plus Jakarta Sans"],
+                    "headline-lg": ["Plus Jakarta Sans"]
+            },
+            "fontSize": {
+                    "body-lg": ["18px", {"lineHeight": "1.9", "fontWeight": "400"}],
+                    "headline-lg-mobile": ["32px", {"lineHeight": "1.2", "fontWeight": "700"}],
+                    "body-sm": ["14px", {"lineHeight": "1.5", "fontWeight": "400"}],
+                    "headline-sm": ["20px", {"lineHeight": "1.4", "fontWeight": "600"}],
+                    "display-lg": ["56px", {"lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "800"}],
+                    "headline-md": ["28px", {"lineHeight": "1.3", "fontWeight": "600"}],
+                    "body-md": ["16px", {"lineHeight": "1.5", "fontWeight": "400"}],
+                    "label-md": ["14px", {"lineHeight": "1.2", "fontWeight": "600"}],
+                    "label-sm": ["12px", {"lineHeight": "1.0", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                    "headline-lg": ["40px", {"lineHeight": "1.25", "letterSpacing": "-0.01em", "fontWeight": "700"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body {
+            background-color: #f8fafc;
+            color: #1a1b20;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            overflow-x: hidden;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+        }
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: 80px repeat(5, 1fr);
+            grid-template-rows: auto repeat(10, 80px);
+        }
+        .sidebar-transition {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .active-tab {
+            background: #baf15d;
+            color: #4a6d00;
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #e3e2e8;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body class="bg-surface-slate">
+<!-- TopNavBar -->
+<header class="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-12 h-16 bg-glass-fill backdrop-blur-xl border-b border-glass-border shadow-sm">
+<div class="flex items-center gap-8">
+<h1 class="font-headline-md text-headline-md font-bold text-primary">Edukom LMS</h1>
+<div class="hidden md:flex relative group">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline">search</span>
+<input class="pl-10 pr-4 py-2 bg-surface-container rounded-full border-none focus:ring-2 focus:ring-primary-container text-body-sm w-64 transition-all" placeholder="Search resources..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-6">
+<button class="p-2 rounded-full hover:bg-surface-container-high/50 transition-all active:scale-95">
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="notifications">notifications</span>
+</button>
+<button class="p-2 rounded-full hover:bg-surface-container-high/50 transition-all active:scale-95">
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="settings">settings</span>
+</button>
+<div class="flex items-center gap-3 pl-4 border-l border-outline-variant">
+<div class="text-right hidden sm:block">
+<p class="font-label-md text-label-md text-on-surface">Alex Rivera</p>
+<p class="text-xs text-outline">Computer Science</p>
+</div>
+<div class="w-10 h-10 rounded-full border-2 border-primary-fixed overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="A professional headshot of a young university student with a bright, welcoming smile, wearing a casual navy sweater. The background is a softly blurred modern academic library with warm lighting and wooden textures. High-fidelity photography style with a clean, academic portal aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDANdhfabOjXHJDy0-XfgE6UPqwy781N8hB5fP18ULqyCSpHetknV7pwkP3bB1lxOp1TFEVkwTg92LgdEA8_crJ86lsTWU8YUirl05jcUBoP3s2-oDQLz9Ukma0T6SXXl_ZdnWOZYi0aEWZavqxxYsx2qfDwtaNb5hgZiCNs5mbElXWYZPSP2e_7uny-ZGIhRNYbDZKthEbNZfK5EidgRnb2KImOE4CcbKCbCwtcEdSZpked1ciCvOiSj95zwGFuCSu-WTpzZFT_3M"/>
+</div>
+</div>
+</div>
+</header>
+<!-- SideNavBar -->
+<aside class="fixed left-0 top-0 h-full w-64 bg-glass-fill backdrop-blur-2xl border-r border-glass-border shadow-md flex flex-col py-8 px-4 z-40 pt-24 sidebar-transition">
+<div class="mb-8 px-2">
+<div class="flex items-center gap-3 mb-1">
+<span class="material-symbols-outlined text-primary text-3xl" style="font-variation-settings: 'FILL' 1;">school</span>
+<span class="font-headline-sm text-headline-sm font-extrabold text-primary">Academic Portal</span>
+</div>
+<p class="text-xs text-outline-variant font-label-sm uppercase tracking-widest pl-10">Fall Semester 2024</p>
+</div>
+<nav class="flex-1 space-y-1">
+<a class="flex items-center gap-4 px-4 py-3 rounded-xl text-on-surface-variant hover:bg-surface-container-highest/30 transition-transform hover:translate-x-1 duration-300" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="font-label-md text-label-md">Dashboard</span>
+</a>
+<a class="flex items-center gap-4 px-4 py-3 rounded-xl text-on-surface-variant hover:bg-surface-container-highest/30 transition-transform hover:translate-x-1 duration-300" href="#">
+<span class="material-symbols-outlined" data-icon="menu_book">menu_book</span>
+<span class="font-label-md text-label-md">Courses</span>
+</a>
+<a class="flex items-center gap-4 px-4 py-3 bg-secondary-container text-on-secondary-container rounded-xl font-bold transition-transform hover:translate-x-1 duration-300" href="#">
+<span class="material-symbols-outlined" data-icon="schedule" style="font-variation-settings: 'FILL' 1;">schedule</span>
+<span class="font-label-md text-label-md">Schedule</span>
+</a>
+<a class="flex items-center gap-4 px-4 py-3 rounded-xl text-on-surface-variant hover:bg-surface-container-highest/30 transition-transform hover:translate-x-1 duration-300" href="#">
+<span class="material-symbols-outlined" data-icon="calendar_month">calendar_month</span>
+<span class="font-label-md text-label-md">Calendar</span>
+</a>
+<a class="flex items-center gap-4 px-4 py-3 rounded-xl text-on-surface-variant hover:bg-surface-container-highest/30 transition-transform hover:translate-x-1 duration-300" href="#">
+<span class="material-symbols-outlined" data-icon="folder">folder</span>
+<span class="font-label-md text-label-md">Resources</span>
+</a>
+</nav>
+<div class="mt-auto space-y-1 border-t border-glass-border pt-6">
+<button class="w-full py-3 px-4 mb-4 bg-primary text-white rounded-full font-label-md text-label-md hover:shadow-lg hover:shadow-primary/20 transition-all active:scale-95">View Grades</button>
+<a class="flex items-center gap-4 px-4 py-3 rounded-xl text-on-surface-variant hover:bg-surface-container-highest/30 transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="help">help</span>
+<span class="font-label-md text-label-md">Help</span>
+</a>
+<a class="flex items-center gap-4 px-4 py-3 rounded-xl text-error hover:bg-error-container/20 transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="logout">logout</span>
+<span class="font-label-md text-label-md">Logout</span>
+</a>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="ml-64 pt-16 min-h-screen">
+<div class="p-8 max-w-[1440px] mx-auto">
+<!-- Header Section -->
+<div class="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-4">
+<div>
+<h2 class="font-headline-lg text-headline-lg text-primary-container">Academic Schedule</h2>
+<p class="font-body-md text-body-md text-outline">Managing your weekly learning journey</p>
+</div>
+<div class="flex items-center gap-4">
+<div class="glass-card px-6 py-3 rounded-2xl flex items-center gap-4 shadow-sm">
+<button class="p-1 hover:bg-surface-container rounded-full transition-colors"><span class="material-symbols-outlined text-primary">chevron_left</span></button>
+<span class="font-bold text-primary-container">Monday, Oct 12</span>
+<button class="p-1 hover:bg-surface-container rounded-full transition-colors"><span class="material-symbols-outlined text-primary">chevron_right</span></button>
+</div>
+<button class="bg-primary text-on-primary px-6 py-3 rounded-full font-label-md flex items-center gap-2 hover:opacity-90 active:scale-95 transition-all">
+<span class="material-symbols-outlined text-[20px]">add</span> New Entry
+                    </button>
+</div>
+</div>
+<div class="grid grid-cols-12 gap-gutter">
+<!-- Filters Column -->
+<div class="col-span-12 lg:col-span-3">
+<div class="glass-card rounded-3xl p-6 sticky top-24">
+<div class="flex items-center justify-between mb-6">
+<h3 class="font-headline-sm text-headline-sm text-primary">Filters</h3>
+<span class="material-symbols-outlined text-outline">tune</span>
+</div>
+<div class="space-y-6">
+<div>
+<label class="font-label-md text-label-md text-on-surface block mb-3">Subjects</label>
+<div class="space-y-2">
+<label class="flex items-center gap-3 cursor-pointer group">
+<input checked="" class="rounded border-outline-variant text-primary focus:ring-primary w-5 h-5" type="checkbox"/>
+<span class="font-body-sm text-body-sm text-on-surface-variant group-hover:text-primary transition-colors">Mathematics</span>
+</label>
+<label class="flex items-center gap-3 cursor-pointer group">
+<input checked="" class="rounded border-outline-variant text-primary focus:ring-primary w-5 h-5" type="checkbox"/>
+<span class="font-body-sm text-body-sm text-on-surface-variant group-hover:text-primary transition-colors">Science</span>
+</label>
+<label class="flex items-center gap-3 cursor-pointer group">
+<input class="rounded border-outline-variant text-primary focus:ring-primary w-5 h-5" type="checkbox"/>
+<span class="font-body-sm text-body-sm text-on-surface-variant group-hover:text-primary transition-colors">Literature</span>
+</label>
+<label class="flex items-center gap-3 cursor-pointer group">
+<input class="rounded border-outline-variant text-primary focus:ring-primary w-5 h-5" type="checkbox"/>
+<span class="font-body-sm text-body-sm text-on-surface-variant group-hover:text-primary transition-colors">Computer Science</span>
+</label>
+</div>
+</div>
+<div>
+<label class="font-label-md text-label-md text-on-surface block mb-3">Tutor</label>
+<select class="w-full bg-surface-slate border border-outline-variant rounded-xl py-2 px-3 text-body-sm focus:ring-primary focus:border-primary">
+<option>All Tutors</option>
+<option>Dr. Sarah Mitchell</option>
+<option>Prof. James Wilson</option>
+<option>Dr. Elena Rodriguez</option>
+</select>
+</div>
+<div class="pt-4 border-t border-outline-variant">
+<label class="flex items-center justify-between cursor-pointer">
+<span class="font-label-md text-label-md text-on-surface">Live Sessions Only</span>
+<div class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" type="checkbox" value=""/>
+<div class="w-11 h-6 bg-surface-container-highest peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-success-vibrant"></div>
+</div>
+</label>
+</div>
+<div class="bg-primary-container text-on-primary-container p-4 rounded-2xl">
+<p class="text-xs font-bold uppercase tracking-widest opacity-70 mb-1">Weekly Progress</p>
+<h4 class="font-headline-sm text-headline-sm text-white mb-2">72% Completed</h4>
+<div class="w-full bg-white/20 h-2 rounded-full overflow-hidden">
+<div class="bg-secondary-container h-full w-[72%]"></div>
+</div>
+<p class="text-[10px] mt-2 text-white/60">4 sessions remaining this week</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Calendar Column -->
+<div class="col-span-12 lg:col-span-9">
+<div class="glass-card rounded-3xl overflow-hidden shadow-md">
+<!-- Calendar Header -->
+<div class="bg-primary-container py-4 px-4 grid grid-cols-6 items-center text-center">
+<div class="text-white/60 font-label-sm uppercase tracking-tighter">Time</div>
+<div class="text-white font-bold font-label-md">MON <span class="block text-xs font-normal opacity-70">12 Oct</span></div>
+<div class="text-white font-bold font-label-md">TUE <span class="block text-xs font-normal opacity-70">13 Oct</span></div>
+<div class="text-white font-bold font-label-md">WED <span class="block text-xs font-normal opacity-70">14 Oct</span></div>
+<div class="text-white font-bold font-label-md">THU <span class="block text-xs font-normal opacity-70">15 Oct</span></div>
+<div class="text-white font-bold font-label-md">FRI <span class="block text-xs font-normal opacity-70">16 Oct</span></div>
+</div>
+<!-- Calendar Content -->
+<div class="calendar-grid bg-white relative">
+<!-- Time Markers -->
+<div class="col-start-1 row-start-2 border-r border-slate-100 flex items-start justify-center pt-4 text-[11px] font-bold text-outline uppercase">08:00</div>
+<div class="col-start-1 row-start-3 border-r border-slate-100 flex items-start justify-center pt-4 text-[11px] font-bold text-outline uppercase">09:00</div>
+<div class="col-start-1 row-start-4 border-r border-slate-100 flex items-start justify-center pt-4 text-[11px] font-bold text-outline uppercase">10:00</div>
+<div class="col-start-1 row-start-5 border-r border-slate-100 flex items-start justify-center pt-4 text-[11px] font-bold text-outline uppercase">11:00</div>
+<div class="col-start-1 row-start-6 border-r border-slate-100 flex items-start justify-center pt-4 text-[11px] font-bold text-outline uppercase">12:00</div>
+<div class="col-start-1 row-start-7 border-r border-slate-100 flex items-start justify-center pt-4 text-[11px] font-bold text-outline uppercase">13:00</div>
+<div class="col-start-1 row-start-8 border-r border-slate-100 flex items-start justify-center pt-4 text-[11px] font-bold text-outline uppercase">14:00</div>
+<div class="col-start-1 row-start-9 border-r border-slate-100 flex items-start justify-center pt-4 text-[11px] font-bold text-outline uppercase">15:00</div>
+<div class="col-start-1 row-start-10 border-r border-slate-100 flex items-start justify-center pt-4 text-[11px] font-bold text-outline uppercase">16:00</div>
+<!-- Grid Lines -->
+<div class="absolute inset-0 pointer-events-none" style="grid-column: 2 / 7; grid-row: 2 / 12;">
+<div class="w-full h-full border-t border-slate-50 flex flex-col">
+<div class="h-[80px] border-b border-slate-50 w-full"></div>
+<div class="h-[80px] border-b border-slate-50 w-full"></div>
+<div class="h-[80px] border-b border-slate-50 w-full"></div>
+<div class="h-[80px] border-b border-slate-50 w-full"></div>
+<div class="h-[80px] border-b border-slate-50 w-full"></div>
+<div class="h-[80px] border-b border-slate-50 w-full"></div>
+<div class="h-[80px] border-b border-slate-50 w-full"></div>
+<div class="h-[80px] border-b border-slate-50 w-full"></div>
+<div class="h-[80px] border-b border-slate-50 w-full"></div>
+<div class="h-[80px] border-b border-slate-50 w-full"></div>
+</div>
+</div>
+<!-- Class Cards -->
+<!-- Advanced Calculus - Monday 09:00 -->
+<div class="z-10 p-2" style="grid-column: 2; grid-row: 3 / 5;">
+<div class="h-full w-full glass-card rounded-2xl p-3 border-l-4 border-l-primary flex flex-col justify-between shadow-sm hover:shadow-md transition-shadow cursor-pointer group">
+<div>
+<div class="flex items-center justify-between mb-1">
+<span class="text-[10px] font-bold text-primary uppercase">Mathematics</span>
+<span class="flex h-2 w-2 rounded-full bg-success-vibrant animate-pulse"></span>
+</div>
+<h4 class="font-bold text-sm text-primary-container leading-tight group-hover:text-primary transition-colors">Advanced Calculus</h4>
+<p class="text-[11px] text-outline mt-1 flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">schedule</span> 09:00 - 10:30 AM
+                                        </p>
+</div>
+<div class="flex items-center justify-between mt-2">
+<div class="flex items-center gap-1.5">
+<div class="w-5 h-5 rounded-full overflow-hidden border border-white">
+<img class="w-full h-full object-cover" data-alt="A portrait of an experienced female professor, Dr. Sarah Mitchell, with a distinguished and intellectual look. She is in a modern home office with bookshelves and soft studio lighting. High-end, professional academic photography." src="https://lh3.googleusercontent.com/aida-public/AB6AXuClKxHPPORusXZyBmAzUYIju67drkw8oNMHJlhY0_PUdW3V4W3ge15J-zXsgMb0TC2eqer8nn03qWX_idAMvLpQOH2MM1IFLZzH9C4KRsGdulH5l0Vrg9I_DeNX-O6tkQMfRvktI7Ntke1ZVGUnD3Q065laNPR7_mEdOmaw-NfFu4tY1wWTowCP_aY0ATdGv1IXqwkddjMQ0JmlPMeDRk1_Y9whKHMqlNNZ5sZ6_W3PgDpfwaFeeNXFX3rP_mGXZIQJhK4sGFqPJVg"/>
+</div>
+<span class="text-[10px] font-semibold text-on-surface-variant">Dr. S. Mitchell</span>
+</div>
+<span class="text-[9px] bg-secondary-container/30 text-secondary px-1.5 py-0.5 rounded-full font-bold">LIVE</span>
+</div>
+</div>
+</div>
+<!-- Theoretical Physics - Monday 13:00 -->
+<div class="z-10 p-2" style="grid-column: 2; grid-row: 7 / 9;">
+<div class="h-full w-full glass-card rounded-2xl p-3 border-l-4 border-l-tertiary flex flex-col justify-between shadow-sm hover:shadow-md transition-shadow cursor-pointer">
+<div>
+<div class="flex items-center justify-between mb-1">
+<span class="text-[10px] font-bold text-tertiary-container uppercase">Science</span>
+<span class="text-[9px] text-success-vibrant font-bold flex items-center gap-0.5"><span class="material-symbols-outlined text-[12px]">check_circle</span> Marked</span>
+</div>
+<h4 class="font-bold text-sm text-primary-container leading-tight">Theoretical Physics</h4>
+<p class="text-[11px] text-outline mt-1 flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">schedule</span> 01:00 - 02:30 PM
+                                        </p>
+</div>
+<div class="flex items-center justify-between mt-2">
+<div class="flex items-center gap-1.5">
+<div class="w-5 h-5 rounded-full overflow-hidden border border-white">
+<img class="w-full h-full object-cover" data-alt="Close-up portrait of a male professor, Prof. James Wilson, looking attentive and kind, in a bright university hallway. The style is clean, sharp, and optimistic with high-key lighting." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCWhAbuO3lzTgKkzPAPVXNOzFcy5erZKA-Gj_qGVOVId1Gd6AeWmVTn4tUVDRX-Acv-114ALMVbPMNcLHuXjZWizdQdzcS89zPwzaQVe-C0FsG7q_rLyauF5rG7cImG8x_pjeccF166wYPCHuUdAxDUTcJaV8zoNnxuqBv9L0-rds1SfZOtswEdh36TAB9Y2JWZvsJXvjZnMkJcaSLdBteaPfJzmAeG13NJZduNxe9J1T0WGUAQc71lm3TWghfGZR1z9OgsrFwReyA"/>
+</div>
+<span class="text-[10px] font-semibold text-on-surface-variant">Prof. J. Wilson</span>
+</div>
+<button class="bg-primary-container text-white p-1 rounded-lg hover:bg-primary transition-colors">
+<span class="material-symbols-outlined text-[14px]">videocam</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Creative Writing - Wednesday 10:00 -->
+<div class="z-10 p-2" style="grid-column: 4; grid-row: 4 / 6;">
+<div class="h-full w-full glass-card rounded-2xl p-3 border-l-4 border-l-secondary flex flex-col justify-between shadow-sm hover:shadow-md transition-shadow cursor-pointer">
+<div>
+<div class="flex items-center justify-between mb-1">
+<span class="text-[10px] font-bold text-secondary-container uppercase bg-secondary px-1.5 py-0.5 rounded text-white">Literature</span>
+<span class="text-[9px] text-error font-bold flex items-center gap-0.5">Pending</span>
+</div>
+<h4 class="font-bold text-sm text-primary-container leading-tight">Modern Lit Analysis</h4>
+<p class="text-[11px] text-outline mt-1 flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">schedule</span> 10:00 - 11:30 AM
+                                        </p>
+</div>
+<div class="flex items-center justify-between mt-2">
+<div class="flex items-center gap-1.5">
+<div class="w-5 h-5 rounded-full overflow-hidden border border-white">
+<img class="w-full h-full object-cover" data-alt="A portrait of Dr. Elena Rodriguez, a young professor with dark hair and glasses, set in a cozy literature office filled with old books. Soft ambient natural light from a window. High-quality academic portal image style." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCOtz4DFcoaSJSU1mv7QKm9G1tiMp7bj8pSt9rh1NXzq6ZO_GPq94rQvlUi-Oqm5FZrCKOpMKTsh6xt-Bw_Xfe5o_MhygXtttvNB8tK9ynKcPiXAGxR9VFAio0r47D7doLnqmCWa2opYhWbJDxJIqmujE1jEQ6pd8rsOGO2JttBIxAse0g3FU-3CAUn0BSrMLBGGn9-V7xhjPiQUe-Je2BdLW7UwMVnPIo_KOkGqfxWdSbgHp1yf5lU0GuZHIydba9uwL4-Piz8Qbw"/>
+</div>
+<span class="text-[10px] font-semibold text-on-surface-variant">Dr. E. Rodriguez</span>
+</div>
+<span class="material-symbols-outlined text-outline text-[16px]">more_vert</span>
+</div>
+</div>
+</div>
+<!-- Computer Architecture - Friday 14:00 -->
+<div class="z-10 p-2" style="grid-column: 6; grid-row: 8 / 10;">
+<div class="h-full w-full glass-card rounded-2xl p-3 border-l-4 border-l-on-primary-container flex flex-col justify-between shadow-sm hover:shadow-md transition-shadow cursor-pointer group">
+<div>
+<div class="flex items-center justify-between mb-1">
+<span class="text-[10px] font-bold text-primary uppercase">Computing</span>
+<span class="flex h-2 w-2 rounded-full bg-success-vibrant"></span>
+</div>
+<h4 class="font-bold text-sm text-primary-container leading-tight group-hover:text-primary transition-colors">Computer Architecture</h4>
+<p class="text-[11px] text-outline mt-1 flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">schedule</span> 02:00 - 03:30 PM
+                                        </p>
+</div>
+<div class="flex items-center justify-between mt-2">
+<div class="flex items-center gap-1.5">
+<div class="w-5 h-5 rounded-full overflow-hidden border border-white">
+<img class="w-full h-full object-cover" data-alt="A focused male lecturer in his 30s, presenting a digital schematic. The background is a high-tech lab with glowing blue computer screens. Sharp focus, professional lighting, modern corporate education style." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAUR8OZYoi_FczAir_nkyG5edcHT1axgUNUC6EVayojaK7n1II33heID8OjhE_RSGy62kXoTLmv3_Ijl2z2PsHx7xooWEAy5E-xolfcUENWCngcki0fwEt1mcHYy4GDrKrCx4vlAb86KIkUBTapQEhxNRwgcZUfJTuIt3UC0zSzvZHiZAoVRfe2P6Wgamb7GSiRlT4hV_bcxUffLWgHESzJhCrFL7Azawv1dUSme1kMx8VEP3FFFWhDVJPgxKwbInlLAmJrGhcTIfw"/>
+</div>
+<span class="text-[10px] font-semibold text-on-surface-variant">Dr. Marcus Chen</span>
+</div>
+<a class="text-[10px] font-bold text-success-vibrant underline" href="#">Join Live</a>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Additional Footer Info -->
+<div class="mt-8 flex flex-col md:flex-row items-center gap-6">
+<div class="flex-1 flex gap-4 overflow-x-auto pb-2 custom-scrollbar">
+<div class="glass-card px-5 py-4 rounded-2xl flex items-center gap-4 min-w-[240px]">
+<div class="w-12 h-12 bg-secondary-container/20 rounded-xl flex items-center justify-center">
+<span class="material-symbols-outlined text-secondary text-2xl">assignment</span>
+</div>
+<div>
+<p class="text-xs text-outline font-label-sm uppercase">Next Assignment</p>
+<h5 class="font-bold text-primary">Calculus Lab #4</h5>
+<p class="text-[10px] text-error font-bold mt-0.5">Due in 2 days</p>
+</div>
+</div>
+<div class="glass-card px-5 py-4 rounded-2xl flex items-center gap-4 min-w-[240px]">
+<div class="w-12 h-12 bg-primary-container/10 rounded-xl flex items-center justify-center">
+<span class="material-symbols-outlined text-primary text-2xl">group</span>
+</div>
+<div>
+<p class="text-xs text-outline font-label-sm uppercase">Study Group</p>
+<h5 class="font-bold text-primary">Physics Circle</h5>
+<p class="text-[10px] text-secondary font-bold mt-0.5">Today at 5:00 PM</p>
+</div>
+</div>
+<div class="glass-card px-5 py-4 rounded-2xl flex items-center gap-4 min-w-[240px]">
+<div class="w-12 h-12 bg-success-vibrant/10 rounded-xl flex items-center justify-center">
+<span class="material-symbols-outlined text-success-vibrant text-2xl">workspace_premium</span>
+</div>
+<div>
+<p class="text-xs text-outline font-label-sm uppercase">Achievements</p>
+<h5 class="font-bold text-primary">Perfect Week</h5>
+<p class="text-[10px] text-on-surface-variant mt-0.5">Keep up the streak!</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<script>
+        // Simple interactivity for navigation and interactions
+        document.querySelectorAll('a, button').forEach(el => {
+            el.addEventListener('click', (e) => {
+                if(el.getAttribute('href') === '#') e.preventDefault();
+            });
+        });
+
+        // Search highlight effect
+        const searchInput = document.querySelector('input[type="text"]');
+        searchInput.addEventListener('focus', () => {
+            searchInput.parentElement.classList.add('w-80');
+        });
+        searchInput.addEventListener('blur', () => {
+            if (searchInput.value === '') {
+                searchInput.parentElement.classList.remove('w-80');
+            }
+        });
+
+        // Hover class card interaction
+        const cards = document.querySelectorAll('.glass-card.group');
+        cards.forEach(card => {
+            card.addEventListener('mouseenter', () => {
+                card.style.transform = 'translateY(-4px)';
+                card.style.transition = 'transform 0.3s ease';
+            });
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = 'translateY(0)';
+            });
+        });
+    </script>
+</body></html>

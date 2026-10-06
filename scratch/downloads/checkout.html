@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+
+<html class="scroll-smooth" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Checkout | Edukom LMS</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .glass-card {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .active-tab-indicator {
+            view-transition-name: active-tab;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-variant": "#e3e2e8",
+                        "glass-border": "rgba(255, 255, 255, 0.4)",
+                        "surface-bright": "#faf8ff",
+                        "tertiary-container": "#182b4e",
+                        "on-error-container": "#93000a",
+                        "on-tertiary-container": "#8193bc",
+                        "surface-container-low": "#f4f3f9",
+                        "surface-slate": "#f8fafc",
+                        "surface-container-high": "#e9e7ee",
+                        "on-tertiary-fixed-variant": "#35466b",
+                        "on-tertiary": "#ffffff",
+                        "on-secondary-container": "#4a6d00",
+                        "outline": "#747781",
+                        "on-secondary-fixed": "#121f00",
+                        "on-primary-fixed": "#001848",
+                        "on-primary-container": "#7791d8",
+                        "secondary-container": "#baf15d",
+                        "secondary-fixed": "#bdf45f",
+                        "inverse-primary": "#b2c5ff",
+                        "secondary-fixed-dim": "#a2d745",
+                        "surface-dim": "#dad9df",
+                        "primary-fixed": "#dae2ff",
+                        "on-tertiary-fixed": "#051a3d",
+                        "tertiary": "#011639",
+                        "inverse-on-surface": "#f1f0f6",
+                        "error-alert": "#ef4444",
+                        "on-surface-variant": "#444650",
+                        "on-surface": "#1a1b20",
+                        "surface": "#faf8ff",
+                        "outline-variant": "#c4c6d2",
+                        "surface-container-highest": "#e3e2e8",
+                        "surface-container": "#eeedf3",
+                        "error": "#ba1a1a",
+                        "background": "#faf8ff",
+                        "primary-container": "#002769",
+                        "surface-container-lowest": "#ffffff",
+                        "on-error": "#ffffff",
+                        "on-secondary-fixed-variant": "#344e00",
+                        "success-vibrant": "#71A20A",
+                        "primary": "#00143f",
+                        "on-primary-fixed-variant": "#274486",
+                        "glass-fill": "rgba(255, 255, 255, 0.7)",
+                        "secondary": "#476800",
+                        "on-background": "#1a1b20",
+                        "on-secondary": "#ffffff",
+                        "on-primary": "#ffffff",
+                        "error-container": "#ffdad6",
+                        "surface-tint": "#415c9f",
+                        "inverse-surface": "#2f3035",
+                        "tertiary-fixed": "#d8e2ff",
+                        "tertiary-fixed-dim": "#b4c6f2",
+                        "primary-fixed-dim": "#b2c5ff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "max-width": "1280px",
+                        "margin-desktop": "48px",
+                        "margin-mobile": "16px",
+                        "base-unit": "8px",
+                        "gutter": "24px"
+                    },
+                    "fontFamily": {
+                        "body-lg": ["Plus Jakarta Sans"],
+                        "headline-lg": ["Plus Jakarta Sans"],
+                        "body-md": ["Plus Jakarta Sans"],
+                        "label-sm": ["Plus Jakarta Sans"],
+                        "headline-lg-mobile": ["Plus Jakarta Sans"],
+                        "label-md": ["Plus Jakarta Sans"],
+                        "headline-sm": ["Plus Jakarta Sans"],
+                        "display-lg": ["Plus Jakarta Sans"],
+                        "body-sm": ["Plus Jakarta Sans"],
+                        "headline-md": ["Plus Jakarta Sans"]
+                    },
+                    "fontSize": {
+                        "body-lg": ["18px", {"lineHeight": "1.9", "fontWeight": "400"}],
+                        "headline-lg": ["40px", {"lineHeight": "1.25", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                        "body-md": ["16px", {"lineHeight": "1.5", "fontWeight": "400"}],
+                        "label-sm": ["12px", {"lineHeight": "1.0", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                        "headline-lg-mobile": ["32px", {"lineHeight": "1.2", "fontWeight": "700"}],
+                        "label-md": ["14px", {"lineHeight": "1.2", "fontWeight": "600"}],
+                        "headline-sm": ["20px", {"lineHeight": "1.4", "fontWeight": "600"}],
+                        "display-lg": ["56px", {"lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "800"}],
+                        "body-sm": ["14px", {"lineHeight": "1.5", "fontWeight": "400"}],
+                        "headline-md": ["28px", {"lineHeight": "1.3", "fontWeight": "600"}]
+                    }
+                },
+            },
+        }
+    </script>
+</head>
+<body class="bg-surface-slate font-body-md text-on-surface min-h-screen selection:bg-secondary-container selection:text-on-secondary-container">
+<!-- Top Navigation Bar -->
+<header class="fixed top-0 w-full z-50 flex justify-between items-center px-margin-mobile md:px-margin-desktop h-20 bg-glass-fill/70 backdrop-blur-md border-b border-glass-border shadow-sm">
+<div class="flex items-center gap-8">
+<span class="font-headline-md text-headline-md font-bold text-primary">Edukom LMS</span>
+<nav class="hidden md:flex gap-6">
+<a class="text-on-surface-variant hover:text-primary transition-colors font-body-md" href="#">My Courses</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors font-body-md" href="#">Library</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors font-body-md" href="#">Schedule</a>
+</nav>
+</div>
+<div class="flex items-center gap-4">
+<button class="p-2 rounded-full hover:bg-surface-container-high transition-colors text-on-surface-variant">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="p-2 rounded-full hover:bg-surface-container-high transition-colors text-on-surface-variant">
+<span class="material-symbols-outlined">shopping_cart</span>
+</button>
+<div class="w-10 h-10 rounded-full overflow-hidden border-2 border-primary-container">
+<img class="w-full h-full object-cover" data-alt="A professional student portrait for a user profile, captured with soft, natural lighting in a bright, modern library setting. The student has a confident expression, wearing a stylish navy blue blazer. The image has a premium, high-resolution aesthetic with a clean white and slate blue color palette to match the Edukom LMS brand identity." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCltgVmYeDUAMetg8gWAGR3PKQxfJKIVxq6b3ngQoLeZIboNgADV02_yIhYrfkSFIfvObJtBLXn8uTq_Rv3CWyzerLiqxnAvZQppIzScyhiKDC0TfPiERolm9q06YIHXCYgd61jYSXIjvNtFiaCY8tm-ffTElniWY8RlyGOPJfeCX5uW-yh8rM9n32xyxPJ76owGVO9Wj9gI7aAc5lXUWzjJ-2KxxREj8BpLqk3ypbTkYTw4sy5djpIBDAPBzB-Q4cO0MxgTABJ4iY"/>
+</div>
+</div>
+</header>
+<main class="pt-32 pb-20 px-margin-mobile md:px-margin-desktop max-w-[1280px] mx-auto">
+<!-- Breadcrumb / Back button -->
+<div class="mb-8 flex items-center gap-2 group cursor-pointer w-fit">
+<span class="material-symbols-outlined text-primary group-hover:-translate-x-1 transition-transform">arrow_back</span>
+<span class="font-label-md text-label-md text-primary uppercase tracking-widest">Back to Dashboard</span>
+</div>
+<h1 class="font-headline-lg text-headline-lg text-primary mb-12">Complete Your Enrollment</h1>
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-gutter items-start">
+<!-- Left Panel: Order Summary -->
+<section class="lg:col-span-5 space-y-6">
+<div class="glass-card p-8 rounded-xl shadow-sm">
+<h2 class="font-headline-sm text-headline-sm text-primary mb-6 flex items-center gap-2">
+<span class="material-symbols-outlined">receipt_long</span>
+                        Order Summary
+                    </h2>
+<div class="space-y-4 mb-8">
+<div class="flex justify-between items-center text-body-md text-on-surface-variant">
+<span>MSc Data Science - Tuition Fee</span>
+<span class="font-semibold text-on-surface">$2,500.00</span>
+</div>
+<div class="flex justify-between items-center text-body-md text-on-surface-variant">
+<span>Service &amp; Administrative Tax</span>
+<span class="font-semibold text-on-surface">$12.50</span>
+</div>
+</div>
+<div class="pt-6 border-t border-outline-variant/30">
+<label class="block font-label-md text-label-md text-on-surface-variant mb-2" for="coupon">Discount Coupon</label>
+<div class="flex gap-2">
+<input class="flex-1 bg-surface-container-low border border-outline-variant rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary-container/20 focus:border-primary transition-all" id="coupon" placeholder="Enter code" type="text"/>
+<button class="px-6 py-3 bg-primary text-white rounded-lg font-label-md hover:scale-[0.98] active:scale-95 transition-all">Apply</button>
+</div>
+</div>
+<div class="mt-8 p-6 bg-primary-container text-on-primary-container rounded-xl flex justify-between items-center">
+<div>
+<p class="text-label-sm uppercase tracking-wider opacity-80">Total Amount</p>
+<p class="font-headline-md text-headline-md font-bold text-white">$2,512.50</p>
+</div>
+<span class="material-symbols-outlined text-4xl opacity-50" style="font-variation-settings: 'FILL' 1;">verified_user</span>
+</div>
+</div>
+<!-- Benefits/Trust indicators -->
+<div class="grid grid-cols-2 gap-4">
+<div class="p-4 rounded-xl border border-outline-variant/30 flex items-center gap-3">
+<span class="material-symbols-outlined text-success-vibrant">check_circle</span>
+<span class="text-body-sm font-semibold">Lifetime Access</span>
+</div>
+<div class="p-4 rounded-xl border border-outline-variant/30 flex items-center gap-3">
+<span class="material-symbols-outlined text-success-vibrant">check_circle</span>
+<span class="text-body-sm font-semibold">Accredited Certificate</span>
+</div>
+</div>
+</section>
+<!-- Right Panel: Paystack Payment Modal -->
+<section class="lg:col-span-7">
+<div class="bg-white rounded-xl shadow-xl overflow-hidden border border-outline-variant/20">
+<!-- Paystack Style Header -->
+<div class="bg-surface-container-low p-6 flex justify-between items-center border-b border-outline-variant/30">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 bg-primary rounded flex items-center justify-center">
+<span class="material-symbols-outlined text-white text-sm">lock</span>
+</div>
+<div>
+<h3 class="font-label-md text-label-md text-primary">SECURE CHECKOUT</h3>
+<p class="text-[10px] text-on-surface-variant">SECURED BY <span class="font-bold text-sky-500">PAYSTACK</span></p>
+</div>
+</div>
+<div class="text-right">
+<p class="text-label-sm text-on-surface-variant">alex.morgan@email.com</p>
+<p class="text-xs font-bold text-primary">Pay $2,512.50</p>
+</div>
+</div>
+<!-- Tabs -->
+<div class="flex border-b border-outline-variant/30 bg-surface-container-lowest">
+<button class="flex-1 py-4 flex flex-col items-center gap-1 border-b-2 border-primary text-primary transition-all" id="tab-card" onclick="switchTab('card')">
+<span class="material-symbols-outlined">credit_card</span>
+<span class="font-label-md">Card</span>
+</button>
+<button class="flex-1 py-4 flex flex-col items-center gap-1 border-b-2 border-transparent text-on-surface-variant hover:text-primary transition-all" id="tab-bank" onclick="switchTab('bank')">
+<span class="material-symbols-outlined">account_balance</span>
+<span class="font-label-md">Bank</span>
+</button>
+<button class="flex-1 py-4 flex flex-col items-center gap-1 border-b-2 border-transparent text-on-surface-variant hover:text-primary transition-all" id="tab-ussd" onclick="switchTab('ussd')">
+<span class="material-symbols-outlined">dialpad</span>
+<span class="font-label-md">USSD</span>
+</button>
+</div>
+<!-- Payment Content -->
+<div class="p-8 lg:p-12">
+<div class="space-y-6" id="content-card">
+<div class="space-y-2">
+<label class="block font-label-md text-on-surface-variant">CARD NUMBER</label>
+<div class="relative">
+<input class="w-full bg-surface-slate border border-outline-variant rounded-lg px-4 py-4 text-headline-sm font-mono tracking-widest focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all" placeholder="0000 0000 0000 0000" type="text"/>
+<div class="absolute right-4 top-1/2 -translate-y-1/2 flex gap-2">
+<div class="w-8 h-5 bg-surface-container rounded"></div>
+<div class="w-8 h-5 bg-surface-container-high rounded"></div>
+</div>
+</div>
+</div>
+<div class="grid grid-cols-2 gap-6">
+<div class="space-y-2">
+<label class="block font-label-md text-on-surface-variant">EXPIRY DATE</label>
+<input class="w-full bg-surface-slate border border-outline-variant rounded-lg px-4 py-4 text-headline-sm font-mono focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all" placeholder="MM / YY" type="text"/>
+</div>
+<div class="space-y-2">
+<label class="block font-label-md text-on-surface-variant">CVV</label>
+<input class="w-full bg-surface-slate border border-outline-variant rounded-lg px-4 py-4 text-headline-sm font-mono focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all" placeholder="123" type="password"/>
+</div>
+</div>
+<button class="w-full py-5 bg-success-vibrant text-white rounded-lg font-headline-sm flex items-center justify-center gap-3 hover:shadow-lg hover:brightness-110 active:scale-[0.98] transition-all mt-8 group" id="pay-btn">
+<span class="material-symbols-outlined group-hover:animate-pulse" id="btn-icon">lock</span>
+<span id="btn-text">Pay $2,512.50</span>
+</button>
+<p class="text-center text-body-sm text-on-surface-variant mt-6">
+                                Your transaction is encrypted and secured by world-class standards.
+                            </p>
+</div>
+<!-- Placeholder contents for other tabs (hidden by default) -->
+<div class="hidden py-10 text-center space-y-4" id="content-bank">
+<span class="material-symbols-outlined text-6xl text-primary-container">account_balance</span>
+<h4 class="font-headline-sm">Pay via Bank Transfer</h4>
+<p class="text-on-surface-variant">Select your bank to initiate a secure transfer.</p>
+<div class="grid grid-cols-2 gap-4 mt-6">
+<div class="p-4 border border-outline-variant rounded-xl cursor-pointer hover:border-primary">GT Bank</div>
+<div class="p-4 border border-outline-variant rounded-xl cursor-pointer hover:border-primary">Zenith Bank</div>
+</div>
+</div>
+<div class="hidden py-10 text-center space-y-4" id="content-ussd">
+<span class="material-symbols-outlined text-6xl text-primary-container">dialpad</span>
+<h4 class="font-headline-sm">Pay via USSD</h4>
+<p class="text-on-surface-variant">Dial the code displayed on your mobile device.</p>
+</div>
+</div>
+<!-- Bottom Branding -->
+<div class="bg-surface-container-low p-4 flex justify-center items-center gap-2 opacity-60">
+<span class="text-xs font-label-md text-on-surface-variant">PAYMENT POWERED BY</span>
+<div class="h-4 w-20 bg-primary/20 rounded"></div>
+</div>
+</div>
+</section>
+</div>
+</main>
+<!-- Success Modal (Hidden) -->
+<div class="fixed inset-0 bg-primary/40 backdrop-blur-sm z-[100] flex items-center justify-center opacity-0 pointer-events-none transition-opacity duration-500" id="success-overlay">
+<div class="glass-card p-12 rounded-2xl max-w-md w-full text-center scale-90 transition-transform duration-500" id="success-modal">
+<div class="w-20 h-20 bg-success-vibrant rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg shadow-success-vibrant/40">
+<span class="material-symbols-outlined text-white text-5xl" style="font-variation-settings: 'FILL' 1;">check</span>
+</div>
+<h2 class="font-headline-md text-headline-md text-primary mb-2">Payment Successful!</h2>
+<p class="text-on-surface-variant mb-8">You've been successfully enrolled in MSc Data Science. Your receipt has been sent to your email.</p>
+<button class="w-full py-4 bg-primary text-white rounded-xl font-label-md hover:brightness-125 transition-all" onclick="window.location.reload()">Go to My Courses</button>
+</div>
+</div>
+<script>
+        function switchTab(tab) {
+            const tabs = ['card', 'bank', 'ussd'];
+            tabs.forEach(t => {
+                const btn = document.getElementById(`tab-${t}`);
+                const content = document.getElementById(`content-${t}`);
+                if (t === tab) {
+                    btn.classList.add('border-primary', 'text-primary');
+                    btn.classList.remove('border-transparent', 'text-on-surface-variant');
+                    content.classList.remove('hidden');
+                } else {
+                    btn.classList.remove('border-primary', 'text-primary');
+                    btn.classList.add('border-transparent', 'text-on-surface-variant');
+                    content.classList.add('hidden');
+                }
+            });
+        }
+
+        const payBtn = document.getElementById('pay-btn');
+        const btnText = document.getElementById('btn-text');
+        const btnIcon = document.getElementById('btn-icon');
+        const successOverlay = document.getElementById('success-overlay');
+        const successModal = document.getElementById('success-modal');
+
+        payBtn.addEventListener('click', () => {
+            // Simulate payment processing
+            payBtn.disabled = true;
+            btnText.innerText = 'Processing...';
+            btnIcon.innerText = 'sync';
+            btnIcon.classList.add('animate-spin');
+
+            setTimeout(() => {
+                // Show success state
+                successOverlay.classList.remove('opacity-0', 'pointer-events-none');
+                successModal.classList.remove('scale-90');
+                successModal.classList.add('scale-100');
+            }, 2000);
+        });
+
+        // Add visual flair to inputs
+        const inputs = document.querySelectorAll('input');
+        inputs.forEach(input => {
+            input.addEventListener('focus', () => {
+                input.parentElement.closest('.glass-card')?.classList.add('ring-2', 'ring-primary-container/10');
+            });
+            input.addEventListener('blur', () => {
+                input.parentElement.closest('.glass-card')?.classList.remove('ring-2', 'ring-primary-container/10');
+            });
+        });
+    </script>
+</body></html>

@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Edukom LMS | Empowering Academic Excellence</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "on-tertiary-container": "#d77b5b",
+                      "surface-container-low": "#f3f3f9",
+                      "secondary-fixed-dim": "#bdc5e7",
+                      "tertiary-container": "#541701",
+                      "on-secondary-fixed-variant": "#3d4661",
+                      "surface-bright": "#f9f9fe",
+                      "outline": "#747781",
+                      "secondary": "#555e7a",
+                      "outline-variant": "#c4c6d2",
+                      "on-primary-container": "#7691d8",
+                      "on-surface": "#1a1c20",
+                      "surface-container-highest": "#e2e2e7",
+                      "on-primary-fixed-variant": "#264486",
+                      "tertiary-fixed": "#ffdbcf",
+                      "primary": "#00143e",
+                      "on-background": "#1a1c20",
+                      "secondary-container": "#d3dcfe",
+                      "tertiary": "#320900",
+                      "tertiary-fixed-dim": "#ffb59c",
+                      "on-secondary-container": "#57607d",
+                      "on-tertiary-fixed-variant": "#783117",
+                      "surface-tint": "#405c9f",
+                      "secondary-fixed": "#dae1ff",
+                      "inverse-on-surface": "#f0f0f6",
+                      "on-secondary-fixed": "#111b34",
+                      "on-primary": "#ffffff",
+                      "surface-variant": "#e2e2e7",
+                      "surface-dim": "#dad9df",
+                      "inverse-primary": "#b2c5ff",
+                      "on-primary-fixed": "#001847",
+                      "on-tertiary-fixed": "#390c00",
+                      "on-secondary": "#ffffff",
+                      "inverse-surface": "#2f3035",
+                      "error": "#ba1a1a",
+                      "surface-container-high": "#e8e8ed",
+                      "surface-container-lowest": "#ffffff",
+                      "primary-fixed-dim": "#b2c5ff",
+                      "primary-container": "#002768",
+                      "on-tertiary": "#ffffff",
+                      "on-surface-variant": "#444650",
+                      "surface": "#f9f9fe",
+                      "on-error-container": "#93000a",
+                      "on-error": "#ffffff",
+                      "surface-container": "#eeedf3",
+                      "background": "#f9f9fe",
+                      "primary-fixed": "#dae2ff",
+                      "error-container": "#ffdad6",
+                      "accent-green": "#71A20A"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "2xl": "1rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "gutter": "16px",
+                      "base": "8px",
+                      "margin": "24px",
+                      "md": "16px",
+                      "lg": "24px",
+                      "xs": "4px",
+                      "sm": "8px",
+                      "xl": "32px"
+              },
+              "fontFamily": {
+                      "body-md": ["Plus Jakarta Sans"],
+                      "label-md": ["Plus Jakarta Sans"],
+                      "headline-md": ["Plus Jakarta Sans"],
+                      "body-lg": ["Plus Jakarta Sans"],
+                      "headline-lg": ["Plus Jakarta Sans"]
+              },
+              "fontSize": {
+                      "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                      "label-md": ["12px", {"lineHeight": "16px", "letterSpacing": "0.5px", "fontWeight": "500"}],
+                      "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                      "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                      "headline-lg": ["32px", {"lineHeight": "40px", "fontWeight": "700"}]
+              }
+            },
+          },
+        }
+    </script>
+<style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #f9f9fe; color: #1a1c20; }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.4);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 16px;
+        }
+        .hero-gradient {
+            background: radial-gradient(circle at 70% 30%, rgba(113, 162, 10, 0.08) 0%, transparent 40%),
+                        radial-gradient(circle at 10% 80%, rgba(0, 39, 104, 0.05) 0%, transparent 40%);
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .active-nav-underline {
+            position: relative;
+        }
+        .active-nav-underline::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background-color: #00143e;
+            border-radius: 2px;
+        }
+    </style>
+</head>
+<body class="bg-background overflow-x-hidden hero-gradient">
+<!-- TopAppBar -->
+<header class="docked full-width top-0 sticky z-50 bg-surface/80 dark:bg-surface-dim/80 backdrop-blur-md shadow-sm dark:shadow-none">
+<nav class="flex justify-between items-center w-full px-margin py-4 max-w-7xl mx-auto">
+<div class="font-headline-md text-headline-md font-bold text-primary dark:text-primary-fixed">
+                Edukom LMS
+            </div>
+<div class="hidden md:flex items-center gap-xl">
+<a class="font-label-md text-label-md text-primary dark:text-primary-fixed-dim border-b-2 border-primary dark:border-primary-fixed-dim pb-1 hover:text-primary dark:hover:text-primary-fixed transition-colors duration-200" href="#">Tutors</a>
+<a class="font-label-md text-label-md text-on-surface-variant dark:text-outline-variant hover:text-primary dark:hover:text-primary-fixed transition-colors duration-200" href="#">Entrance Prep</a>
+<a class="font-label-md text-label-md text-on-surface-variant dark:text-outline-variant hover:text-primary dark:hover:text-primary-fixed transition-colors duration-200" href="#">Homework</a>
+<a class="font-label-md text-label-md text-on-surface-variant dark:text-outline-variant hover:text-primary dark:hover:text-primary-fixed transition-colors duration-200" href="#">Global Access</a>
+</div>
+<div class="flex items-center gap-md">
+<button class="font-label-md text-label-md text-primary font-bold px-lg py-sm hover:opacity-80 transition-all">Login</button>
+<button class="font-label-md text-label-md bg-primary text-on-primary px-lg py-sm rounded-lg hover:opacity-90 transition-all shadow-md">Get Started</button>
+</div>
+</nav>
+</header>
+<main>
+<!-- Hero Section -->
+<section class="relative w-full px-margin py-xl max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-xl min-h-[80vh]">
+<div class="flex-1 space-y-lg text-center md:text-left z-10">
+<h1 class="font-headline-lg text-headline-lg text-primary leading-tight max-w-xl">
+                    Empowering Academic Excellence with Edukom LMS
+                </h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant max-w-lg">
+                    Personalized learning paths for every student. Unlock your potential with global access to elite tutors and comprehensive study resources.
+                </p>
+<div class="flex flex-col sm:flex-row gap-md justify-center md:justify-start pt-md">
+<button class="bg-accent-green text-white font-bold px-xl py-lg rounded-xl shadow-lg shadow-accent-green/20 hover:scale-105 transition-transform">Start Your Journey</button>
+<button class="flex items-center justify-center gap-xs font-bold text-accent-green px-xl py-lg border-2 border-accent-green/20 rounded-xl hover:bg-accent-green/5 transition-all">
+                        View Courses
+                        <span class="material-symbols-outlined">chevron_right</span>
+</button>
+</div>
+</div>
+<div class="flex-1 w-full relative">
+<div class="relative w-full aspect-square md:aspect-video rounded-2xl overflow-hidden glass-card p-4">
+<img alt="Edukom LMS Interactive Hero Illustration" class="w-full h-full object-contain" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCXGzlzTdHWhbQzczQnOALki27-4Bs7gVb-KKL-mF_L2L4bjz2aiE8jW8e4Z7QgwufGOQHQ7OA1394YLyMRG_SSKco1poArEFPpAFqiA7fb2ng-mxCi1lubXy6YOYhNOEyzW0fxB0BpmayJbww5sYEXEn5Zo9NzThjodc3eGRur9JSvhtu90XDMK9Pt-4Hkcd0VYso_38OgVoeauRo1UC0vn2luOKKNlGb-W1HDzOHxhtrRSlX0ePYVH3lSP4vJjDblGvHJsXFzcRY"/>
+</div>
+<!-- Decorative elements -->
+<div class="absolute -top-10 -right-10 w-32 h-32 bg-accent-green/10 rounded-full blur-3xl"></div>
+<div class="absolute -bottom-10 -left-10 w-48 h-48 bg-primary/5 rounded-full blur-3xl"></div>
+</div>
+</section>
+<!-- Comprehensive Educational Support -->
+<section class="w-full px-margin py-24 max-w-7xl mx-auto">
+<div class="text-center mb-16 space-y-sm">
+<h2 class="font-headline-lg text-headline-lg text-primary">Educational Support Ecosystem</h2>
+<p class="text-on-surface-variant font-body-lg">Specialized tools and mentorship for every stage of your academic journey.</p>
+</div>
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-lg">
+<!-- Card 1 -->
+<div class="glass-card p-xl flex flex-col items-start gap-md hover:translate-y-[-8px] transition-all duration-300 group">
+<div class="w-14 h-14 rounded-2xl bg-accent-green/10 flex items-center justify-center text-accent-green group-hover:bg-accent-green group-hover:text-white transition-colors">
+<span class="material-symbols-outlined text-[32px]">school</span>
+</div>
+<h3 class="font-headline-md text-headline-md text-primary">Online Tutor</h3>
+<p class="font-body-md text-on-surface-variant">Live one-on-one sessions with subject matter experts tailored to your pace.</p>
+</div>
+<!-- Card 2 -->
+<div class="glass-card p-xl flex flex-col items-start gap-md hover:translate-y-[-8px] transition-all duration-300 group">
+<div class="w-14 h-14 rounded-2xl bg-accent-green/10 flex items-center justify-center text-accent-green group-hover:bg-accent-green group-hover:text-white transition-colors">
+<span class="material-symbols-outlined text-[32px]">edit_note</span>
+</div>
+<h3 class="font-headline-md text-headline-md text-primary">Entrance Prep</h3>
+<p class="font-body-md text-on-surface-variant">Strategic coaching for top-tier university entrance exams and certifications.</p>
+</div>
+<!-- Card 3 -->
+<div class="glass-card p-xl flex flex-col items-start gap-md hover:translate-y-[-8px] transition-all duration-300 group">
+<div class="w-14 h-14 rounded-2xl bg-accent-green/10 flex items-center justify-center text-accent-green group-hover:bg-accent-green group-hover:text-white transition-colors">
+<span class="material-symbols-outlined text-[32px]">assignment</span>
+</div>
+<h3 class="font-headline-md text-headline-md text-primary">Homework Help</h3>
+<p class="font-body-md text-on-surface-variant">24/7 assistance with complex assignments and conceptual clarity.</p>
+</div>
+<!-- Card 4 -->
+<div class="glass-card p-xl flex flex-col items-start gap-md hover:translate-y-[-8px] transition-all duration-300 group">
+<div class="w-14 h-14 rounded-2xl bg-accent-green/10 flex items-center justify-center text-accent-green group-hover:bg-accent-green group-hover:text-white transition-colors">
+<span class="material-symbols-outlined text-[32px]">public</span>
+</div>
+<h3 class="font-headline-md text-headline-md text-primary">Global Access</h3>
+<p class="font-body-md text-on-surface-variant">Study anywhere, anytime with our cloud-based interactive learning dashboard.</p>
+</div>
+</div>
+</section>
+<!-- Who We Are -->
+<section class="w-full bg-surface-container-low py-24">
+<div class="max-w-7xl mx-auto px-margin flex flex-col md:flex-row items-center gap-24">
+<div class="flex-1 space-y-md">
+<span class="text-accent-green font-bold text-label-md tracking-widest uppercase">Our Mission</span>
+<h2 class="font-headline-lg text-headline-lg text-primary">Bridging the Gap in Global Education</h2>
+<p class="font-body-lg text-on-surface-variant leading-relaxed">
+                        At Edukom LMS, we believe that geography shouldn't dictate the quality of education. Our platform connects students with the world's most talented educators, utilizing cutting-edge AI and human-centric mentorship. 
+                    </p>
+<p class="font-body-lg text-on-surface-variant leading-relaxed">
+                        Whether you're preparing for a local final or an international standardized test, our mission is to provide the structure, resources, and inspiration needed to excel in a competitive global landscape.
+                    </p>
+<div class="flex gap-lg pt-4">
+<div class="flex flex-col">
+<span class="text-headline-md text-primary font-bold">15k+</span>
+<span class="text-label-md text-on-surface-variant">Active Students</span>
+</div>
+<div class="border-r border-outline-variant"></div>
+<div class="flex flex-col">
+<span class="text-headline-md text-primary font-bold">500+</span>
+<span class="text-label-md text-on-surface-variant">Elite Tutors</span>
+</div>
+<div class="border-r border-outline-variant"></div>
+<div class="flex flex-col">
+<span class="text-headline-md text-primary font-bold">98%</span>
+<span class="text-label-md text-on-surface-variant">Success Rate</span>
+</div>
+</div>
+</div>
+<div class="flex-1 w-full">
+<div class="aspect-video bg-surface-container rounded-2xl overflow-hidden shadow-2xl">
+<img class="w-full h-full object-cover" data-alt="A professional and warm group of diverse educators and students collaborating in a modern, sun-drenched architectural space. The style is clean and corporate with soft natural lighting and a high-end educational aesthetic. The color palette features deep blues and fresh greens consistent with the Edukom brand." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDwi7_ZlrtWQ8Ya59s2XFPERSD2a5DbCRxDAv6dF0QujC2oYqFIsr_SIJGuIAdLjWZP8z6UJPTYREnyg09XFQPR3MNli0TvqNL4yYUzKcq3R4CdZ7BoVBpq892SsljqGfMVDcXmY3PpMsjx71JAqAlT4cf2L7FpEIQs8qZo-KIHlcp817v62CfLsgVPEcd1wKJAdy1rIqW5fhVsnE8Q2S8lWdmmVWIrsnX_iOLTSh_ozkGtCr5rvokGjYw5gQiQC4y7mQKeX2-mRUQ"/>
+</div>
+</div>
+</div>
+</section>
+<!-- Subjects We Take & Exams We Prep For -->
+<section class="w-full px-margin py-24 max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-24">
+<!-- Subjects -->
+<div class="space-y-lg">
+<div class="flex items-center gap-sm">
+<span class="material-symbols-outlined text-accent-green">book</span>
+<h3 class="font-headline-md text-headline-md text-primary">Subjects We Master</h3>
+</div>
+<div class="flex flex-wrap gap-md">
+<span class="px-lg py-md rounded-full bg-white border border-outline-variant text-on-surface-variant font-bold hover:bg-primary hover:text-white transition-all cursor-default">Mathematics</span>
+<span class="px-lg py-md rounded-full bg-white border border-outline-variant text-on-surface-variant font-bold hover:bg-primary hover:text-white transition-all cursor-default">Physics</span>
+<span class="px-lg py-md rounded-full bg-white border border-outline-variant text-on-surface-variant font-bold hover:bg-primary hover:text-white transition-all cursor-default">Chemistry</span>
+<span class="px-lg py-md rounded-full bg-white border border-outline-variant text-on-surface-variant font-bold hover:bg-primary hover:text-white transition-all cursor-default">Biology</span>
+<span class="px-lg py-md rounded-full bg-white border border-outline-variant text-on-surface-variant font-bold hover:bg-primary hover:text-white transition-all cursor-default">Computer Science</span>
+<span class="px-lg py-md rounded-full bg-white border border-outline-variant text-on-surface-variant font-bold hover:bg-primary hover:text-white transition-all cursor-default">English Literature</span>
+<span class="px-lg py-md rounded-full bg-white border border-outline-variant text-on-surface-variant font-bold hover:bg-primary hover:text-white transition-all cursor-default">World History</span>
+<span class="px-lg py-md rounded-full bg-white border border-outline-variant text-on-surface-variant font-bold hover:bg-primary hover:text-white transition-all cursor-default">Economics</span>
+</div>
+</div>
+<!-- Exams -->
+<div class="space-y-lg">
+<div class="flex items-center gap-sm">
+<span class="material-symbols-outlined text-accent-green">verified</span>
+<h3 class="font-headline-md text-headline-md text-primary">Exams We Prepare For</h3>
+</div>
+<div class="grid grid-cols-2 sm:grid-cols-3 gap-md">
+<div class="p-md bg-surface-container rounded-xl flex items-center justify-center font-bold text-primary border border-transparent hover:border-accent-green transition-all cursor-default">SAT</div>
+<div class="p-md bg-surface-container rounded-xl flex items-center justify-center font-bold text-primary border border-transparent hover:border-accent-green transition-all cursor-default">GRE</div>
+<div class="p-md bg-surface-container rounded-xl flex items-center justify-center font-bold text-primary border border-transparent hover:border-accent-green transition-all cursor-default">GMAT</div>
+<div class="p-md bg-surface-container rounded-xl flex items-center justify-center font-bold text-primary border border-transparent hover:border-accent-green transition-all cursor-default">IELTS</div>
+<div class="p-md bg-surface-container rounded-xl flex items-center justify-center font-bold text-primary border border-transparent hover:border-accent-green transition-all cursor-default">TOEFL</div>
+<div class="p-md bg-surface-container rounded-xl flex items-center justify-center font-bold text-primary border border-transparent hover:border-accent-green transition-all cursor-default">LSAT</div>
+</div>
+</div>
+</section>
+<!-- Testimonials Carousel -->
+<section class="w-full bg-primary py-24 text-on-primary">
+<div class="max-w-7xl mx-auto px-margin">
+<div class="text-center mb-16">
+<h2 class="font-headline-lg text-headline-lg mb-md">What Parents Say</h2>
+<p class="text-on-primary/70 font-body-lg">Real results from families around the globe.</p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-lg">
+<!-- Testimonial 1 -->
+<div class="glass-card bg-white/5 border-white/10 p-xl flex flex-col gap-md">
+<div class="flex text-accent-green">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">star</span>
+</div>
+<p class="font-body-md italic leading-relaxed text-on-primary/90">
+                            "Edukom transformed my son's approach to Mathematics. He went from struggling with basics to achieving an A* in his IGCSEs. The tutors are world-class."
+                        </p>
+<div class="mt-auto flex items-center gap-md">
+<div class="w-10 h-10 rounded-full bg-surface-container"></div>
+<div>
+<p class="font-bold text-on-primary">Sarah Jenkins</p>
+<p class="text-label-md text-on-primary/60">London, UK</p>
+</div>
+</div>
+</div>
+<!-- Testimonial 2 -->
+<div class="glass-card bg-white/5 border-white/10 p-xl flex flex-col gap-md">
+<div class="flex text-accent-green">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">star</span>
+</div>
+<p class="font-body-md italic leading-relaxed text-on-primary/90">
+                            "The SAT prep program is exceptionally structured. My daughter improved her score by 240 points within just three months of dedicated tutoring."
+                        </p>
+<div class="mt-auto flex items-center gap-md">
+<div class="w-10 h-10 rounded-full bg-surface-container"></div>
+<div>
+<p class="font-bold text-on-primary">Dr. Amit Shah</p>
+<p class="text-label-md text-on-primary/60">Mumbai, IN</p>
+</div>
+</div>
+</div>
+<!-- Testimonial 3 -->
+<div class="glass-card bg-white/5 border-white/10 p-xl flex flex-col gap-md">
+<div class="flex text-accent-green">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">star</span>
+</div>
+<p class="font-body-md italic leading-relaxed text-on-primary/90">
+                            "Finding high-quality Physics help was hard until we joined Edukom. The interactive whiteboard sessions are a game changer for complex topics."
+                        </p>
+<div class="mt-auto flex items-center gap-md">
+<div class="w-10 h-10 rounded-full bg-surface-container"></div>
+<div>
+<p class="font-bold text-on-primary">Elena Rodriguez</p>
+<p class="text-label-md text-on-primary/60">Madrid, ES</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- FAQs Accordion -->
+<section class="w-full px-margin py-24 max-w-4xl mx-auto">
+<div class="text-center mb-16">
+<h2 class="font-headline-lg text-headline-lg text-primary">Common Questions</h2>
+<p class="text-on-surface-variant font-body-lg">Everything you need to know about our learning model.</p>
+</div>
+<div class="space-y-md">
+<details class="group glass-card overflow-hidden">
+<summary class="flex justify-between items-center p-lg font-bold text-primary cursor-pointer list-none">
+                        How are the tutors selected?
+                        <span class="material-symbols-outlined group-open:rotate-180 transition-transform">expand_more</span>
+</summary>
+<div class="p-lg pt-0 text-on-surface-variant font-body-md leading-relaxed">
+                        All our tutors undergo a rigorous 4-stage selection process including subject proficiency tests, demo classes, pedagogical assessments, and background checks. Only the top 3% of applicants join our platform.
+                    </div>
+</details>
+<details class="group glass-card overflow-hidden">
+<summary class="flex justify-between items-center p-lg font-bold text-primary cursor-pointer list-none">
+                        Can I switch my tutor if I'm not satisfied?
+                        <span class="material-symbols-outlined group-open:rotate-180 transition-transform">expand_more</span>
+</summary>
+<div class="p-lg pt-0 text-on-surface-variant font-body-md leading-relaxed">
+                        Yes, student-tutor chemistry is vital. If you feel the current match isn't optimal, our student success managers will help you transition to a new tutor within 48 hours at no additional cost.
+                    </div>
+</details>
+<details class="group glass-card overflow-hidden">
+<summary class="flex justify-between items-center p-lg font-bold text-primary cursor-pointer list-none">
+                        What technical equipment is required?
+                        <span class="material-symbols-outlined group-open:rotate-180 transition-transform">expand_more</span>
+</summary>
+<div class="p-lg pt-0 text-on-surface-variant font-body-md leading-relaxed">
+                        A stable internet connection and a device with a webcam (Laptop or Tablet) are required. For certain subjects like Math or Physics, we recommend a digital stylus or graphic tablet for real-time problem-solving on our digital whiteboard.
+                    </div>
+</details>
+<details class="group glass-card overflow-hidden">
+<summary class="flex justify-between items-center p-lg font-bold text-primary cursor-pointer list-none">
+                        Do you offer trial classes?
+                        <span class="material-symbols-outlined group-open:rotate-180 transition-transform">expand_more</span>
+</summary>
+<div class="p-lg pt-0 text-on-surface-variant font-body-md leading-relaxed">
+                        Absolutely. We offer a complimentary 30-minute diagnostic session for every new student to assess their current level and experience our teaching methodology.
+                    </div>
+</details>
+</div>
+</section>
+</main>
+<!-- Footer -->
+<footer class="w-full px-margin py-xl flex flex-col md:flex-row justify-between items-center gap-md bg-primary dark:bg-primary-container text-on-primary dark:text-on-primary-container">
+<div class="flex flex-col gap-sm">
+<div class="font-headline-md text-headline-md font-bold text-on-primary dark:text-on-primary-container">
+                Edukom LMS
+            </div>
+<p class="font-body-md text-on-primary/60 max-w-xs text-center md:text-left">
+                Empowering the next generation of global leaders through personalized education.
+            </p>
+</div>
+<div class="flex flex-wrap justify-center gap-lg">
+<a class="font-label-md text-label-md text-on-primary/80 dark:text-on-primary-container/80 hover:text-on-primary dark:hover:text-on-primary-container underline transition-all" href="#">About Us</a>
+<a class="font-label-md text-label-md text-on-primary/80 dark:text-on-primary-container/80 hover:text-on-primary dark:hover:text-on-primary-container underline transition-all" href="#">Subjects</a>
+<a class="font-label-md text-label-md text-on-primary/80 dark:text-on-primary-container/80 hover:text-on-primary dark:hover:text-on-primary-container underline transition-all" href="#">Exams</a>
+<a class="font-label-md text-label-md text-on-primary/80 dark:text-on-primary-container/80 hover:text-on-primary dark:hover:text-on-primary-container underline transition-all" href="#">Testimonials</a>
+<a class="font-label-md text-label-md text-on-primary/80 dark:text-on-primary-container/80 hover:text-on-primary dark:hover:text-on-primary-container underline transition-all" href="#">FAQs</a>
+<a class="font-label-md text-label-md text-on-primary/80 dark:text-on-primary-container/80 hover:text-on-primary dark:hover:text-on-primary-container underline transition-all" href="#">Privacy Policy</a>
+</div>
+<div class="flex flex-col items-center md:items-end gap-sm">
+<div class="flex gap-md">
+<span class="material-symbols-outlined text-on-primary/80 cursor-pointer hover:text-white">language</span>
+<span class="material-symbols-outlined text-on-primary/80 cursor-pointer hover:text-white">share</span>
+</div>
+<p class="font-body-md text-body-md text-on-primary/80 dark:text-on-primary-container/80">
+                © 2024 Edukom LMS. All rights reserved.
+            </p>
+</div>
+</footer>
+<script>
+        // Simple micro-interaction for glass cards
+        document.querySelectorAll('.glass-card').forEach(card => {
+            card.addEventListener('mousemove', (e) => {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                card.style.setProperty('--mouse-x', `${x}px`);
+                card.style.setProperty('--mouse-y', `${y}px`);
+            });
+        });
+    </script>
+</body></html>

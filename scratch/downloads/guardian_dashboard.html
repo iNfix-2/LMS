@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Edukom Parent Dashboard | Liam Johnson</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-error": "#ffffff",
+                    "on-secondary-container": "#4a6d00",
+                    "surface-variant": "#e3e2e8",
+                    "surface-container-high": "#e9e7ee",
+                    "on-primary-fixed-variant": "#274486",
+                    "tertiary-fixed": "#d8e2ff",
+                    "surface-slate": "#f8fafc",
+                    "glass-border": "rgba(255, 255, 255, 0.4)",
+                    "inverse-on-surface": "#f1f0f6",
+                    "error-container": "#ffdad6",
+                    "surface-container-lowest": "#ffffff",
+                    "on-primary-container": "#7791d8",
+                    "on-tertiary-fixed": "#051a3d",
+                    "on-secondary-fixed-variant": "#344e00",
+                    "surface-container": "#eeedf3",
+                    "primary-container": "#002769",
+                    "surface": "#faf8ff",
+                    "surface-container-highest": "#e3e2e8",
+                    "primary": "#00143f",
+                    "outline-variant": "#c4c6d2",
+                    "on-secondary-fixed": "#121f00",
+                    "on-tertiary": "#ffffff",
+                    "secondary-container": "#baf15d",
+                    "on-tertiary-container": "#8193bc",
+                    "on-primary": "#ffffff",
+                    "secondary-fixed": "#bdf45f",
+                    "on-background": "#1a1b20",
+                    "surface-dim": "#dad9df",
+                    "surface-bright": "#faf8ff",
+                    "background": "#faf8ff",
+                    "on-surface": "#1a1b20",
+                    "primary-fixed": "#dae2ff",
+                    "error-alert": "#ef4444",
+                    "error": "#ba1a1a",
+                    "on-surface-variant": "#444650",
+                    "on-secondary": "#ffffff",
+                    "tertiary-container": "#182b4e",
+                    "surface-tint": "#415c9f",
+                    "secondary-fixed-dim": "#a2d745",
+                    "glass-fill": "rgba(255, 255, 255, 0.7)",
+                    "on-tertiary-fixed-variant": "#35466b",
+                    "on-error-container": "#93000a",
+                    "tertiary": "#011639",
+                    "secondary": "#476800",
+                    "tertiary-fixed-dim": "#b4c6f2",
+                    "primary-fixed-dim": "#b2c5ff",
+                    "surface-container-low": "#f4f3f9",
+                    "inverse-surface": "#2f3035",
+                    "success-vibrant": "#71A20A",
+                    "outline": "#747781",
+                    "inverse-primary": "#b2c5ff",
+                    "on-primary-fixed": "#001848"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "gutter": "24px",
+                    "base-unit": "8px",
+                    "margin-mobile": "16px",
+                    "max-width": "1280px",
+                    "margin-desktop": "48px"
+            },
+            "fontFamily": {
+                    "headline-sm": ["Plus Jakarta Sans"],
+                    "body-lg": ["Plus Jakarta Sans"],
+                    "label-sm": ["Plus Jakarta Sans"],
+                    "display-lg": ["Plus Jakarta Sans"],
+                    "label-md": ["Plus Jakarta Sans"],
+                    "headline-md": ["Plus Jakarta Sans"],
+                    "headline-lg": ["Plus Jakarta Sans"],
+                    "body-sm": ["Plus Jakarta Sans"],
+                    "body-md": ["Plus Jakarta Sans"]
+            }
+          }
+        }
+      }
+    </script>
+<style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #f8fafc;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            border-radius: 16px;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.05);
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #e3e2e8;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body class="bg-surface-slate text-on-surface">
+<!-- SideNavBar (Execution from JSON) -->
+<aside class="fixed left-0 top-0 h-full z-50 flex flex-col py-gutter bg-glass-fill backdrop-blur-xl border-r border-glass-border shadow-md w-64">
+<div class="px-6 mb-8">
+<h1 class="font-headline-sm text-headline-sm font-black text-primary">Edukom</h1>
+</div>
+<!-- Active Child Context -->
+<div class="px-4 mb-8">
+<div class="flex items-center gap-3 p-3 rounded-xl bg-surface-container-low border border-glass-border">
+<img class="w-10 h-10 rounded-full border-2 border-white object-cover" data-alt="A professional studio portrait of a cheerful teenage boy with dark hair wearing a crisp white school uniform, set against a soft blue gradient background. The lighting is bright and high-key, reflecting a modern academic environment with soft shadows and sharp focus on the facial features." src="https://lh3.googleusercontent.com/aida-public/AB6AXuA6us7wTtsasAc2kEcHPL74WTsrcssN0Ns0vDbEYdwRVfEEgzeypPU10PeL7dZX_tmKMkRcHHSfIcODqzs9TrdJi9WCqluTex18oHjkoTIt10M9dmcALOiR7Smuse3dgMmITinXzZDlnCk_6Gbx2rO-fyalecewb9ggbSqRbKgqv9YNJMpmXI93iyDLEnEe3FUkRX9IzHIi9ayQQBHDvDBe8uAp1ehgb6ZO0-ZNjj8yT4Wc91cCm3wvAGkLU_5QKURGwfaHx6EYENQ"/>
+<div>
+<p class="font-label-md text-label-md text-primary truncate">Liam Johnson</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Grade 10-B</p>
+</div>
+</div>
+</div>
+<nav class="flex-1 px-2 space-y-1">
+<!-- Active: Children -->
+<a class="flex items-center gap-3 bg-secondary-container text-on-secondary-container rounded-xl px-4 py-3 hover:translate-x-1 duration-300" href="#">
+<span class="material-symbols-outlined" data-icon="child_care">child_care</span>
+<span class="font-label-md text-label-md">Children</span>
+</a>
+<a class="flex items-center gap-3 text-on-surface-variant px-4 py-3 hover:bg-surface-variant/50 transition-all hover:translate-x-1 duration-300" href="#">
+<span class="material-symbols-outlined" data-icon="assessment">assessment</span>
+<span class="font-label-md text-label-md">Reports</span>
+</a>
+<a class="flex items-center gap-3 text-on-surface-variant px-4 py-3 hover:bg-surface-variant/50 transition-all hover:translate-x-1 duration-300" href="#">
+<span class="material-symbols-outlined" data-icon="payments">payments</span>
+<span class="font-label-md text-label-md">Payments</span>
+</a>
+<a class="flex items-center gap-3 text-on-surface-variant px-4 py-3 hover:bg-surface-variant/50 transition-all hover:translate-x-1 duration-300" href="#">
+<span class="material-symbols-outlined" data-icon="mail">mail</span>
+<span class="font-label-md text-label-md">Messages</span>
+</a>
+<a class="flex items-center gap-3 text-on-surface-variant px-4 py-3 hover:bg-surface-variant/50 transition-all hover:translate-x-1 duration-300" href="#">
+<span class="material-symbols-outlined" data-icon="description">description</span>
+<span class="font-label-md text-label-md">Documents</span>
+</a>
+</nav>
+<div class="px-2 mt-auto space-y-1">
+<button class="w-full mb-4 py-3 rounded-xl border-2 border-dashed border-outline-variant text-on-surface-variant flex items-center justify-center gap-2 hover:bg-surface-container transition-colors">
+<span class="material-symbols-outlined">add</span>
+<span class="font-label-md text-label-md">Add Child</span>
+</button>
+<a class="flex items-center gap-3 text-on-surface-variant px-4 py-3 hover:bg-surface-variant/50 transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="help">help</span>
+<span class="font-label-md text-label-md">Help Center</span>
+</a>
+<a class="flex items-center gap-3 text-error px-4 py-3 hover:bg-error-container/20 transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="logout">logout</span>
+<span class="font-label-md text-label-md">Sign Out</span>
+</a>
+</div>
+</aside>
+<!-- TopNavBar (Execution from JSON) -->
+<header class="fixed top-0 right-0 left-64 z-40 bg-glass-fill backdrop-blur-md border-b border-glass-border shadow-sm flex justify-between items-center px-gutter py-4">
+<div class="flex items-center gap-6">
+<div class="relative group cursor-pointer">
+<div class="flex items-center gap-2 bg-surface-container-low px-4 py-2 rounded-lg border border-glass-border">
+<span class="font-label-md text-label-md text-primary">Liam Johnson</span>
+<span class="material-symbols-outlined text-primary text-sm">expand_more</span>
+</div>
+</div>
+<nav class="hidden md:flex gap-6">
+<a class="font-label-md text-label-md text-primary font-bold border-b-2 border-secondary py-1" href="#">Dashboard</a>
+<a class="font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors py-1" href="#">Academics</a>
+<a class="font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors py-1" href="#">Finances</a>
+</nav>
+</div>
+<div class="flex items-center gap-4">
+<button class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-container transition-colors relative">
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="notifications">notifications</span>
+<span class="absolute top-2 right-2 w-2 h-2 bg-error-alert rounded-full"></span>
+</button>
+<button class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-container transition-colors">
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="settings">settings</span>
+</button>
+<div class="h-8 w-px bg-glass-border mx-2"></div>
+<div class="flex items-center gap-3">
+<img class="w-10 h-10 rounded-full object-cover" data-alt="A sophisticated headshot of a middle-aged woman with a friendly expression, wearing elegant business attire and a soft silk scarf. The background is a blurred high-end interior with warm lighting. The overall aesthetic is professional, approachable, and high-quality, fitting for a modern digital guardian portal." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDZo9Z1E9b9UoNy49yvcgxSKr-Aw6eUhld1-nykx4YT22qBF2677C2qi8Rdx5OPGwrKsyi9uruPAZYRxpTURZGbVO1R42mUWFm4LOjwxGNIbi2dBNc0vOwYkKdYRzWFE96MIsJhHq9VPAkKQw4rG2EopoksX4rdVtZI2mDDXiZ_WGRYky134p8V4tqXbNdhySS8m_LUW88DqGp-c3f9MVAHdRh-sFsA-XA4q0_yI-oQykexUEyRCvokFt65QKcd4L1q8OwGQhGIKIs"/>
+</div>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="ml-64 pt-24 px-gutter pb-12 max-w-[1280px] mx-auto">
+<!-- Bento Grid Layout -->
+<div class="grid grid-cols-12 gap-6">
+<!-- Welcome Panel (Large Card) -->
+<section class="col-span-12 lg:col-span-8 glass-card p-8 flex flex-col md:flex-row items-center gap-8 relative overflow-hidden">
+<div class="absolute -right-12 -top-12 w-48 h-48 bg-secondary/10 rounded-full blur-3xl"></div>
+<div class="z-10 text-center md:text-left flex-1">
+<h2 class="font-headline-lg text-headline-lg text-primary mb-2">Hello, Guardian!</h2>
+<p class="font-body-md text-body-md text-on-surface-variant mb-6">Here's a quick look at <span class="font-bold text-primary">Liam's</span> progress this week. He's performing excellently in Mathematics.</p>
+<div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+<div class="bg-white/40 p-4 rounded-xl border border-white/60">
+<span class="material-symbols-outlined text-success-vibrant mb-2" data-icon="grade">grade</span>
+<p class="font-headline-sm text-headline-sm text-primary">A-</p>
+<p class="font-label-sm text-label-sm uppercase text-on-surface-variant opacity-70">Current Grade</p>
+</div>
+<div class="bg-white/40 p-4 rounded-xl border border-white/60">
+<span class="material-symbols-outlined text-primary mb-2" data-icon="event_available">event_available</span>
+<p class="font-headline-sm text-headline-sm text-primary">98%</p>
+<p class="font-label-sm text-label-sm uppercase text-on-surface-variant opacity-70">Attendance</p>
+</div>
+<div class="bg-white/40 p-4 rounded-xl border border-white/60">
+<span class="material-symbols-outlined text-secondary mb-2" data-icon="task_alt">task_alt</span>
+<p class="font-headline-sm text-headline-sm text-primary">42/50</p>
+<p class="font-label-sm text-label-sm uppercase text-on-surface-variant opacity-70">Lessons</p>
+</div>
+<div class="bg-white/40 p-4 rounded-xl border border-white/60">
+<span class="material-symbols-outlined text-error mb-2" data-icon="notification_important">notification_important</span>
+<p class="font-headline-sm text-headline-sm text-primary">3</p>
+<p class="font-label-sm text-label-sm uppercase text-on-surface-variant opacity-70">Exams</p>
+</div>
+</div>
+</div>
+<div class="hidden md:block w-48 shrink-0">
+
+</div>
+</section>
+<!-- Invoices & Payments Summary -->
+<section class="col-span-12 lg:col-span-4 glass-card p-6 flex flex-col justify-between">
+<div>
+<div class="flex justify-between items-start mb-6">
+<h3 class="font-headline-sm text-headline-sm text-primary">Finances</h3>
+<span class="material-symbols-outlined text-on-surface-variant">account_balance_wallet</span>
+</div>
+<div class="space-y-4 mb-8">
+<div class="flex justify-between items-center p-3 rounded-lg bg-error-container/10 border border-error/10">
+<div>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Pending Invoices</p>
+<p class="font-headline-sm text-headline-sm text-error">$150.00</p>
+</div>
+<span class="material-symbols-outlined text-error">priority_high</span>
+</div>
+<div class="flex justify-between items-center p-3 rounded-lg bg-surface-container-low border border-glass-border">
+<div>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Paid (Term 2)</p>
+<p class="font-headline-sm text-headline-sm text-success-vibrant">$2,450.00</p>
+</div>
+<span class="material-symbols-outlined text-success-vibrant">check_circle</span>
+</div>
+</div>
+</div>
+<button class="w-full py-4 bg-secondary-fixed text-on-secondary-fixed font-bold rounded-full hover:bg-secondary-fixed-dim transition-all shadow-lg shadow-secondary/20 flex items-center justify-center gap-2 active:scale-95 duration-200">
+                    Pay Now
+                    <span class="material-symbols-outlined">arrow_forward</span>
+</button>
+</section>
+<!-- Academic Timetable -->
+<section class="col-span-12 lg:col-span-8 glass-card p-6">
+<div class="flex justify-between items-center mb-6">
+<h3 class="font-headline-sm text-headline-sm text-primary">Daily Schedule</h3>
+<div class="flex gap-2">
+<span class="px-3 py-1 rounded-full bg-primary-fixed text-on-primary-fixed text-label-sm font-label-sm">Monday</span>
+<span class="px-3 py-1 rounded-full border border-outline-variant text-on-surface-variant text-label-sm font-label-sm">May 12</span>
+</div>
+</div>
+<div class="space-y-3">
+<!-- Schedule Item -->
+<div class="flex items-center gap-4 p-4 rounded-xl hover:bg-white/40 transition-colors border border-transparent hover:border-glass-border">
+<div class="w-16 text-center">
+<p class="font-label-md text-label-md text-primary">08:00</p>
+<p class="font-label-sm text-label-sm text-on-surface-variant opacity-60">AM</p>
+</div>
+<div class="w-1 h-10 bg-primary rounded-full"></div>
+<div class="flex-1">
+<p class="font-label-md text-label-md text-primary">Advanced Mathematics</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Dr. Sarah Weaver • Room 304</p>
+</div>
+<div class="hidden sm:flex -space-x-2">
+<img class="w-8 h-8 rounded-full border-2 border-white object-cover" data-alt="A portrait of a senior academic female professor with glasses and silver hair, smiling warmly. Professional lighting, high-quality resolution, blurred bookshelf background." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCylkL3PtLvW-nkzMirwXoonxCVm7HxNZlbnpHTVD1xDhU5u2Vw8_rZEZFA-xapEdocLtdAKfVJKqly-HkqXLssNeDF0PJVinM4_WAcnpkAjV_zUp2nDfnzSPd1t-ppJD4qzqyOxvLjE1biXavHYhWtoojvM_Zx21bxnM2XxNE5yRG6xuOKeBBmTfdadwk3oZyyyoDS4FZ_gLdVI84GuAagUwlS9kA3VenasmjRfv1ShDiaPk3DO_lUh1B1N3NhwkprDSeJfgfYsqU"/>
+</div>
+</div>
+<!-- Schedule Item -->
+<div class="flex items-center gap-4 p-4 rounded-xl hover:bg-white/40 transition-colors border border-transparent hover:border-glass-border">
+<div class="w-16 text-center">
+<p class="font-label-md text-label-md text-primary">10:30</p>
+<p class="font-label-sm text-label-sm text-on-surface-variant opacity-60">AM</p>
+</div>
+<div class="w-1 h-10 bg-secondary rounded-full"></div>
+<div class="flex-1">
+<p class="font-label-md text-label-md text-primary">Physics Laboratory</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Prof. James Miller • Lab 2</p>
+</div>
+<div class="hidden sm:flex -space-x-2">
+<img class="w-8 h-8 rounded-full border-2 border-white object-cover" data-alt="A portrait of a male science professor in a lab coat, looking intellectual and friendly. Modern lab environment in the background with soft bokeh." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBtzXSbWOQFnX1VKfyzKS1d6jDv4v2ArsLNleU3tK0mjqF2lkXgsn2AlDqiMi8eycqhhgAMQmoWNbW6WJ_M56TEzVqNYELmrfAR_8z0vFGh9m2Hve2Igvk70FYRObqYQk7xLCEAGcdGEiCeXHgrd5iIz-Mk20X22OuJeCRsNMOQ31mke7EiBcHpI-BL4UgEXfzAYxhrF_RWNyVBS-nLj-7Yy_0X_VXK83pziQlIvMuuXn7OlZkmpYWKp_zKqt2Stn7AB5IdYxkTdFs"/>
+</div>
+</div>
+<!-- Schedule Item -->
+<div class="flex items-center gap-4 p-4 rounded-xl hover:bg-white/40 transition-colors border border-transparent hover:border-glass-border">
+<div class="w-16 text-center">
+<p class="font-label-md text-label-md text-primary">01:00</p>
+<p class="font-label-sm text-label-sm text-on-surface-variant opacity-60">PM</p>
+</div>
+<div class="w-1 h-10 bg-tertiary-container rounded-full"></div>
+<div class="flex-1">
+<p class="font-label-md text-label-md text-primary">Modern Literature</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Ms. Elena Rodriguez • Room 112</p>
+</div>
+<div class="hidden sm:flex -space-x-2">
+<img class="w-8 h-8 rounded-full border-2 border-white object-cover" data-alt="A portrait of a young professional female teacher with a welcoming smile, wearing a casual blazer. Contemporary classroom background with soft lighting." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBeRCcWhiK0ymqapJv6Z-Gazk8eZVT2Z-qAelUmfVE3xelWuAIz_5o2Qmsf_DWeZU7kclYg3uQzbvypmmmUnlDFaDjxCkcT0VvU_Qubhc5qvVtEXvdUGs_PiFhp_sYQ_huZ2BOlgV9om6xvOaKp8Iy1J94_5dMxbHV2H_94qAFCHppM6NrZVAJBqerWChDUJlIpLB4cC-n2N70QRpcjG0BLMNd9x-p_LPUF1lqAGMvGMZk4LgmYh1T531XtrE3M7BjYz-7pVz80Hi0"/>
+</div>
+</div>
+</div>
+</section>
+<!-- Activity Log -->
+<section class="col-span-12 lg:col-span-4 glass-card p-6 flex flex-col">
+<h3 class="font-headline-sm text-headline-sm text-primary mb-6">Recent Activity</h3>
+<div class="space-y-6 flex-1 overflow-y-auto custom-scrollbar pr-2 max-h-[400px]">
+<div class="flex gap-4">
+<div class="mt-1 w-8 h-8 shrink-0 rounded-full bg-secondary-container flex items-center justify-center">
+<span class="material-symbols-outlined text-on-secondary-container text-sm">history_edu</span>
+</div>
+<div>
+<p class="font-label-md text-label-md text-primary">Grade posted for Physics Quiz</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-1">Liam scored 18/20 (90%)</p>
+<p class="text-[10px] font-label-sm uppercase text-outline">2 hours ago</p>
+</div>
+</div>
+<div class="flex gap-4">
+<div class="mt-1 w-8 h-8 shrink-0 rounded-full bg-primary-fixed flex items-center justify-center">
+<span class="material-symbols-outlined text-on-primary-fixed text-sm">how_to_reg</span>
+</div>
+<div>
+<p class="font-label-md text-label-md text-primary">Attendance marked for Math</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-1">Present &amp; Punctual</p>
+<p class="text-[10px] font-label-sm uppercase text-outline">5 hours ago</p>
+</div>
+</div>
+<div class="flex gap-4">
+<div class="mt-1 w-8 h-8 shrink-0 rounded-full bg-error-container flex items-center justify-center">
+<span class="material-symbols-outlined text-on-error-container text-sm">assignment_late</span>
+</div>
+<div>
+<p class="font-label-md text-label-md text-primary">Upcoming Biology Exam</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-1">Scheduled for Friday, 10:00 AM</p>
+<p class="text-[10px] font-label-sm uppercase text-outline">Yesterday</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Tutor Messaging Panel -->
+<section class="col-span-12 glass-card p-6 flex flex-col md:flex-row items-center gap-8">
+<div class="flex-1">
+<h3 class="font-headline-sm text-headline-sm text-primary mb-2">Message Tutors</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Direct channel to Liam's educators for progress updates and support.</p>
+</div>
+<div class="w-full md:w-auto flex flex-wrap gap-4">
+<button class="flex items-center gap-3 p-2 pr-6 rounded-full border border-glass-border hover:bg-white/50 transition-all group">
+<img class="w-10 h-10 rounded-full object-cover" data-alt="Close up portrait of Dr. Sarah Weaver, professional academic, looking directly at camera with a slight smile. Studio lighting, soft white background." src="https://lh3.googleusercontent.com/aida-public/AB6AXuA34qZ8GepO1tkjnh-mbNYCEGqsM0VfTJ9JvrUguOWrEdHGZRLFPI5oJdurQhenkO_YIqsU96PyaeJskixTDzjEwlGGb29ZI8Np3KJAN2UAcjYcRIxMuhPoSWXwQpScZnAIh9r0VChp70uOH8tqSG9FSE3I5lG7n8DtVO-Zfypr_vUKLzlvYvCcl6dfXlr6vbghbTwaVVpTs2xspSl_oU6sM516_jn-E-xuQSunBVx0txihVIhFGt1CAWUWWmqJql5V8eCcUUoPkJc"/>
+<div>
+<p class="font-label-md text-label-md text-primary group-hover:text-secondary transition-colors">Dr. Weaver</p>
+<p class="text-[10px] uppercase font-label-sm text-on-surface-variant">Mathematics</p>
+</div>
+</button>
+<button class="flex items-center gap-3 p-2 pr-6 rounded-full border border-glass-border hover:bg-white/50 transition-all group">
+<img class="w-10 h-10 rounded-full object-cover" data-alt="Portrait of Prof. James Miller, mature academic male, friendly expression, wearing a shirt and tie. Professional setting, office background blurred." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBcH01w1T82ZHE6bMFezgeuKX6CNGiEnltlFedlxpX7NkPSW9fGI3o61MykTPYfMmYkAVW3jUt5viB7GIx9MhjTLMuakl7BWjBn9femVtGUTPKSWyrEHoKIEOM_X4pHwWmB8gFjWMImIkT6MYj2QjtdH2Fm0QIzH92ZTE_SymGAIGCUogC8tsVzdlQoiARE9rhRgDsOlJQRZcZHek1a4rJwR9kkF7Jc64v7afBpwmssAaaJDBIooCRiIiacAHew3vEXJdSsT7tNhPA"/>
+<div>
+<p class="font-label-md text-label-md text-primary group-hover:text-secondary transition-colors">Prof. Miller</p>
+<p class="text-[10px] uppercase font-label-sm text-on-surface-variant">Physics</p>
+</div>
+</button>
+<button class="flex items-center justify-center w-12 h-12 rounded-full bg-primary text-white hover:bg-tertiary transition-transform active:scale-90">
+<span class="material-symbols-outlined">chat</span>
+</button>
+</div>
+</section>
+</div>
+</main>
+<!-- Contextual FAB (Execution for Home/Dashboard) -->
+<button class="fixed bottom-8 right-8 w-16 h-16 bg-secondary text-on-secondary rounded-full shadow-2xl flex items-center justify-center group hover:scale-110 transition-all duration-300 z-50">
+<span class="material-symbols-outlined text-3xl group-hover:rotate-12 transition-transform">support_agent</span>
+</button>
+<script>
+        // Micro-interactions for glass cards
+        document.querySelectorAll('.glass-card').forEach(card => {
+            card.addEventListener('mousemove', e => {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                card.style.setProperty('--mouse-x', `${x}px`);
+                card.style.setProperty('--mouse-y', `${y}px`);
+            });
+        });
+
+        // Toggle active child dropdown simulation
+        const childSelector = document.querySelector('.relative.group.cursor-pointer');
+        if (childSelector) {
+            childSelector.addEventListener('click', () => {
+                // Future implementation: show/hide dropdown
+                console.log('Child selector clicked');
+            });
+        }
+    </script>
+</body></html>
